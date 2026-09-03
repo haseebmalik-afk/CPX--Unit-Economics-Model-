@@ -153,6 +153,7 @@ button.act.primary:hover{background:#E0431A}
 .scen{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:13px}
 .scard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:17px 18px}
 .scard.cur{border-color:var(--cpx);border-width:1.5px}
+.scard.win{border-color:var(--green);border-width:1.5px;background:linear-gradient(180deg,var(--green-lt) 0%,#fff 60%)}
 .scard .tag{font-size:1rem;font-weight:700}
 .scard .lbl{font-size:.73rem;color:var(--muted);margin:2px 0 10px;line-height:1.4}
 .scard .ne{font-size:1.8rem;font-weight:700;letter-spacing:-.02em}
@@ -181,7 +182,7 @@ button.act.primary:hover{background:#E0431A}
 <body>
 <nav>
   <div class="brand">
-    <div class="logo"><svg viewBox="0 0 100 100"><path fill="#000" d="M18 24 Q54 39 47 50 Q54 61 18 76 Q39 55 39 50 Q39 45 18 24Z M51 29 L71 50 L51 71 Q67 56 67 50 Q67 44 51 29Z"/></svg></div>
+    <div class="logo"><img src="data:image/png;base64,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" alt="CPX" style="width:20px;height:20px;object-fit:contain"></div>
     <div><b>CPX</b><span>Unit Economics</span></div>
   </div>
   <div class="grp">Overview</div>
@@ -240,7 +241,7 @@ button.act.primary:hover{background:#E0431A}
 </section>
 
 <section class="page" id="page-path">
-  <div class="head"><div><h1>Path to Profit</h1><div class="sub">Five scenarios, each computed live by the same engine. The assumptions behind every scenario are listed on its card. Apply one to load it into the levers.</div></div></div>
+  <div class="head"><div><h1>Path to Profit</h1><div class="sub">Five scenarios, each computed live by the same engine. Since July's build restarts in August, the paths that reach profit hold brand volume at plan and cut OpEx — cutting brands makes it worse. Apply any scenario to load it into the levers.</div></div></div>
   <div class="scen" id="scenCards"></div>
 </section>
 
@@ -254,7 +255,9 @@ button.act.primary:hover{background:#E0431A}
 <section class="page" id="page-pnl">
   <div class="head"><div><h1>P&amp;L — CPX + MARS combined SBU</h1><div class="sub">Jan–<span class="mLatest"></span> are booked actuals, tied to the live P&amp;L to the dirham. Later months project at current levers. CPX = the direct CPX line; MARS = all other channels, variances included.</div></div></div>
   <div class="grid">
-    <div class="card col12 p0"><div style="padding:15px 18px 0"><div class="eyebrow">Cumulative net earnings</div></div><div class="ch" style="padding:6px 12px 12px"><canvas id="cCum" height="140"></canvas></div></div>
+    <div class="card col12 p0"><div style="padding:15px 18px 0"><div class="eyebrow">Cumulative net earnings — Target vs As-Is</div></div><div class="ch" style="padding:6px 12px 4px"><canvas id="cCum" height="150"></canvas></div><div class="legend" style="padding:0 18px 14px" id="cumLegend"></div></div>
+    <div class="card col6" id="pnlBoxTarget"></div>
+    <div class="card col6" id="pnlBoxAsis"></div>
     <div class="card col12 p0"><div class="twrap" id="pnlTable" style="border:none;border-radius:13px"></div></div>
   </div>
   <p style="font-size:.8rem;color:var(--muted);line-height:1.6;margin-top:10px;max-width:80ch" id="pnlNote"></p>
@@ -278,7 +281,7 @@ button.act.primary:hover{background:#E0431A}
 </section>
 
 <section class="page" id="page-cohorts">
-  <div class="head"><div><h1>Brand Build</h1><div class="sub">How new-brand revenue stacks up as each monthly cohort ramps. Six cohorts sign <span id="coh-per"></span> brands each from Jul–Dec; every cohort climbs its own ramp curve and churns <span id="coh-churn"></span>/month. July has passed, so the build shown is Aug onward. Recomputes with the levers.</div></div></div>
+  <div class="head"><div><h1>Brand Build</h1><div class="sub">How new-brand revenue stacks up as each monthly cohort ramps. <span id="coh-count"></span> cohorts sign <span id="coh-per"></span> brands each from <span id="coh-start"></span>–Dec; every cohort climbs its own ramp curve and churns <span id="coh-churn"></span>/month. No brands were signed before, so the entire build starts fresh. Recomputes with the levers.</div></div></div>
   <div class="grid">
     <div class="card col12 p0"><div style="padding:15px 18px 0"><div class="eyebrow">New-brand revenue by cohort — the stack</div></div>
       <div class="ch" style="padding:6px 12px 12px"><canvas id="cCohort" height="150"></canvas></div>
@@ -299,7 +302,7 @@ button.act.primary:hover{background:#E0431A}
 const CPX_DATA = {"meta":{"latest":7,"latestLabel":"Jul-26","updated":"Aug 2026 cycle","runRate":7025,"pipelineOrders":[6083,7206,5636,5140,6003,4077,4056]},"seasonality":[0.0747,0.1133,0.0802,0.0734,0.0829,0.0734,0.0747,0.0747,0.0802,0.0734,0.1256,0.0734],"actuals":{"ncOps":[204243,311187,235296,195589,209667,149793,148435],"cpxRec":[199065,301631,213485,195439,220560,150339,133480],"cpxCos":[65432,68175,85883,58842,66393,39391,35639],"marsRev":[96282,86617,191853,51705,79276,61595,8307],"marsCos":[35816,54068,32067,36628,31552,33735,32380],"opex":[421526,382411,356484,400792,336637,457106,488309],"brands":[28,30,32,32,32,27,26],"affiliates":[211,236,205,194,199,170,107],"orders":[5813,7033,5353,4915,5694,4187,3932],"payout":[69786,74222,84710,58652,58005,38814,40539],"pnlNE":[-227427,-116406,-69096,-249118,-134746,-318298,-414541]},"marsStatic":{"rev":82234,"cos":36607},"adjustments":{"julOps":148435,"julRecognized":133480,"julAdj":-14958},"brands":[{"name":"Sephora","m":[122396,239243,120375,109899,110810,100071,89145],"status":"\u2193 Declining"},{"name":"Nayomi","m":[24860,29715,53242,45666,48284,12763,26775],"status":"\u2713 Active"},{"name":"DKNY","m":[6108,4770,12100,8546,10592,2507,7207],"status":"\u2713 Active"},{"name":"OnTime","m":[5344,6677,9912,2072,4837,4272,3070],"status":"\u2193 Declining"},{"name":"Riva","m":[4581,5072,5674,3105,5996,3307,2545],"status":"\u2193 Declining"},{"name":"Cole Haan","m":[3150,2090,8348,9518,1670,1723,1307],"status":"\u2713 Active"},{"name":"Bloomingdales","m":[2533,2320,2961,2641,7663,6956,5061],"status":"\u2193 Declining"},{"name":"Izil","m":[5009,4376,3324,2161,2817,1858,2094],"status":"\u2713 Active"},{"name":"Level Shoes","m":[8294,2635,739,658,4437,6614,2426],"status":"\u2713 Active"},{"name":"Mamas & Papas","m":[2989,2320,1661,1377,2096,1752,1921],"status":"\u2713 Active"},{"name":"Bath and Body Works","m":[4761,1425,1593,882,1010,1517,1172],"status":"\u2713 Active"},{"name":"Mumzworld","m":[1872,1982,2389,1906,1458,1065,1404],"status":"\u2713 Active"},{"name":"Charlotte Tilburry","m":[1151,572,2275,921,2693,907,1378],"status":"\u2713 Active"},{"name":"H&M","m":[992,1137,1387,1137,1410,6,0],"status":"\u2192 Watch"},{"name":"Ounass","m":[1092,1045,1967,1313,0,0,0],"status":"\u2593 Inactive"},{"name":"Squatwolf","m":[251,892,1636,872,1229,2235,1000],"status":"\u2713 Active"},{"name":"Swarovski","m":[1513,854,705,77,0,0,0],"status":"\u2593 Inactive"},{"name":"Mother Care","m":[552,400,517,517,317,447,447],"status":"\u2713 Active"},{"name":"Dabdoob - GZ","m":[965,707,324,0,0,0,0],"status":"\u2593 Inactive"},{"name":"Vogacloset","m":[1047,386,541,594,261,440,228],"status":"\u2713 Active"},{"name":"Victoria's Secret","m":[235,308,705,206,279,235,250],"status":"\u2713 Active"},{"name":"Triumph","m":[104,122,805,526,0,0,0],"status":"\u2593 Inactive"},{"name":"GAP","m":[424,351,312,117,279,0,0],"status":"\u26a0 At Risk"},{"name":"Sun & Sands Sports","m":[704,211,29,75,84,264,14],"status":"\u2713 Active"},{"name":"Banana republic","m":[180,82,482,266,48,13,16],"status":"\u2713 Active"},{"name":"Adidas - RKT","m":[250,216,279,87,153,260,197],"status":"\u2713 Active"},{"name":"Allbirds","m":[298,427,200,19,0,0,0],"status":"\u2593 Inactive"},{"name":"New Balance","m":[269,147,146,140,207,131,206],"status":"\u2713 Active"},{"name":"Noon - GZ","m":[469,0,0,0,324,190,241],"status":"\u2713 Active"},{"name":"Styli","m":[382,142,114,25,214,62,45],"status":"\u2193 Declining"},{"name":"6th Street - GZ","m":[365,266,144,0,0,0,0],"status":"\u2593 Inactive"},{"name":"MetroBrazil","m":[739,0,0,0,0,0,0],"status":"\u2593 Inactive"},{"name":"Namshi - GZ","m":[36,78,209,25,107,71,57],"status":"\u2193 Declining"},{"name":"American Eagle","m":[153,94,106,65,18,0,0],"status":"\u26a0 At Risk"},{"name":"Airalo","m":[83,118,63,165,268,92,214],"status":"\u2713 Active"},{"name":"Footlocker","m":[0,0,0,0,106,35,18],"status":"\u2193 Declining"},{"name":"Eyewa","m":[25,0,32,11,0,0,0],"status":"\u2593 Inactive"},{"name":"Under Armour","m":[0,7,0,0,0,0,0],"status":"\u2593 Inactive"},{"name":"Nice One","m":[0,0,0,0,1,0,0],"status":"\u26a0 At Risk"},{"name":"Reef Perfumes - GZ","m":[0,0,0,0,0,0,0],"status":"\u2014 Too early"}],"affiliates":[{"name":"Alaa Ghawi","m":[1051,1724,986,1135,1209,1059,785],"payout":58501,"tier":"Anchor","status":"\u2193 Declining"},{"name":"Dima","m":[886,1236,894,835,812,598,754],"payout":68842,"tier":"Anchor","status":"\u2713 Active"},{"name":"Abdulaziz","m":[399,610,411,411,381,196,291],"payout":31634,"tier":"Core","status":"\u2713 Active"},{"name":"Muhammad","m":[263,275,114,185,203,132,418],"payout":17655,"tier":"Core","status":"\u2713 Active"},{"name":"Sahseh","m":[199,196,207,121,272,221,210],"payout":19736,"tier":"Core","status":"\u2193 Declining"},{"name":"Ragad Essa Aldahous","m":[147,239,176,178,187,82,44],"payout":17745,"tier":"Growing","status":"\u2193 Declining"},{"name":"Amal","m":[203,141,167,134,232,104,73],"payout":27783,"tier":"Growing","status":"\u2193 Declining"},{"name":"Mohamed","m":[209,230,218,194,201,69,135],"payout":25658,"tier":"Core","status":"\u2713 Active"},{"name":"Abdulrhaman","m":[110,153,146,84,118,50,37],"payout":5702,"tier":"Growing","status":"\u2193 Declining"},{"name":"Nawaf\u2605","m":[94,158,153,98,102,48,84],"payout":3505,"tier":"Growing","status":"\u2713 Active"},{"name":"Rofayda Ali","m":[68,161,118,106,148,129,1],"payout":104,"tier":"Growing","status":"\u2193 Declining"},{"name":"Geeks","m":[105,60,120,126,156,162,181],"payout":11175,"tier":"Growing","status":"\u2191 Scaling"},{"name":"Eslam","m":[88,102,180,106,99,29,6],"payout":17594,"tier":"Growing","status":"\u2193 Declining"},{"name":"Abanob Hamdy","m":[448,34,21,13,15,52,23],"payout":3577,"tier":"Growing","status":"\u2713 Active"},{"name":"Magdalena","m":[195,173,36,27,42,30,0],"payout":1130,"tier":"Growing","status":"\u2192 Dormant"},{"name":"Rahman","m":[52,79,59,132,90,65,8],"payout":1681,"tier":"Growing","status":"\u2193 Declining"},{"name":"Gift","m":[82,38,100,57,97,57,70],"payout":4966,"tier":"Growing","status":"\u2713 Active"},{"name":"a","m":[56,72,108,85,66,2,2],"payout":3334,"tier":"Growing","status":"\u2713 Active"},{"name":"Mahmoud","m":[92,73,78,52,42,13,37],"payout":2814,"tier":"Growing","status":"\u2713 Active"},{"name":"Rabea","m":[65,117,49,42,47,35,2],"payout":5376,"tier":"Growing","status":"\u2193 Declining"},{"name":"Mohanad","m":[61,45,69,59,54,30,25],"payout":3271,"tier":"Growing","status":"\u2193 Declining"},{"name":"Donia Hesham","m":[12,44,128,31,49,26,19],"payout":4649,"tier":"Growing","status":"\u2193 Declining"},{"name":"Amani","m":[57,65,63,25,25,10,19],"payout":5050,"tier":"Growing","status":"\u2713 Active"},{"name":"Mariam Khalid Althawadi","m":[101,53,25,15,29,9,39],"payout":5809,"tier":"Growing","status":"\u2713 Active"},{"name":"Kumail Raza","m":[55,16,43,14,82,154,52],"payout":9575,"tier":"Growing","status":"\u2713 Active"},{"name":"Tasneem Mohamed Kamel","m":[2,2,2,6,134,173,137],"payout":9466,"tier":"Growing","status":"\u2713 Active"},{"name":"Yash","m":[15,55,23,35,18,8,3],"payout":734,"tier":"Tail","status":"\u2193 Declining"},{"name":"Saudi Coupon","m":[14,23,29,29,42,47,45],"payout":3324,"tier":"Growing","status":"\u2713 Active"},{"name":"Mahmoud Abd Elrhman","m":[29,19,27,22,35,13,14],"payout":5502,"tier":"Tail","status":"\u2713 Active"},{"name":"Mohamed","m":[209,230,218,194,201,69,135],"payout":25658,"tier":"Core","status":"\u2713 Active"},{"name":"CPX SPAM\u2757","m":[10,18,26,22,33,22,34],"payout":2601,"tier":"Tail","status":"\u2713 Active"},{"name":"Raja","m":[17,23,3,19,50,41,27],"payout":3724,"tier":"Tail","status":"\u2193 Declining"},{"name":"Ashwaq","m":[17,30,10,23,18,4,0],"payout":297,"tier":"Tail","status":"\u2192 Dormant"},{"name":"Mahmoud Kharoof","m":[11,51,6,2,26,30,0],"payout":283,"tier":"Tail","status":"\u2192 Dormant"},{"name":"Mohamed","m":[209,230,218,194,201,69,135],"payout":25658,"tier":"Core","status":"\u2713 Active"},{"name":"Ahmed","m":[51,54,38,52,80,60,62],"payout":4752,"tier":"Growing","status":"\u2713 Active"},{"name":"R","m":[6,46,14,10,13,2,1],"payout":299,"tier":"Tail","status":"\u2193 Declining"},{"name":"Wegdan","m":[17,21,25,6,8,3,2],"payout":614,"tier":"Tail","status":"\u2193 Declining"},{"name":"Kareem","m":[37,27,22,17,23,18,6],"payout":1929,"tier":"Tail","status":"\u2193 Declining"},{"name":"Amal","m":[203,141,167,134,232,104,73],"payout":27783,"tier":"Growing","status":"\u2193 Declining"},{"name":"Rahman Hussain","m":[16,13,4,13,25,5,10],"payout":1052,"tier":"Tail","status":"\u2713 Active"},{"name":"Kamal Alotiby","m":[15,31,16,5,1,2,0],"payout":202,"tier":"Tail","status":"\u2192 Dormant"},{"name":"Omar","m":[19,7,15,14,10,10,9],"payout":968,"tier":"Tail","status":"\u2713 Active"},{"name":"Karam","m":[10,6,13,15,14,9,1],"payout":863,"tier":"Tail","status":"\u2193 Declining"},{"name":"Mahmoud Hassan","m":[9,9,7,10,18,4,3],"payout":510,"tier":"Tail","status":"\u2193 Declining"},{"name":"Weaam","m":[18,10,14,8,4,1,1],"payout":212,"tier":"Tail","status":"\u2713 Active"},{"name":"Tamer","m":[21,17,13,31,30,10,25],"payout":634,"tier":"Tail","status":"\u2713 Active"},{"name":"Jory","m":[6,13,19,2,10,6,12],"payout":979,"tier":"Tail","status":"\u2713 Active"},{"name":"Nasrsalem","m":[6,22,7,7,8,3,5],"payout":596,"tier":"Tail","status":"\u2713 Active"},{"name":"Alaa","m":[18,14,31,5,11,2,1],"payout":1337,"tier":"Tail","status":"\u2193 Declining"}]};
 const MO=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const PER_ORDER=490*0.082*0.65, ORD_PER_AFF=27;
-const PLAN={opex:420000,brands:207,exChurn:0.05,newChurn:0.05,expansion:0.10,arpa:240000,margin:0.70,fast:false};
+const PLAN={opex:420000,brands:207,exChurn:0.05,newChurn:0.05,expansion:0.10,arpa:240000,fast:false};
 const N=CPX_DATA.meta.latest, A=CPX_DATA.actuals, S=CPX_DATA.seasonality;
 const MARSGP=CPX_DATA.marsStatic.rev-CPX_DATA.marsStatic.cos;
 const IMPLIED_BASE=A.ncOps.reduce((a,b)=>a+b,0)/S.slice(0,N).reduce((a,b)=>a+b,0);
@@ -313,7 +316,7 @@ function engine(L){
   const mARPA=L.arpa/12, total=[], existing=[], newRev=[];
   for(let m=1;m<=12;m++){
     let ex;if(m<=N)ex=A.ncOps[m-1];else{const n=m-N;ex=IMPLIED_BASE*S[m-1]*Math.pow(1-L.exChurn,n)*Math.pow(1+L.expansion,n/(12-N));}
-    let nr=0;for(let sc=7;sc<=12;sc++)if(m>=sc){const age=m-sc;nr+=(L.brands/6)*Math.pow(1-L.newChurn,age)*ramp[Math.min(age,6)]*mARPA;}
+    let nr=0;for(let sc=N+1;sc<=12;sc++)if(m>=sc){const age=m-sc;nr+=(L.brands/(12-N))*Math.pow(1-L.newChurn,age)*ramp[Math.min(age,6)]*mARPA;}
     existing.push(ex);newRev.push(nr);total.push(ex+nr);
   }
   const rows={cpxS:[],cpxC:[],mR:[],mC:[],ox:[],ne:[],cum:[]};let run=0;
@@ -336,14 +339,16 @@ function engine(L){
 
 /* ---------- AS-IS engine (today frozen flat) ---------- */
 function asIs(){
-  const total=[],rows={ne:[],cum:[]};let run=0;
+  const total=[],rows={cpxS:[],cpxC:[],mR:[],mC:[],ox:[],ne:[],cum:[]};let run=0;
   for(let m=1;m<=12;m++){
     let r; if(m<=N)r=A.ncOps[m-1]; else r=IMPLIED_BASE*S[m-1]; // frozen, no churn/expansion, no new
     total.push(r);
     let cpxS,cpxC,mR,mC,ox;
     if(m<=N){cpxS=A.cpxRec[m-1];cpxC=A.cpxCos[m-1];mR=A.marsRev[m-1];mC=A.marsCos[m-1];ox=A.opex[m-1];}
     else{cpxS=r;cpxC=.3*r;mR=CPX_DATA.marsStatic.rev;mC=CPX_DATA.marsStatic.cos;ox=OPEX_RUN;}
-    const v=(cpxS-cpxC)+(mR-mC)-ox;rows.ne.push(v);run+=v;rows.cum.push(run);
+    const v=(cpxS-cpxC)+(mR-mC)-ox;
+    rows.cpxS.push(cpxS);rows.cpxC.push(cpxC);rows.mR.push(mR);rows.mC.push(mC);rows.ox.push(ox);
+    rows.ne.push(v);run+=v;rows.cum.push(run);
   }
   let monthPos="Never";for(let m=1;m<=12;m++)if(rows.ne[m-1]>=0){monthPos=MO[m-1];break;}
   let recovers="Not in-year";for(let m=1;m<=12;m++)if(rows.cum[m-1]>=0){recovers=MO[m-1];break;}
@@ -353,16 +358,16 @@ function asIs(){
 
 /* ---------- scenario definitions with explicit assumptions ---------- */
 const SCEN={
-  A:{label:"Steady scale",lv:{opex:300000,brands:100,fast:false},
-     assume:[["New brands","100"],["OpEx/mo","300K"],["Ramp","Standard"],["ARPA","240K"]]},
-  B:{label:"Lean + fast ramp",lv:{opex:300000,brands:80,fast:true},
-     assume:[["New brands","80"],["OpEx/mo","300K"],["Ramp","Fast"],["ARPA","240K"]]},
-  C:{label:"Deep cost cut",lv:{opex:260000,brands:80,fast:true},
-     assume:[["New brands","80"],["OpEx/mo","260K"],["Ramp","Fast"],["ARPA","240K"]]},
-  D:{label:"Premium brands",lv:{opex:300000,brands:60,arpa:360000,fast:true},
-     assume:[["New brands","60"],["OpEx/mo","300K"],["Ramp","Fast"],["ARPA","360K"]]},
-  E:{label:"Full push",lv:{opex:300000,brands:100,fast:true},
-     assume:[["New brands","100"],["OpEx/mo","300K"],["Ramp","Fast"],["ARPA","240K"]]},
+  A:{label:"Cost discipline",lv:{opex:250000,brands:207,fast:false},
+     assume:[["New brands","207 (plan)"],["OpEx/mo","250K"],["Ramp","Standard"],["ARPA","240K"]]},
+  B:{label:"Hold the line",lv:{opex:300000,brands:207,fast:false},
+     assume:[["New brands","207 (plan)"],["OpEx/mo","300K"],["Ramp","Standard"],["ARPA","240K"]]},
+  C:{label:"Faster onboarding",lv:{opex:300000,brands:207,fast:true},
+     assume:[["New brands","207 (plan)"],["OpEx/mo","300K"],["Ramp","Fast"],["ARPA","240K"]]},
+  D:{label:"Lean brand book",lv:{opex:300000,brands:150,fast:false},
+     assume:[["New brands","150"],["OpEx/mo","300K"],["Ramp","Standard"],["ARPA","240K"]]},
+  E:{label:"Status quo OpEx",lv:{opex:420000,brands:207,fast:false},
+     assume:[["New brands","207 (plan)"],["OpEx/mo","420K (current)"],["Ramp","Standard"],["ARPA","240K"]]},
 };
 
 /* ---------- fmt & chart theme ---------- */
@@ -424,8 +429,8 @@ function renderCockpit(){
     ["Profit (net earnings)", ai.neFY, t.neFY, 1],
     ["Orders", ra/PER_ORDER, rt/PER_ORDER, 0],
     ["Active affiliates (avg/mo)", ra/PER_ORDER/ORD_PER_AFF/12, rt/PER_ORDER/ORD_PER_AFF/12, 0],
-    ["Brands @ 20K output", ra/mARPA, rt/mARPA, 0],
-    ["Brands @ nominal run-rate", ra/CPX_DATA.meta.runRate, rt/CPX_DATA.meta.runRate, 0],
+    ["Brands @ 20K ARPA equivalents", ra/mARPA, rt/mARPA, 0],
+    ["Brands @ nominal monthly ARPA", ra/CPX_DATA.meta.runRate, rt/CPX_DATA.meta.runRate, 0],
     ["Recovers H1 loss", null, null, 2],
   ];
   let ch=`<table class="cmp"><thead><tr><th>FY metric</th><th>As-Is<br><span class="th-sub">frozen</span></th><th>Target<br><span class="th-sub">levers</span></th><th>Uplift<br><span class="th-sub">Target − As-Is</span></th></tr></thead><tbody>`;
@@ -496,8 +501,8 @@ function renderTargets(){
     {name:"Net commission (AED)",div:1,act:A.ncOps},
     {name:"Orders",div:PER_ORDER,act:A.orders},
     {name:"Active affiliates",div:PER_ORDER*ORD_PER_AFF,act:A.affiliates},
-    {name:"Brands — 20K units (output-equivalent)",div:LV.arpa/12,act:A.ncOps.map(v=>v/(LV.arpa/12))},
-    {name:`Brands — nominal run-rate (${f0(CPX_DATA.meta.runRate)}/brand)`,div:CPX_DATA.meta.runRate,act:A.brands},
+    {name:"Brands — 20K ARPA equivalents",div:LV.arpa/12,act:A.ncOps.map(v=>v/(LV.arpa/12))},
+    {name:`Brands — nominal monthly ARPA (AED ${f0(CPX_DATA.meta.runRate)}/brand)`,div:CPX_DATA.meta.runRate,act:A.brands},
   ];
   let html="";
   mets.forEach((mt,mi)=>{
@@ -531,24 +536,29 @@ function renderTargets(){
 /* ================= LEVERS ================= */
 const LDEF=[
   {k:"opex",label:"SBU OpEx / month (Aug on)",hint:"Operating expense assumed for each remaining month. The reduction lever.",plan:PLAN.opex,step:10000},
-  {k:"brands",label:"New brand signings (year)",hint:"20K-quality brands signed across the year in six ramping cohorts.",plan:PLAN.brands,step:1},
+  {k:"brands",label:"New brand signings (year)",hint:"20K-monthly-ARPA brands signed across the remaining months in equal cohorts (no signings landed before, so the build starts now).",plan:PLAN.brands,step:1},
   {k:"arpa",label:"New-brand ARPA (annual)",hint:"Annual revenue a fully-ramped new brand contributes.",plan:PLAN.arpa,step:10000},
-  {k:"exChurn",label:"Existing-brand churn / mo",hint:"Monthly revenue lost from the current book. Decimal (0.05 = 5%).",plan:PLAN.exChurn,step:0.01,pct:1},
-  {k:"newChurn",label:"New-brand churn / mo",hint:"Monthly attrition within new cohorts. Decimal.",plan:PLAN.newChurn,step:0.01,pct:1},
-  {k:"expansion",label:"Existing-brand expansion",hint:"Growth of surviving existing brands over the rest of the year. Decimal.",plan:PLAN.expansion,step:0.01,pct:1},
-  {k:"margin",label:"CPX GP margin",hint:"Gross margin (reference only in this view).",plan:PLAN.margin,step:0.05,pct:1},
+  {k:"exChurn",label:"Existing-brand churn (% / mo)",hint:"Monthly revenue lost from the current book. Enter as percent, e.g. 5.",plan:PLAN.exChurn,step:1,pct:1},
+  {k:"newChurn",label:"New-brand churn (% / mo)",hint:"Monthly attrition within new cohorts. Enter as percent.",plan:PLAN.newChurn,step:1,pct:1},
+  {k:"expansion",label:"Existing-brand expansion (%)",hint:"Growth of surviving existing brands over the rest of the year. Enter as percent.",plan:PLAN.expansion,step:1,pct:1},
 ];
 function renderLevers(){
   let h=LDEF.map(d=>`<div class="lev ${d.hero?'hero-lev':''}"><label>${d.label}</label><div class="hint">${d.hint}</div>
-    <input type="number" id="lv-${d.k}" value="${LV[d.k]}" step="${d.step}">
+    <input type="number" id="lv-${d.k}" value="${d.pct?+(LV[d.k]*100).toFixed(1):LV[d.k]}" step="${d.step}">
     <div class="plan">plan: ${d.pct?(d.plan*100).toFixed(0)+"%":f0(d.plan)}</div>
     <div class="live" id="live-${d.k}"></div></div>`).join("");
+  // locked GP margin info tile (not a lever)
+  const mAct=1-A.cpxCos.reduce((a,b)=>a+b,0)/A.cpxRec.reduce((a,b)=>a+b,0);
+  h+=`<div class="lev" style="background:var(--line2)"><label>CPX GP margin — locked</label>
+    <div class="hint">Held at the model's moving average, not a lever. Projected COS runs at 30% of commission.</div>
+    <div class="big sm" style="margin-top:2px">${(mAct*100).toFixed(1)}%</div>
+    <div class="plan">Jan–${MO[N-1]} actual average</div></div>`;
   h+=`<div class="lev"><label>New-brand ramp curve</label><div class="hint">How fast new brands reach full productivity.</div>
     <select id="lv-fast"><option value="false"${!LV.fast?" selected":""}>Standard · 10→90% / 6mo</option><option value="true"${LV.fast?" selected":""}>Fast · 30→100% / 6mo</option></select>
     <div class="plan">plan: Standard</div><div class="live"></div></div>`;
   $("#leverGrid").innerHTML=h;
 }
-function readLevers(){LDEF.forEach(d=>{const v=parseFloat($("#lv-"+d.k).value);if(!isNaN(v))LV[d.k]=v;});LV.fast=$("#lv-fast").value==="true";}
+function readLevers(){LDEF.forEach(d=>{const v=parseFloat($("#lv-"+d.k).value);if(!isNaN(v))LV[d.k]=d.pct?v/100:v;});LV.fast=$("#lv-fast").value==="true";}
 function renderImpact(){
   const r=engine(LV), base=engine(PLAN).neFY;
   $("#leverImpact").innerHTML=`<div class="lab">These levers produce — revenue, then profit</div>
@@ -566,13 +576,35 @@ function renderImpact(){
 
 /* ================= PNL ================= */
 function renderPnl(){
-  const r=engine(LV);
+  const r=engine(LV), ai=asIs();
   destroy("cCum");
-  CH.cCum=new Chart($("#cCum"),{type:"line",data:{labels:MO,datasets:[{label:"Cumulative NE",data:r.rows.cum,borderColor:INK,borderWidth:2.5,
-    pointRadius:3,pointBackgroundColor:r.rows.cum.map((_,i)=>i<N?INK:CPX),tension:.2,fill:true,
-    backgroundColor:x=>{const g=x.chart.ctx.createLinearGradient(0,0,0,140);g.addColorStop(0,"rgba(250,85,35,.10)");g.addColorStop(1,"rgba(250,85,35,.01)");return g;}}]},
+  CH.cCum=new Chart($("#cCum"),{type:"line",data:{labels:MO,datasets:[
+    {label:"Target (levers)",data:r.rows.cum,borderColor:CPX,borderWidth:2.5,pointRadius:3,
+     pointBackgroundColor:r.rows.cum.map((_,i)=>i<N?INK:CPX),tension:.2},
+    {label:"As-Is (frozen)",data:ai.rows.cum,borderColor:MUT,borderWidth:1.6,borderDash:[5,4],pointRadius:0,pointHoverRadius:4,tension:.2},
+  ]},
     options:{responsive:true,maintainAspectRatio:false,animation:{duration:500},interaction:{intersect:false,mode:"index"},
       plugins:{legend:{display:false},tooltip:tip()},scales:{x:{grid:{display:false},ticks:{color:MUT}},y:{grid:{color:GRID},ticks:{color:MUT,callback:fK}}}}});
+  $("#cumLegend").innerHTML=`<span><i style="background:${CPX}"></i>Target (levers applied)</span><span><i style="background:${MUT};height:2px;border-radius:0"></i>As-Is (frozen)</span>`;
+
+  // two P&L summary boxes
+  function pnlBox(el,title,color,rr,rec){
+    const cpxRev=rr.cpxS?rr.cpxS.reduce((a,b)=>a+b,0):null;
+    el.innerHTML=`<div class="eyebrow" style="color:${color};font-weight:700">${title}</div>
+      <div class="scnbox">
+        <div class="sr"><span>CPX revenue (FY)</span><b>${f0(rr.rev)}</b></div>
+        <div class="sr"><span>CPX COS</span><b>${f0(rr.cos)}</b></div>
+        <div class="sr"><span>MARS gross profit</span><b>${f0(rr.marsGP)}</b></div>
+        <div class="sr"><span>SBU OpEx</span><b>${f0(rr.opex)}</b></div>
+        <div class="sr big-r"><span>FY profit</span><b class="${cls(rr.ne)}">${fS(rr.ne)}</b></div>
+        <div class="sr sub"><span>Recovers H1 loss</span><b class="${rec==='Not in-year'?'neg':'pos'}">${rec}</b></div>
+      </div>`;
+  }
+  const sum=a=>a.reduce((x,y)=>x+y,0);
+  pnlBox($("#pnlBoxTarget"),"TARGET P&L — LEVERS APPLIED","var(--cpx)",{
+    rev:sum(r.rows.cpxS),cos:sum(r.rows.cpxC),marsGP:sum(r.rows.mR)-sum(r.rows.mC),opex:sum(r.rows.ox),ne:r.neFY},r.recovers);
+  pnlBox($("#pnlBoxAsis"),"AS-IS P&L — BUSINESS FROZEN","var(--muted)",{
+    rev:sum(ai.rows.cpxS),cos:sum(ai.rows.cpxC),marsGP:sum(ai.rows.mR)-sum(ai.rows.mC),opex:sum(ai.rows.ox),ne:ai.neFY},ai.recovers);
   const rows=[["CPX Revenue (recognized)",r.rows.cpxS],["CPX COS",r.rows.cpxC],
     ["CPX Gross Profit",r.rows.cpxS.map((v,i)=>v-r.rows.cpxC[i]),1,1],
     ["MARS Revenue",r.rows.mR],["MARS COS",r.rows.mC],
@@ -631,11 +663,17 @@ function renderAffiliates(){
 /* ================= PATH (with assumptions) ================= */
 function renderPath(){
   const cur=engine(LV);
-  let h=`<div class="scard cur"><div class="tag">Current levers</div><div class="lbl">What the Levers page is set to now</div>
+  // count profitable scenarios
+  const results=Object.entries(SCEN).map(([k,s])=>({k,s,r:engine({...PLAN,...s.lv})}));
+  const profitable=results.filter(x=>x.r.neFY>=0);
+  let h=`<div class="card col12" style="grid-column:1/-1;margin-bottom:4px;border-left:3px solid ${profitable.length?'var(--green)':'var(--red)'}">
+    <div style="font-size:.95rem;font-weight:600;color:var(--ink)">${profitable.length} of ${results.length} scenarios reach full-year profit</div>
+    <div style="font-size:.82rem;color:var(--muted);margin-top:3px;line-height:1.5">The paths that work hold brand signings at plan (207) and cut OpEx — fewer brands can't overcome the post-July ramp compression. ${profitable.length?`Best realistic path: <b style="color:var(--green)">${profitable.sort((a,b)=>b.r.neFY-a.r.neFY)[0].s.label}</b>.`:""}</div></div>`;
+  h+=`<div class="scard cur"><div class="tag">Current levers</div><div class="lbl">What the Levers page is set to now</div>
     <div class="ne ${cls(cur.neFY)}">${fS(cur.neFY)}</div>
     <div class="meta">Recovers H1 loss: <b style="color:${cur.recovers==="Not in-year"?"var(--red)":"var(--green)"}">${cur.recovers}</b> · profitable monthly from ${cur.monthPos}<br>Projection ${f0(cur.proj)}</div></div>`;
-  Object.entries(SCEN).forEach(([k,s])=>{const r=engine({...PLAN,...s.lv});
-    h+=`<div class="scard"><div class="tag">${s.label}</div><div class="lbl">Scenario ${k}</div>
+  results.forEach(({k,s,r})=>{const win=r.neFY>=0;
+    h+=`<div class="scard${win?' win':''}"><div class="tag">${s.label}${win?' <span class="chip up" style="font-size:.6rem;vertical-align:middle">PROFIT</span>':''}</div><div class="lbl">Scenario ${k}</div>
       <div class="ne ${cls(r.neFY)}">${fS(r.neFY)}</div>
       <div class="meta">Recovers H1 loss: <b style="color:${r.recovers==="Not in-year"?"var(--red)":"var(--green)"}">${r.recovers}</b> · profitable monthly from ${r.monthPos}<br>Projection ${f0(r.proj)}</div>
       <ul class="assume">${s.assume.map(([a,b])=>`<li><span>${a}</span><b>${b}</b></li>`).join("")}</ul>
@@ -648,9 +686,9 @@ function renderPath(){
 function renderCohorts(){
   const L=LV;
   const ramp=L.fast?[.30,.50,.70,.85,.95,1,1]:[.10,.20,.35,.55,.75,.90,1];
-  const perCohort=L.brands/6, mARPA=L.arpa/12;
-  const startCohort=Math.max(7,N+1); // July passed → Aug onward
-  const cohorts=[7,8,9,10,11,12];
+  const perCohort=L.brands/(12-N), mARPA=L.arpa/12;
+  const startCohort=N+1; // build restarts after the latest actual month
+  const cohorts=[];for(let sc=N+1;sc<=12;sc++)cohorts.push(sc);
   const months=[];for(let m=N+1;m<=12;m++)months.push(m); // Aug..Dec
   // matrix[cohort][month] revenue
   const matrix={}, totals={}, survivors={};
@@ -662,6 +700,8 @@ function renderCohorts(){
     });});
   $("#coh-per").textContent=perCohort.toFixed(1);
   $("#coh-churn").textContent=(L.newChurn*100).toFixed(0)+"%";
+  $("#coh-count").textContent=["","One","Two","Three","Four","Five","Six"][12-N]||String(12-N);
+  $("#coh-start").textContent=MO[N];
 
   // stacked bar chart
   const palette=[CPX,"#F5915F","#F7B38C","#F9CDB2","#FBE0D0","#1A2230"];
@@ -677,7 +717,6 @@ function renderCohorts(){
   let h=`<table><thead><tr><th>Cohort signed</th><th>Brands</th>${months.map(m=>`<th>${MO[m-1]}</th>`).join("")}<th>FY new</th></tr></thead><tbody>`;
   cohorts.forEach(sc=>{
     const rowFY=months.reduce((a,m)=>a+(matrix[sc][m]||0),0);
-    if(sc<startCohort && !months.some(m=>matrix[sc][m])){return;}
     h+=`<tr><td>${MO[sc-1]} cohort</td><td class="c-asis">${perCohort.toFixed(1)}</td>`;
     months.forEach(m=>{h+=matrix[sc][m]?`<td class="c-proj">${f0(matrix[sc][m])}</td>`:'<td class="c-dash">—</td>';});
     h+=`<td><b>${f0(rowFY)}</b></td></tr>`;});
@@ -687,7 +726,7 @@ function renderCohorts(){
   $("#cohortTable").innerHTML=h;
 
   const fyNew=months.reduce((a,m)=>a+totals[m],0);
-  $("#cohortNote").innerHTML=`At current levers, ${L.brands} signings across six cohorts add <b style="color:var(--cpx)">${f0(fyNew)}</b> of new-brand commission from ${MO[startCohort-1]}–Dec. Each cohort is ${perCohort.toFixed(1)} brands ramping on the ${L.fast?"fast (30→100%)":"standard (10→90%)"} curve at AED ${f0(mARPA)}/brand/month, less ${(L.newChurn*100).toFixed(0)}% monthly churn. The stack shows why the year is back-loaded: December carries all six cohorts at once, the earliest ones near full productivity.`;
+  $("#cohortNote").innerHTML=`At current levers, ${L.brands} signings across ${12-N} cohorts (${MO[N]}–Dec — no brands were signed in ${MO[N-1]}, so the build restarts) add <b style="color:var(--cpx)">${f0(fyNew)}</b> of new-brand commission from ${MO[startCohort-1]}–Dec. Each cohort is ${perCohort.toFixed(1)} brands ramping on the ${L.fast?"fast (30→100%)":"standard (10→90%)"} curve at AED ${f0(mARPA)}/brand/month, less ${(L.newChurn*100).toFixed(0)}% monthly churn. The stack shows why the year is back-loaded: December carries all six cohorts at once, the earliest ones near full productivity.`;
 }
 
 function renderMethod(){
