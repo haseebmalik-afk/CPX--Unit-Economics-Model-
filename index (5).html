@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPX Unit Economics 2026 — ITCAN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F7F8F6; --panel:#FFFFFF; --ink:#1B2E52; --ink-soft:#44536F;
+  --hair:#DCE1E8; --green:#21744A; --green-soft:#E8F2EC;
+  --red:#AE3A2E; --red-soft:#F7ECEA; --amber:#9A6A1B; --amber-soft:#F6EFDF;
+  --blue:#2B5FA3; --grey:#7A8494;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px}
+body{font-family:"IBM Plex Sans",Roboto,system-ui,sans-serif;background:var(--paper);
+  color:var(--ink);display:flex;min-height:100vh}
+.num{font-variant-numeric:tabular-nums;text-align:right}
+
+/* ---- workbook-spine rail ---- */
+nav{width:190px;min-width:190px;background:var(--ink);color:#C9D3E6;
+  display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+nav .brand{padding:22px 18px 16px;border-bottom:1px solid rgba(255,255,255,.12)}
+nav .brand b{color:#fff;font-size:1.15rem;font-weight:700;letter-spacing:.01em;display:block}
+nav .brand span{font-size:.72rem;color:#8FA0C2}
+nav a{display:block;padding:11px 18px;color:#C9D3E6;text-decoration:none;
+  font-size:.88rem;border-left:3px solid transparent;cursor:pointer}
+nav a:hover{background:rgba(255,255,255,.06);color:#fff}
+nav a.active{background:rgba(255,255,255,.10);color:#fff;border-left-color:#5FA871;font-weight:600}
+nav .foot{margin-top:auto;padding:14px 18px;font-size:.68rem;color:#7286A8;
+  border-top:1px solid rgba(255,255,255,.12);line-height:1.5}
+
+/* ---- content ---- */
+main{flex:1;padding:30px 40px 80px;max-width:1240px}
+.page{display:none}.page.active{display:block}
+h1{font-size:1.5rem;font-weight:700;margin-bottom:2px}
+.sub{color:var(--ink-soft);font-size:.85rem;margin-bottom:26px}
+h2{font-size:1.0rem;font-weight:600;margin:34px 0 12px;padding-left:10px;
+  border-left:4px solid var(--ink)}
+h2 small{font-weight:400;color:var(--grey);font-size:.8rem;margin-left:8px}
+.note{font-size:.78rem;color:var(--grey);margin:8px 0 0;line-height:1.5;max-width:70ch}
+
+/* figures strip */
+.figs{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--hair);background:var(--panel)}
+.figs div{padding:14px 22px;border-right:1px solid var(--hair);min-width:150px}
+.figs div:last-child{border-right:none}
+.figs .l{font-size:.72rem;color:var(--grey);margin-bottom:3px}
+.figs .v{font-size:1.28rem;font-weight:700;font-variant-numeric:tabular-nums}
+.pos{color:var(--green)}.neg{color:var(--red)}.amb{color:var(--amber)}
+
+/* tables */
+table{border-collapse:collapse;width:100%;background:var(--panel);
+  border:1px solid var(--hair);font-size:.8rem}
+th,td{padding:6px 9px;border-bottom:1px solid var(--hair);white-space:nowrap}
+th{background:#EEF1F5;color:var(--ink);font-weight:600;text-align:right;font-size:.74rem}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:inherit}
+tbody tr{background:var(--panel)}
+tbody tr:hover{background:#F3F6FA}
+td{font-variant-numeric:tabular-nums;text-align:right}
+tr.band td{background:#F0F3F7;font-weight:600}
+td.actual{color:var(--green)}
+td.projected{color:var(--blue)}
+td.ask{color:var(--red);background:var(--red-soft)}
+td.dash{color:var(--grey);text-align:center}
+.scrollx{overflow-x:auto}
+.chip{display:inline-block;padding:1px 8px;border-radius:9px;font-size:.7rem;font-weight:600}
+.chip.up{background:var(--green-soft);color:var(--green)}
+.chip.down{background:var(--red-soft);color:var(--red)}
+.chip.flat{background:#EDEFF3;color:var(--ink-soft)}
+.chip.new{background:var(--amber-soft);color:var(--amber)}
+
+/* levers */
+.levers{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.lever{background:var(--panel);border:1px solid var(--hair);padding:14px 16px}
+.lever label{font-size:.78rem;color:var(--ink-soft);display:block;margin-bottom:6px}
+.lever .cur{font-size:.68rem;color:var(--grey)}
+.lever input,.lever select{width:100%;padding:7px 9px;font:inherit;font-size:.95rem;
+  border:1px solid var(--hair);background:#FBFCFD;font-variant-numeric:tabular-nums}
+.lever input:focus,.lever select:focus{outline:2px solid var(--blue);border-color:var(--blue)}
+.btnrow{margin:16px 0 6px;display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;font-size:.8rem;font-weight:600;padding:8px 14px;cursor:pointer;
+  border:1px solid var(--ink);background:var(--panel);color:var(--ink)}
+button:hover{background:var(--ink);color:#fff}
+button.primary{background:var(--ink);color:#fff}
+button.primary:hover{background:#2A4270}
+.impact{background:var(--panel);border:1px solid var(--hair);border-top:4px solid var(--ink);
+  padding:20px 24px;margin-top:20px}
+.impact .big{font-size:2.6rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
+.impact .row{display:flex;gap:34px;flex-wrap:wrap;margin-top:12px}
+.impact .row div{min-width:130px}
+.impact .l{font-size:.72rem;color:var(--grey)}
+.impact .v{font-size:1.05rem;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* scenario cards */
+.scen{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.scen .card{background:var(--panel);border:1px solid var(--hair);padding:16px 18px}
+.scen .card h3{font-size:.9rem;font-weight:600;margin-bottom:2px}
+.scen .card .lbl{font-size:.74rem;color:var(--grey);margin-bottom:10px}
+.scen .ne{font-size:1.5rem;font-weight:700;font-variant-numeric:tabular-nums}
+.scen .meta{font-size:.76rem;color:var(--ink-soft);margin-top:6px}
+.scen .card button{margin-top:12px;font-size:.72rem;padding:5px 10px}
+
+svg text{font-family:"IBM Plex Sans",Roboto,sans-serif}
+.legend{display:flex;gap:18px;font-size:.74rem;color:var(--ink-soft);margin:6px 0 2px;flex-wrap:wrap}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;margin-right:5px;vertical-align:-1px}
+.legend .l-act::before{background:var(--green)}
+.legend .l-proj::before{background:#fff;border:2px solid var(--blue);width:8px;height:8px}
+.legend .l-tgt::before{background:var(--ink);height:2px;width:14px;vertical-align:2px}
+.legend .l-rev::before{background:var(--amber)}
+
+@media(max-width:900px){
+  body{flex-direction:column}
+  nav{width:100%;height:auto;position:static;flex-direction:row;flex-wrap:wrap;align-items:center}
+  nav .brand{border:none;padding:12px 16px}
+  nav a{border-left:none;border-bottom:3px solid transparent;padding:10px 12px}
+  nav a.active{border-bottom-color:#5FA871;border-left:none}
+  nav .foot{display:none}
+  main{padding:20px 16px 60px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand"><b>CPX 2026</b><span>Unit Economics · ITCAN</span></div>
+  <a data-page="cockpit" class="active">Cockpit</a>
+  <a data-page="targets">Targets vs Actuals</a>
+  <a data-page="levers">Levers</a>
+  <a data-page="pnl">P&amp;L</a>
+  <a data-page="brands">Brand Pipeline</a>
+  <a data-page="affiliates">Affiliate Pipeline</a>
+  <a data-page="path">Path to Profit</a>
+  <a data-page="method">Method &amp; Updates</a>
+  <div class="foot">Data through <b id="footMonth"></b><br>Reconciled to P&amp;L, diff = 0<br><span id="footStamp"></span></div>
+</nav>
+<main>
+
+<section class="page active" id="page-cockpit">
+  <h1>Cockpit</h1>
+  <div class="sub">Where the year stands, at current lever settings. Data through <span class="mLatest"></span>.</div>
+  <div id="runway"></div>
+  <div class="legend"><span class="l-act">Actual commission</span><span class="l-proj">Projected (levers)</span><span class="l-tgt">Target pace</span></div>
+  <div class="figs" id="cockpitFigs"></div>
+  <h2>Next month's asks <small>catch-up basis: remaining target re-spread over months left</small></h2>
+  <div class="figs" id="askFigs"></div>
+  <h2>Health signals <small>latest month vs prior</small></h2>
+  <div class="figs" id="healthFigs"></div>
+</section>
+
+<section class="page" id="page-targets">
+  <h1>Targets vs Actuals</h1>
+  <div class="sub">Every metric on the same three lines: what the target pace asks, what actually landed, and the revised ask after misses. Target pace derives from the live target, so it responds to the OpEx lever.</div>
+  <div id="targetBlocks"></div>
+</section>
+
+<section class="page" id="page-levers">
+  <h1>Levers</h1>
+  <div class="sub">The committed plan is 207 brands at AED 420K/month OpEx. Change anything below — every page recomputes instantly. Nothing is saved: reload restores the plan.</div>
+  <div class="levers" id="leverGrid"></div>
+  <div class="btnrow">
+    <button class="primary" id="btnApply">Recalculate</button>
+    <button id="btnReset">Reset to committed plan</button>
+  </div>
+  <div class="impact" id="leverImpact"></div>
+</section>
+
+<section class="page" id="page-pnl">
+  <h1>P&amp;L — CPX + MARS combined SBU</h1>
+  <div class="sub">Jan–<span class="mLatest"></span> are booked actuals reconciled to the live P&amp;L. Later months are projections at current lever settings. CPX = the direct CPX line only; MARS = everything else, variances included.</div>
+  <div class="scrollx" id="pnlTable"></div>
+  <div id="cumChart"></div>
+  <p class="note" id="pnlNote"></p>
+</section>
+
+<section class="page" id="page-brands">
+  <h1>Brand Pipeline</h1>
+  <div class="sub">Per-brand net commission (operational export). Recognized revenue reconciles via the adjustment line.</div>
+  <div class="figs" id="brandFigs"></div>
+  <h2>Concentration</h2>
+  <div id="concBars"></div>
+  <h2>All brands <small>Jan–<span class="mLatest"></span> actuals</small></h2>
+  <div class="scrollx" id="brandTable"></div>
+</section>
+
+<section class="page" id="page-affiliates">
+  <h1>Affiliate Pipeline</h1>
+  <div class="sub">Top 50 affiliates by order volume. Orders per month, payout to date, tier and trend.</div>
+  <div class="figs" id="affFigs"></div>
+  <h2>Top 50 <small>orders per month</small></h2>
+  <div class="scrollx" id="affTable"></div>
+</section>
+
+<section class="page" id="page-path">
+  <h1>Path to Profit</h1>
+  <div class="sub">Five committed scenario definitions, computed live by the same engine — these always agree with the levers page. Apply any scenario to explore it.</div>
+  <div class="scen" id="scenCards"></div>
+  <p class="note">Every scenario keeps churn 5%, expansion 10%, margin 70% unless stated. "Fast ramp" = new brands productive on the 30/50/70/85/95/100 curve instead of 10/20/35/55/75/90.</p>
+</section>
+
+<section class="page" id="page-method">
+  <h1>Method &amp; Updates</h1>
+  <div class="sub">How this model works and how it gets updated each month.</div>
+  <div id="methodBody"></div>
+</section>
+
+</main>
+<script>
+/* ============================================================
+   CPX UNIT ECONOMICS DASHBOARD — ITCAN / Moontech
+   Engine is an exact port of CPX_Unit_Economics_2026_JulyUpdated.xlsx
+   (parity-verified: baseline, targets, all Path-to-Profit scenarios).
+   MONTHLY UPDATE: replace the CPX_DATA object below, nothing else.
+   ============================================================ */
+const CPX_DATA = {"meta":{"latest":7,"latestLabel":"Jul-26","updated":"Aug 2026 cycle","runRate":7025},"seasonality":[0.0747,0.1133,0.0802,0.0734,0.0829,0.0734,0.0747,0.0747,0.0802,0.0734,0.1256,0.0734],"actuals":{"ncOps":[204243,311187,235296,195589,209667,149793,148435],"cpxRec":[199065,301631,213485,195439,220560,150339,133480],"cpxCos":[65432,68175,85883,58842,66393,39391,35639],"marsRev":[96282,86617,191853,51705,79276,61595,8307],"marsCos":[35816,54068,32067,36628,31552,33735,32380],"opex":[421526,382411,356484,400792,336637,457106,488309],"brands":[28,30,32,32,32,27,26],"affiliates":[211,236,205,194,199,170,107],"orders":[5813,7033,5353,4915,5694,4187,3932],"payout":[69786,74222,84710,58652,58005,38814,40539],"pnlNE":[-227427,-116406,-69096,-249118,-134746,-318298,-414541]},"marsStatic":{"rev":82234,"cos":36607},"adjustments":{"julOps":148435,"julRecognized":133480,"julAdj":-14958},"brands":[{"name":"Sephora","m":[122396,239243,120375,109899,110810,100071,89145],"status":"\u2193 Declining"},{"name":"Nayomi","m":[24860,29715,53242,45666,48284,12763,26775],"status":"\u2713 Active"},{"name":"DKNY","m":[6108,4770,12100,8546,10592,2507,7207],"status":"\u2713 Active"},{"name":"OnTime","m":[5344,6677,9912,2072,4837,4272,3070],"status":"\u2193 Declining"},{"name":"Riva","m":[4581,5072,5674,3105,5996,3307,2545],"status":"\u2193 Declining"},{"name":"Cole Haan","m":[3150,2090,8348,9518,1670,1723,1307],"status":"\u2713 Active"},{"name":"Bloomingdales","m":[2533,2320,2961,2641,7663,6956,5061],"status":"\u2193 Declining"},{"name":"Izil","m":[5009,4376,3324,2161,2817,1858,2094],"status":"\u2713 Active"},{"name":"Level Shoes","m":[8294,2635,739,658,4437,6614,2426],"status":"\u2713 Active"},{"name":"Mamas & Papas","m":[2989,2320,1661,1377,2096,1752,1921],"status":"\u2713 Active"},{"name":"Bath and Body Works","m":[4761,1425,1593,882,1010,1517,1172],"status":"\u2713 Active"},{"name":"Mumzworld","m":[1872,1982,2389,1906,1458,1065,1404],"status":"\u2713 Active"},{"name":"Charlotte Tilburry","m":[1151,572,2275,921,2693,907,1378],"status":"\u2713 Active"},{"name":"H&M","m":[992,1137,1387,1137,1410,6,0],"status":"\u2192 Watch"},{"name":"Ounass","m":[1092,1045,1967,1313,0,0,0],"status":"\u2593 Inactive"},{"name":"Squatwolf","m":[251,892,1636,872,1229,2235,1000],"status":"\u2713 Active"},{"name":"Swarovski","m":[1513,854,705,77,0,0,0],"status":"\u2593 Inactive"},{"name":"Mother Care","m":[552,400,517,517,317,447,447],"status":"\u2713 Active"},{"name":"Dabdoob - GZ","m":[965,707,324,0,0,0,0],"status":"\u2593 Inactive"},{"name":"Vogacloset","m":[1047,386,541,594,261,440,228],"status":"\u2713 Active"},{"name":"Victoria's Secret","m":[235,308,705,206,279,235,250],"status":"\u2713 Active"},{"name":"Triumph","m":[104,122,805,526,0,0,0],"status":"\u2593 Inactive"},{"name":"GAP","m":[424,351,312,117,279,0,0],"status":"\u26a0 At Risk"},{"name":"Sun & Sands Sports","m":[704,211,29,75,84,264,14],"status":"\u2713 Active"},{"name":"Banana republic","m":[180,82,482,266,48,13,16],"status":"\u2713 Active"},{"name":"Adidas - RKT","m":[250,216,279,87,153,260,197],"status":"\u2713 Active"},{"name":"Allbirds","m":[298,427,200,19,0,0,0],"status":"\u2593 Inactive"},{"name":"New Balance","m":[269,147,146,140,207,131,206],"status":"\u2713 Active"},{"name":"Noon - GZ","m":[469,0,0,0,324,190,241],"status":"\u2713 Active"},{"name":"Styli","m":[382,142,114,25,214,62,45],"status":"\u2193 Declining"},{"name":"6th Street - GZ","m":[365,266,144,0,0,0,0],"status":"\u2593 Inactive"},{"name":"MetroBrazil","m":[739,0,0,0,0,0,0],"status":"\u2593 Inactive"},{"name":"Namshi - GZ","m":[36,78,209,25,107,71,57],"status":"\u2193 Declining"},{"name":"American Eagle","m":[153,94,106,65,18,0,0],"status":"\u26a0 At Risk"},{"name":"Airalo","m":[83,118,63,165,268,92,214],"status":"\u2713 Active"},{"name":"Footlocker","m":[0,0,0,0,106,35,18],"status":"\u2193 Declining"},{"name":"Eyewa","m":[25,0,32,11,0,0,0],"status":"\u2593 Inactive"},{"name":"Under Armour","m":[0,7,0,0,0,0,0],"status":"\u2593 Inactive"},{"name":"Nice One","m":[0,0,0,0,1,0,0],"status":"\u26a0 At Risk"},{"name":"Reef Perfumes - GZ","m":[0,0,0,0,0,0,0],"status":"\u2014 Too early"}],"affiliates":[{"name":"Alaa Ghawi","m":[1051,1724,986,1135,1209,1059,785],"payout":58501,"tier":"Anchor","status":"\u2193 Declining"},{"name":"Dima","m":[886,1236,894,835,812,598,754],"payout":68842,"tier":"Anchor","status":"\u2713 Active"},{"name":"Abdulaziz","m":[399,610,411,411,381,196,291],"payout":31634,"tier":"Core","status":"\u2713 Active"},{"name":"Muhammad","m":[263,275,114,185,203,132,418],"payout":17655,"tier":"Core","status":"\u2713 Active"},{"name":"Sahseh","m":[199,196,207,121,272,221,210],"payout":19736,"tier":"Core","status":"\u2193 Declining"},{"name":"Ragad Essa Aldahous","m":[147,239,176,178,187,82,44],"payout":17745,"tier":"Growing","status":"\u2193 Declining"},{"name":"Amal","m":[203,141,167,134,232,104,73],"payout":27783,"tier":"Growing","status":"\u2193 Declining"},{"name":"Mohamed","m":[209,230,218,194,201,69,135],"payout":25658,"tier":"Core","status":"\u2713 Active"},{"name":"Abdulrhaman","m":[110,153,146,84,118,50,37],"payout":5702,"tier":"Growing","status":"\u2193 Declining"},{"name":"Nawaf\u2605","m":[94,158,153,98,102,48,84],"payout":3505,"tier":"Growing","status":"\u2713 Active"},{"name":"Rofayda Ali","m":[68,161,118,106,148,129,1],"payout":104,"tier":"Growing","status":"\u2193 Declining"},{"name":"Geeks","m":[105,60,120,126,156,162,181],"payout":11175,"tier":"Growing","status":"\u2191 Scaling"},{"name":"Eslam","m":[88,102,180,106,99,29,6],"payout":17594,"tier":"Growing","status":"\u2193 Declining"},{"name":"Abanob Hamdy","m":[448,34,21,13,15,52,23],"payout":3577,"tier":"Growing","status":"\u2713 Active"},{"name":"Magdalena","m":[195,173,36,27,42,30,0],"payout":1130,"tier":"Growing","status":"\u2192 Dormant"},{"name":"Rahman","m":[52,79,59,132,90,65,8],"payout":1681,"tier":"Growing","status":"\u2193 Declining"},{"name":"Gift","m":[82,38,100,57,97,57,70],"payout":4966,"tier":"Growing","status":"\u2713 Active"},{"name":"a","m":[56,72,108,85,66,2,2],"payout":3334,"tier":"Growing","status":"\u2713 Active"},{"name":"Mahmoud","m":[92,73,78,52,42,13,37],"payout":2814,"tier":"Growing","status":"\u2713 Active"},{"name":"Rabea","m":[65,117,49,42,47,35,2],"payout":5376,"tier":"Growing","status":"\u2193 Declining"},{"name":"Mohanad","m":[61,45,69,59,54,30,25],"payout":3271,"tier":"Growing","status":"\u2193 Declining"},{"name":"Donia Hesham","m":[12,44,128,31,49,26,19],"payout":4649,"tier":"Growing","status":"\u2193 Declining"},{"name":"Amani","m":[57,65,63,25,25,10,19],"payout":5050,"tier":"Growing","status":"\u2713 Active"},{"name":"Mariam Khalid Althawadi","m":[101,53,25,15,29,9,39],"payout":5809,"tier":"Growing","status":"\u2713 Active"},{"name":"Kumail Raza","m":[55,16,43,14,82,154,52],"payout":9575,"tier":"Growing","status":"\u2713 Active"},{"name":"Tasneem Mohamed Kamel","m":[2,2,2,6,134,173,137],"payout":9466,"tier":"Growing","status":"\u2713 Active"},{"name":"Yash","m":[15,55,23,35,18,8,3],"payout":734,"tier":"Tail","status":"\u2193 Declining"},{"name":"Saudi Coupon","m":[14,23,29,29,42,47,45],"payout":3324,"tier":"Growing","status":"\u2713 Active"},{"name":"Mahmoud Abd Elrhman","m":[29,19,27,22,35,13,14],"payout":5502,"tier":"Tail","status":"\u2713 Active"},{"name":"Mohamed","m":[209,230,218,194,201,69,135],"payout":25658,"tier":"Core","status":"\u2713 Active"},{"name":"CPX SPAM\u2757","m":[10,18,26,22,33,22,34],"payout":2601,"tier":"Tail","status":"\u2713 Active"},{"name":"Raja","m":[17,23,3,19,50,41,27],"payout":3724,"tier":"Tail","status":"\u2193 Declining"},{"name":"Ashwaq","m":[17,30,10,23,18,4,0],"payout":297,"tier":"Tail","status":"\u2192 Dormant"},{"name":"Mahmoud Kharoof","m":[11,51,6,2,26,30,0],"payout":283,"tier":"Tail","status":"\u2192 Dormant"},{"name":"Mohamed","m":[209,230,218,194,201,69,135],"payout":25658,"tier":"Core","status":"\u2713 Active"},{"name":"Ahmed","m":[51,54,38,52,80,60,62],"payout":4752,"tier":"Growing","status":"\u2713 Active"},{"name":"R","m":[6,46,14,10,13,2,1],"payout":299,"tier":"Tail","status":"\u2193 Declining"},{"name":"Wegdan","m":[17,21,25,6,8,3,2],"payout":614,"tier":"Tail","status":"\u2193 Declining"},{"name":"Kareem","m":[37,27,22,17,23,18,6],"payout":1929,"tier":"Tail","status":"\u2193 Declining"},{"name":"Amal","m":[203,141,167,134,232,104,73],"payout":27783,"tier":"Growing","status":"\u2193 Declining"},{"name":"Rahman Hussain","m":[16,13,4,13,25,5,10],"payout":1052,"tier":"Tail","status":"\u2713 Active"},{"name":"Kamal Alotiby","m":[15,31,16,5,1,2,0],"payout":202,"tier":"Tail","status":"\u2192 Dormant"},{"name":"Omar","m":[19,7,15,14,10,10,9],"payout":968,"tier":"Tail","status":"\u2713 Active"},{"name":"Karam","m":[10,6,13,15,14,9,1],"payout":863,"tier":"Tail","status":"\u2193 Declining"},{"name":"Mahmoud Hassan","m":[9,9,7,10,18,4,3],"payout":510,"tier":"Tail","status":"\u2193 Declining"},{"name":"Weaam","m":[18,10,14,8,4,1,1],"payout":212,"tier":"Tail","status":"\u2713 Active"},{"name":"Tamer","m":[21,17,13,31,30,10,25],"payout":634,"tier":"Tail","status":"\u2713 Active"},{"name":"Jory","m":[6,13,19,2,10,6,12],"payout":979,"tier":"Tail","status":"\u2713 Active"},{"name":"Nasrsalem","m":[6,22,7,7,8,3,5],"payout":596,"tier":"Tail","status":"\u2713 Active"},{"name":"Alaa","m":[18,14,31,5,11,2,1],"payout":1337,"tier":"Tail","status":"\u2193 Declining"}]};
+
+const MO = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const PER_ORDER = 490*0.082*0.65;      // AED 26.117 net commission per order
+const ORD_PER_AFF = 27;                // blended orders per active affiliate
+const PLAN = { opex:420000, brands:207, exChurn:0.05, newChurn:0.05,
+               expansion:0.10, arpa:240000, margin:0.70, profitGoal:500000, fast:false };
+const SCENARIOS = {
+  A:{label:"OpEx 300K · 100 brands · std ramp", lv:{opex:300000,brands:100,fast:false}},
+  B:{label:"OpEx 300K · 80 brands · fast ramp", lv:{opex:300000,brands:80, fast:true }},
+  C:{label:"OpEx 260K · 80 brands · fast ramp", lv:{opex:260000,brands:80, fast:true }},
+  D:{label:"OpEx 300K · ARPA 360K · fast ramp", lv:{opex:300000,brands:60, arpa:360000, fast:true}},
+  E:{label:"OpEx 300K · 100 brands · fast ramp",lv:{opex:300000,brands:100,fast:true }},
+};
+
+function engine(L){
+  const D=CPX_DATA, A=D.actuals, S=D.seasonality, N=D.meta.latest;
+  const base = A.ncOps.reduce((a,b)=>a+b,0) / S.slice(0,N).reduce((a,b)=>a+b,0);
+  const ramp = L.fast ? [0.30,0.50,0.70,0.85,0.95,1.0,1.0]
+                      : [0.10,0.20,0.35,0.55,0.75,0.90,1.0];
+  const mARPA = L.arpa/12;
+  const existing=[], newRev=[], total=[];
+  for(let m=1;m<=12;m++){
+    let ex;
+    if(m<=N) ex = A.ncOps[m-1];
+    else { const n=m-N;
+      ex = base*S[m-1]*Math.pow(1-L.exChurn,n)*Math.pow(1+L.expansion,n/(12-N)); }
+    let nr=0;
+    for(let sc=7;sc<=12;sc++){
+      if(m>=sc){ const age=m-sc;
+        nr += (L.brands/6)*Math.pow(1-L.newChurn,age)*ramp[Math.min(age,6)]*mARPA; }
+    }
+    existing.push(ex); newRev.push(nr); total.push(ex+nr);
+  }
+  const opexTot = A.opex.reduce((a,b)=>a+b,0) + (12-N)*L.opex;
+  const marsGP  = D.marsStatic.rev - D.marsStatic.cos;
+  const target  = Math.round((L.profitGoal + opexTot - marsGP*12)/L.margin);
+  const rows={cpxS:[],cpxC:[],mR:[],mC:[],ox:[],ne:[],cum:[]}; let run=0;
+  for(let m=1;m<=12;m++){
+    let cpxS,cpxC,mR,mC,ox;
+    if(m<=N){ cpxS=A.cpxRec[m-1]; cpxC=A.cpxCos[m-1];
+              mR=A.marsRev[m-1]; mC=A.marsCos[m-1]; ox=A.opex[m-1]; }
+    else { cpxS=total[m-1]; cpxC=0.3*total[m-1];
+           mR=D.marsStatic.rev; mC=D.marsStatic.cos; ox=L.opex; }
+    const v=(cpxS-cpxC)+(mR-mC)-ox;
+    rows.cpxS.push(cpxS); rows.cpxC.push(cpxC); rows.mR.push(mR);
+    rows.mC.push(mC); rows.ox.push(ox); rows.ne.push(v);
+    run+=v; rows.cum.push(run);
+  }
+  let be="Never";
+  for(let m=1;m<=12;m++) if(rows.ne[m-1]>=0){ be=MO[m-1]; break; }
+  const banked = A.ncOps.reduce((a,b)=>a+b,0);
+  const remaining = Math.max(0, target - banked);
+  const remSeas = S.slice(N).reduce((a,b)=>a+b,0);
+  const catchup = S.map((s,i)=> i<N ? null : remaining*s/remSeas);
+  return { proj: total.reduce((a,b)=>a+b,0), target, banked, remaining,
+           neFY: rows.ne.reduce((a,b)=>a+b,0), be, rows, total, existing,
+           newRev, catchup, base };
+}
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const fmt=(v,dec)=> v==null?"—":Math.round(v).toLocaleString("en-US");
+const fmtS=v=> (v<0?"−":"")+fmt(Math.abs(v));
+const cls=v=> v>=0?"pos":"neg";
+let LV={...PLAN};
+const N=CPX_DATA.meta.latest, A=CPX_DATA.actuals;
+
+/* ---------- SVG charts (hand-drawn, no libraries) ---------- */
+function chartMonthly(opts){
+  // bars: [{vals, actualUpTo, color}], line: vals or null, W responsive via viewBox
+  const W=920,H=230,padL=58,padR=8,padT=14,padB=26;
+  const iw=(W-padL-padR)/12;
+  const all=[...(opts.line||[]),...opts.bars.flatMap(b=>b.vals)].filter(v=>v!=null);
+  const max=Math.max(...all)*1.08||1;
+  const y=v=>padT+(H-padT-padB)*(1-v/max);
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" style="width:100%;background:#fff;border:1px solid var(--hair)">`;
+  // gridlines
+  for(let g=0;g<=4;g++){const gv=max*g/4, gy=y(gv);
+    s+=`<line x1="${padL}" y1="${gy}" x2="${W-padR}" y2="${gy}" stroke="#EDF0F4"/>`;
+    s+=`<text x="${padL-6}" y="${gy+4}" font-size="10" fill="#7A8494" text-anchor="end">${gv>=1e6?(gv/1e6).toFixed(1)+"M":Math.round(gv/1000)+"K"}</text>`;}
+  opts.bars.forEach(b=>{
+    b.vals.forEach((v,i)=>{ if(v==null)return;
+      const x=padL+iw*i+iw*0.18, bw=iw*0.64, yy=y(v), hh=H-padB-yy;
+      if(i<b.actualUpTo) s+=`<rect x="${x}" y="${yy}" width="${bw}" height="${hh}" fill="${b.color}"/>`;
+      else s+=`<rect x="${x}" y="${yy}" width="${bw}" height="${hh}" fill="#fff" stroke="${b.stroke||'#2B5FA3'}" stroke-width="1.6"/>`;
+    });});
+  if(opts.line){
+    let d="";
+    opts.line.forEach((v,i)=>{ if(v==null)return;
+      const x=padL+iw*i+iw/2; d+=(d?"L":"M")+x+","+y(v);});
+    s+=`<path d="${d}" fill="none" stroke="#1B2E52" stroke-width="2" stroke-dasharray="${opts.lineDash||''}"/>`;
+  }
+  MO.forEach((m,i)=>{ s+=`<text x="${padL+iw*i+iw/2}" y="${H-8}" font-size="10.5" fill="#44536F" text-anchor="middle">${m}</text>`;});
+  s+="</svg>";
+  return s;
+}
+function lineChart(vals,W,H){
+  W=W||920;H=H||190;const padL=64,padR=8,padT=12,padB=24;
+  const iw=(W-padL-padR)/12;
+  const mx=Math.max(...vals.map(Math.abs))*1.1||1;
+  const y=v=>padT+(H-padT-padB)*(1-(v+mx)/(2*mx));
+  let s=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;background:#fff;border:1px solid var(--hair)">`;
+  s+=`<line x1="${padL}" y1="${y(0)}" x2="${W-padR}" y2="${y(0)}" stroke="#B9C2CE" stroke-width="1"/>`;
+  s+=`<text x="${padL-6}" y="${y(0)+4}" font-size="10" fill="#7A8494" text-anchor="end">0</text>`;
+  let d="";
+  vals.forEach((v,i)=>{const x=padL+iw*i+iw/2; d+=(d?"L":"M")+x+","+y(v);
+    s+=`<circle cx="${x}" cy="${y(v)}" r="3" fill="${i<N?'#21744A':'#2B5FA3'}"/>`;});
+  s+=`<path d="${d}" fill="none" stroke="#1B2E52" stroke-width="2"/>`;
+  MO.forEach((m,i)=>{s+=`<text x="${padL+iw*i+iw/2}" y="${H-6}" font-size="10.5" fill="#44536F" text-anchor="middle">${m}</text>`;});
+  s+="</svg>";
+  return s;
+}
+
+/* ---------- page renderers ---------- */
+function figBlock(items){
+  return items.map(i=>`<div><div class="l">${i.l}</div><div class="v ${i.c||''}">${i.v}</div></div>`).join("");
+}
+
+function renderCockpit(r){
+  const tgtPace=CPX_DATA.seasonality.map(s=>s*r.target);
+  $("#runway").innerHTML=chartMonthly({
+    bars:[{vals:r.total.map((v,i)=>i<N?A.ncOps[i]:v),actualUpTo:N,color:"#21744A"}],
+    line:tgtPace});
+  $("#cockpitFigs").innerHTML=figBlock([
+    {l:"Banked Jan–"+MO[N-1]+" (operational)",v:fmt(r.banked)},
+    {l:"Recognized (P&L)",v:fmt(A.cpxRec.reduce((a,b)=>a+b,0))},
+    {l:"Locked net earnings Jan–"+MO[N-1],v:fmtS(A.pnlNE.reduce((a,b)=>a+b,0)),c:"neg"},
+    {l:"FY projection @ levers",v:fmt(r.proj)},
+    {l:"FY target (500K profit)",v:fmt(r.target)},
+    {l:"FY net earnings @ levers",v:fmtS(r.neFY),c:cls(r.neFY)},
+    {l:"Breakeven month",v:r.be},
+  ]);
+  const cu=r.catchup[N]; // next month
+  $("#askFigs").innerHTML=figBlock([
+    {l:MO[N]+" commission ask",v:fmt(cu),c:"amb"},
+    {l:MO[N]+" orders ask",v:fmt(cu/PER_ORDER),c:"amb"},
+    {l:MO[N]+" active affiliates ask",v:fmt(cu/PER_ORDER/ORD_PER_AFF),c:"amb"},
+    {l:MO[N]+" brands @20K output",v:fmt(cu/(LV.arpa/12)),c:"amb"},
+    {l:MO[N]+" brands @nominal ("+fmt(CPX_DATA.meta.runRate)+")",v:fmt(cu/CPX_DATA.meta.runRate),c:"amb"},
+  ]);
+  const d=(a,b)=>{const p=(a-b); return `<span class="${p>=0?'pos':'neg'}">${p>=0?'+':''}${fmt(p)}</span>`;};
+  const conc=CPX_DATA.brands[0];
+  $("#healthFigs").innerHTML=figBlock([
+    {l:"Active brands "+MO[N-1],v:A.brands[N-1]+" ("+(A.brands[N-1]-A.brands[N-2]>=0?"+":"")+(A.brands[N-1]-A.brands[N-2])+")",c:A.brands[N-1]>=A.brands[N-2]?"pos":"neg"},
+    {l:"Active affiliates",v:A.affiliates[N-1]+" ("+(A.affiliates[N-1]-A.affiliates[N-2]>=0?"+":"")+(A.affiliates[N-1]-A.affiliates[N-2])+")",c:A.affiliates[N-1]>=A.affiliates[N-2]?"pos":"neg"},
+    {l:"Orders",v:fmt(A.orders[N-1])+" ("+(A.orders[N-1]-A.orders[N-2]>=0?"+":"")+fmt(A.orders[N-1]-A.orders[N-2])+")",c:A.orders[N-1]>=A.orders[N-2]?"pos":"neg"},
+    {l:"Top-brand concentration ("+conc.name+")",v:Math.round(100*conc.m[N-1]/A.ncOps[N-1])+"%",c:"neg"},
+    {l:"Commission / order",v:(A.ncOps[N-1]/A.orders[N-1]).toFixed(1)},
+  ]);
+}
+
+function renderTargets(r){
+  const metrics=[
+    {name:"Revenue (net commission, AED)",div:1,act:A.ncOps},
+    {name:"Orders",div:PER_ORDER,act:A.orders},
+    {name:"Active affiliates",div:PER_ORDER*ORD_PER_AFF,act:A.affiliates},
+    {name:"Brands @ 20K units (output)",div:LV.arpa/12,act:A.ncOps.map(v=>v/(LV.arpa/12))},
+    {name:"Brands @ nominal run-rate ("+fmt(CPX_DATA.meta.runRate)+"/brand)",div:CPX_DATA.meta.runRate,act:A.brands},
+  ];
+  let html="";
+  metrics.forEach(mt=>{
+    const tgt=CPX_DATA.seasonality.map(s=>s*r.target/mt.div);
+    const act=MO.map((_,i)=>i<N?mt.act[i]:null);
+    const rev=r.catchup.map(c=>c==null?null:c/mt.div);
+    html+=`<h2>${mt.name}</h2>`;
+    html+=chartMonthly({bars:[{vals:act,actualUpTo:N,color:"#21744A"}],line:tgt});
+    html+=`<div class="scrollx"><table><thead><tr><th></th>${MO.map(m=>`<th>${m}</th>`).join("")}<th>FY</th></tr></thead><tbody>`;
+    html+=`<tr><td>Target pace</td>${tgt.map(v=>`<td>${fmt(v)}</td>`).join("")}<td><b>${fmt(tgt.reduce((a,b)=>a+b,0))}</b></td></tr>`;
+    html+=`<tr><td>Actual</td>${act.map(v=>v==null?'<td class="dash">—</td>':`<td class="actual">${fmt(v)}</td>`).join("")}<td class="actual"><b>${fmt(mt.act.slice(0,N).reduce((a,b)=>a+b,0))}</b></td></tr>`;
+    html+=`<tr><td>Revised ask (catch-up)</td>${rev.map(v=>v==null?'<td class="dash">—</td>':`<td class="ask">${fmt(v)}</td>`).join("")}<td class="ask"><b>${fmt(rev.filter(v=>v!=null).reduce((a,b)=>a+b,0))}</b></td></tr>`;
+    html+=`</tbody></table></div>`;
+  });
+  html+=`<p class="note">Target pace = FY target spread on seasonality. Revised ask = remaining target (target − banked commission) re-spread over the months left, converted at 26.117/order, 27 orders/affiliate, and per-brand values. Affiliate and brand rows are average-productivity equivalents, not literal headcount quotas.</p>`;
+  $("#targetBlocks").innerHTML=html;
+}
+
+function renderLevers(){
+  const defs=[
+    {k:"opex",label:"SBU OpEx per month, Aug onward (AED)",plan:PLAN.opex,step:10000},
+    {k:"brands",label:"New brand signings (annual, 20K quality)",plan:PLAN.brands,step:1},
+    {k:"arpa",label:"New-brand ARPA (annual, AED)",plan:PLAN.arpa,step:10000},
+    {k:"exChurn",label:"Existing-brand churn per month",plan:PLAN.exChurn,step:0.01,pct:1},
+    {k:"newChurn",label:"New-brand churn per month",plan:PLAN.newChurn,step:0.01,pct:1},
+    {k:"expansion",label:"Existing-brand expansion (rest of year)",plan:PLAN.expansion,step:0.01,pct:1},
+    {k:"margin",label:"CPX GP margin (target back-solve)",plan:PLAN.margin,step:0.05,pct:1},
+    {k:"profitGoal",label:"FY profit goal (AED)",plan:PLAN.profitGoal,step:50000},
+  ];
+  let html=defs.map(d=>`<div class="lever"><label>${d.label}</label>
+    <input type="number" id="lv-${d.k}" value="${d.pct?LV[d.k]:LV[d.k]}" step="${d.step}">
+    <div class="cur">plan: ${d.pct?(d.plan*100).toFixed(0)+"%":fmt(d.plan)}${d.pct?" — enter as decimal, e.g. 0.05":""}</div></div>`).join("");
+  html+=`<div class="lever"><label>New-brand ramp curve</label>
+    <select id="lv-fast"><option value="false"${!LV.fast?" selected":""}>Standard (10→90% over 6 mo)</option>
+    <option value="true"${LV.fast?" selected":""}>Fast (30→100% over 6 mo)</option></select>
+    <div class="cur">plan: Standard</div></div>`;
+  $("#leverGrid").innerHTML=html;
+}
+function readLevers(){
+  ["opex","brands","arpa","exChurn","newChurn","expansion","margin","profitGoal"].forEach(k=>{
+    const v=parseFloat($("#lv-"+k).value); if(!isNaN(v)) LV[k]=v;});
+  LV.fast = $("#lv-fast").value==="true";
+}
+function renderImpact(r){
+  const gap=r.proj-r.target;
+  $("#leverImpact").innerHTML=`
+    <div class="l" style="font-size:.74rem;color:var(--grey)">FY net earnings at these settings</div>
+    <div class="big ${cls(r.neFY)}">${fmtS(r.neFY)}</div>
+    <div class="row">
+      <div><div class="l">FY projection</div><div class="v">${fmt(r.proj)}</div></div>
+      <div><div class="l">FY target</div><div class="v">${fmt(r.target)}</div></div>
+      <div><div class="l">Projection vs target</div><div class="v ${cls(gap)}">${fmtS(gap)}</div></div>
+      <div><div class="l">Breakeven month</div><div class="v">${r.be}</div></div>
+      <div><div class="l">vs committed plan NE</div><div class="v ${cls(r.neFY-engine(PLAN).neFY)}">${fmtS(r.neFY-engine(PLAN).neFY)}</div></div>
+    </div>`;
+}
+
+function renderPnl(r){
+  const rows=[["CPX Revenue (recognized)",r.rows.cpxS],["CPX COS",r.rows.cpxC,-1],
+    ["CPX Gross Profit",r.rows.cpxS.map((v,i)=>v-r.rows.cpxC[i]),0,1],
+    ["MARS Revenue",r.rows.mR],["MARS COS",r.rows.mC,-1],
+    ["MARS Gross Profit",r.rows.mR.map((v,i)=>v-r.rows.mC[i]),0,1],
+    ["SBU OpEx",r.rows.ox,-1],
+    ["Net Earnings",r.rows.ne,0,1,true],["Cumulative NE",r.rows.cum,0,0,true]];
+  let h=`<table><thead><tr><th></th>${MO.map((m,i)=>`<th>${m}${i<N?"":" ·P"}</th>`).join("")}<th>FY</th></tr></thead><tbody>`;
+  rows.forEach(([name,vals,neg,band,signed])=>{
+    const fy=name.startsWith("Cumulative")?vals[11]:vals.reduce((a,b)=>a+b,0);
+    h+=`<tr${band?' class="band"':''}><td>${name}</td>`;
+    vals.forEach((v,i)=>{
+      const c=i<N?"actual":"projected";
+      const shade=signed?(v<0?' style="color:var(--red)"':' style="color:var(--green)"'):"";
+      h+=`<td class="${c}"${shade}>${signed?fmtS(v):fmt(v)}</td>`;});
+    h+=`<td><b>${signed?fmtS(fy):fmt(fy)}</b></td></tr>`;});
+  h+="</tbody></table>";
+  $("#pnlTable").innerHTML=h;
+  $("#cumChart").innerHTML=lineChart(r.rows.cum);
+  $("#pnlNote").textContent=`Operational July commission was ${fmt(CPX_DATA.adjustments.julOps)}; the P&L recognizes ${fmt(CPX_DATA.adjustments.julRecognized)} (adjustment ${fmt(CPX_DATA.adjustments.julAdj)} — recognition timing). Actual columns tie to the live P&L net earnings exactly. Projected months: CPX COS at 30% of commission, MARS at its Jan–${MO[N-1]} average GP of ${fmt(CPX_DATA.marsStatic.rev-CPX_DATA.marsStatic.cos)}/month.`;
+}
+
+function renderBrands(){
+  const B=CPX_DATA.brands;
+  const tot=A.ncOps[N-1], top=B[0];
+  const top3=B.slice().sort((a,b)=>b.m[N-1]-a.m[N-1]).slice(0,3);
+  $("#brandFigs").innerHTML=figBlock([
+    {l:"Active brands "+MO[N-1],v:A.brands[N-1]},
+    {l:"Commission "+MO[N-1],v:fmt(tot)},
+    {l:top3[0].name+" share",v:Math.round(100*top3[0].m[N-1]/tot)+"%",c:"neg"},
+    {l:"Top-3 share",v:Math.round(100*top3.reduce((a,b)=>a+b.m[N-1],0)/tot)+"%",c:"amb"},
+    {l:"Recognized (P&L) "+MO[N-1],v:fmt(CPX_DATA.adjustments.julRecognized)},
+  ]);
+  let cb="";
+  top3.forEach(b=>{const p=100*b.m[N-1]/tot;
+    cb+=`<div style="margin:6px 0;max-width:640px"><div style="display:flex;justify-content:space-between;font-size:.78rem"><span>${b.name}</span><span class="num">${fmt(b.m[N-1])} · ${p.toFixed(0)}%</span></div>
+    <div style="height:10px;background:#EDF0F4"><div style="height:10px;width:${p}%;background:${p>50?'var(--red)':'var(--ink)'}"></div></div></div>`;});
+  $("#concBars").innerHTML=cb;
+  const chip=s=> s.includes("Grow")?'<span class="chip up">▲ Growing</span>'
+    : s.includes("Decl")?'<span class="chip down">▼ Declining</span>'
+    : s.includes("New")?'<span class="chip new">New</span>'
+    : s.includes("Stable")?'<span class="chip flat">Stable</span>'
+    : `<span class="chip flat">${s||"—"}</span>`;
+  let h=`<table><thead><tr><th>Brand</th>${MO.slice(0,N).map(m=>`<th>${m}</th>`).join("")}<th>Avg (active)</th><th>Status</th></tr></thead><tbody>`;
+  B.slice().sort((a,b)=>b.m[N-1]-a.m[N-1]).forEach(b=>{
+    const act=b.m.filter(v=>v>0);
+    const avg=act.length?act.reduce((x,y)=>x+y,0)/act.length:0;
+    h+=`<tr><td>${b.name}</td>${b.m.map(v=>`<td>${v?fmt(v):'<span style="color:#B9C2CE">·</span>'}</td>`).join("")}<td><b>${fmt(avg)}</b></td><td style="text-align:left">${chip(b.status)}</td></tr>`;});
+  h+="</tbody></table>";
+  $("#brandTable").innerHTML=h;
+}
+
+function renderAffiliates(){
+  const F=CPX_DATA.affiliates;
+  $("#affFigs").innerHTML=figBlock([
+    {l:"Active affiliates "+MO[N-1],v:A.affiliates[N-1],c:A.affiliates[N-1]<A.affiliates[N-2]?"neg":"pos"},
+    {l:"Orders "+MO[N-1],v:fmt(A.orders[N-1])},
+    {l:"Payout Jan–"+MO[N-1],v:fmt(A.payout.reduce((a,b)=>a+b,0))},
+    {l:"Orders / affiliate "+MO[N-1],v:(A.orders[N-1]/A.affiliates[N-1]).toFixed(1)},
+    {l:"Top-50 share of orders",v:Math.round(100*F.reduce((a,b)=>a+b.m[N-1],0)/A.orders[N-1])+"%"},
+  ]);
+  const tierChip=t=>({Anchor:'<span class="chip up">Anchor</span>',Core:'<span class="chip flat">Core</span>',
+    Growing:'<span class="chip new">Growing</span>'}[t]||`<span class="chip flat">${t||"Tail"}</span>`);
+  const stChip=s=> s.includes("Decl")?'<span class="chip down">▼</span>': s.includes("Grow")?'<span class="chip up">▲</span>':'<span class="chip flat">·</span>';
+  let h=`<table><thead><tr><th>Affiliate</th>${MO.slice(0,N).map(m=>`<th>${m}</th>`).join("")}<th>Payout</th><th>Tier</th><th>Trend</th></tr></thead><tbody>`;
+  F.slice().sort((a,b)=>b.m[N-1]-a.m[N-1]).forEach(f=>{
+    h+=`<tr><td>${f.name}</td>${f.m.map(v=>`<td>${v?fmt(v):'<span style="color:#B9C2CE">·</span>'}</td>`).join("")}<td>${fmt(f.payout)}</td><td style="text-align:left">${tierChip(f.tier)}</td><td style="text-align:left">${stChip(f.status||"")}</td></tr>`;});
+  h+="</tbody></table>";
+  $("#affTable").innerHTML=h;
+}
+
+function renderPath(){
+  const cur=engine(LV);
+  let h=`<div class="card" style="background:var(--panel);border:1px solid var(--hair);border-top:4px solid var(--ink);padding:16px 18px;margin-bottom:14px">
+    <h3 style="font-size:.9rem">Current levers</h3>
+    <div class="ne ${cls(cur.neFY)}" style="font-size:1.5rem;font-weight:700">${fmtS(cur.neFY)}</div>
+    <div class="meta" style="font-size:.76rem;color:var(--ink-soft)">OpEx ${fmt(LV.opex)} · ${LV.brands} brands · ${LV.fast?"fast":"standard"} ramp · breakeven ${cur.be}</div></div><div class="scen">`;
+  Object.entries(SCENARIOS).forEach(([k,s])=>{
+    const r=engine({...PLAN,...s.lv});
+    h+=`<div class="card"><h3>Scenario ${k}</h3><div class="lbl">${s.label}</div>
+      <div class="ne ${cls(r.neFY)}">${fmtS(r.neFY)}</div>
+      <div class="meta">Breakeven ${r.be} · projection ${fmt(r.proj)}<br>vs 500K goal: <span class="${cls(r.neFY-500000)}">${fmtS(r.neFY-500000)}</span></div>
+      <button data-scen="${k}">Apply to levers</button></div>`;});
+  h+="</div>";
+  $("#scenCards").innerHTML=h;
+  document.querySelectorAll("[data-scen]").forEach(b=>b.addEventListener("click",()=>{
+    LV={...PLAN,...SCENARIOS[b.dataset.scen].lv};
+    renderLevers(); recompute(); showPage("levers");
+  }));
+}
+
+function renderMethod(){
+  const D=CPX_DATA;
+  $("#methodBody").innerHTML=`
+  <h2>Unit economics</h2>
+  <p class="note">One order carries AED 490 average value × 8.2% commission × 65% CPX share = <b>AED 26.117 net commission</b>. A blended active affiliate produces <b>27 orders/month</b> (~AED 705). A standard brand unit is <b>AED 20K/month</b> (240K ARPA). The current per-brand nominal run-rate is <b>AED ${fmt(D.meta.runRate)}</b>/month (Jan–${MO[N-1]} commission ÷ brand-months).</p>
+  <h2>Engine</h2>
+  <p class="note">Existing-brand revenue projects from an implied base (banked commission ÷ seasonality of actual months), decayed by monthly churn and lifted by expansion. New brands arrive in six equal cohorts Jul–Dec and ramp on the selected curve with 5%/month cohort churn. The FY target back-solves from the profit goal: (goal + full-year OpEx − 12× static MARS GP) ÷ CPX margin. Projected CPX COS runs at 30% of commission. MARS holds at its Jan–${MO[N-1]} average (rev ${fmt(D.marsStatic.rev)}, COS ${fmt(D.marsStatic.cos)}).</p>
+  <h2>Reconciliation</h2>
+  <p class="note">Actual months tie to the live ITCAN P&L net earnings to the dirham: CPX = the direct CPX lines only; MARS = all remaining channels (Coupon Rush, Code 71, Fixed Fee, Unassigned) <b>including Variances Live</b>. Operational commission (performance export) and recognized revenue (P&L) differ by booking timing; the brand-pipeline adjustment reconciles them (${MO[N-1]}: ${fmt(D.adjustments.julOps)} operational vs ${fmt(D.adjustments.julRecognized)} recognized, adjustment ${fmt(D.adjustments.julAdj)}).</p>
+  <h2>Monthly update</h2>
+  <p class="note">1&nbsp;— Send the monthly performance export and the P&L. 2&nbsp;— The Excel model is updated and verified first (reconciliation battery, zero errors). 3&nbsp;— The data block at the top of this page's script is regenerated from the verified file. 4&nbsp;— Commit the new <b>index.html</b> to the GitHub repository; Pages redeploys automatically within a minute. Levers, targets, catch-up, P&L and Path to Profit all recompute from the new actuals — no other code changes.</p>
+  <h2>Changelog</h2>
+  <p class="note"><b>${D.meta.updated}</b> — July actuals loaded (commission ${fmt(A.ncOps[6])}, 26 brands, 107 affiliates, 3,932 orders). P&L restated twice; final basis flips variances into MARS, halving static MARS GP to ${fmt(D.marsStatic.rev-D.marsStatic.cos)}/month and lifting the FY target to ${fmt(engine(PLAN).target)}. OpEx forecast held at 420K/month (P&L's own Aug–Dec forecast runs ~447K — flagged, awaiting plan-of-record decision).</p>`;
+}
+
+/* ---------- wiring ---------- */
+function recompute(){
+  readLeversSafe();
+  const r=engine(LV);
+  renderCockpit(r); renderTargets(r); renderImpact(r); renderPnl(r); renderPath();
+}
+function readLeversSafe(){ try{ if($("#lv-opex")) readLevers(); }catch(e){} }
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll("nav a").forEach(a=>a.classList.remove("active"));
+  $("#page-"+id).classList.add("active");
+  document.querySelector(`nav a[data-page="${id}"]`).classList.add("active");
+  window.scrollTo(0,0);
+}
+document.querySelectorAll("nav a").forEach(a=>a.addEventListener("click",()=>showPage(a.dataset.page)));
+document.addEventListener("click",e=>{
+  if(e.target.id==="btnApply"){ recompute(); }
+  if(e.target.id==="btnReset"){ LV={...PLAN}; renderLevers(); recompute(); }
+});
+document.addEventListener("change",e=>{ if(e.target.closest("#leverGrid")) recompute(); });
+
+document.querySelectorAll(".mLatest").forEach(el=>el.textContent=MO[N-1]+"-26");
+$("#footMonth").textContent=MO[N-1]+" 2026";
+$("#footStamp").textContent=CPX_DATA.meta.updated;
+renderLevers(); renderBrands(); renderAffiliates(); renderMethod(); recompute();
+
+</script>
+</body>
+</html>
