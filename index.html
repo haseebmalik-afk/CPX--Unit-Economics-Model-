@@ -3,563 +3,727 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CPX Unit Economics 2026 — ITCAN</title>
+<title>CPX Unit Economics 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root{
-  --paper:#F7F8F6; --panel:#FFFFFF; --ink:#1B2E52; --ink-soft:#44536F;
-  --hair:#DCE1E8; --green:#21744A; --green-soft:#E8F2EC;
-  --red:#AE3A2E; --red-soft:#F7ECEA; --amber:#9A6A1B; --amber-soft:#F6EFDF;
-  --blue:#2B5FA3; --grey:#7A8494;
+  --bg:#F5F6F8; --card:#FFFFFF; --ink:#1A2230; --muted:#6A7382; --faint:#A6AEBC;
+  --line:#E6E9EF; --line2:#EEF0F4;
+  --cpx:#FA5523; --cpx-mid:#F5915F; --cpx-lt:#FBC4AF; --cpx-wash:#FFF1EC;
+  --green:#12805A; --green-lt:#E4F6ED; --red:#C43B1E; --red-lt:#FDE7E0;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{font-size:15px}
-body{font-family:"IBM Plex Sans",Roboto,system-ui,sans-serif;background:var(--paper);
-  color:var(--ink);display:flex;min-height:100vh}
-.num{font-variant-numeric:tabular-nums;text-align:right}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);
+  display:flex;min-height:100vh;-webkit-font-smoothing:antialiased}
+.tnum{font-variant-numeric:tabular-nums}
 
-/* ---- workbook-spine rail ---- */
-nav{width:190px;min-width:190px;background:var(--ink);color:#C9D3E6;
+/* rail */
+nav{width:198px;min-width:198px;background:#1E2530;border-right:1px solid #2A3240;
   display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
-nav .brand{padding:22px 18px 16px;border-bottom:1px solid rgba(255,255,255,.12)}
-nav .brand b{color:#fff;font-size:1.15rem;font-weight:700;letter-spacing:.01em;display:block}
-nav .brand span{font-size:.72rem;color:#8FA0C2}
-nav a{display:block;padding:11px 18px;color:#C9D3E6;text-decoration:none;
-  font-size:.88rem;border-left:3px solid transparent;cursor:pointer}
+nav .brand{display:flex;align-items:center;gap:11px;padding:18px 18px 15px;border-bottom:1px solid #2A3240}
+nav .logo{width:34px;height:34px;background:var(--cpx);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+nav .logo svg{width:19px;height:19px}
+nav .brand b{font-size:1rem;font-weight:700;letter-spacing:-.01em;line-height:1;color:#fff}
+nav .brand span{font-size:.68rem;color:#8A93A3}
+nav .grp{font-size:.6rem;letter-spacing:.1em;color:#6A7383;padding:15px 18px 5px;text-transform:uppercase;font-weight:600}
+nav a{display:flex;align-items:center;gap:9px;padding:8px 18px;margin:1px 8px;border-radius:8px;color:#B8C0CC;
+  text-decoration:none;font-size:.85rem;font-weight:500;cursor:pointer}
 nav a:hover{background:rgba(255,255,255,.06);color:#fff}
-nav a.active{background:rgba(255,255,255,.10);color:#fff;border-left-color:#5FA871;font-weight:600}
-nav .foot{margin-top:auto;padding:14px 18px;font-size:.68rem;color:#7286A8;
-  border-top:1px solid rgba(255,255,255,.12);line-height:1.5}
+nav a.active{background:var(--cpx);color:#fff;font-weight:600}
+nav .foot{margin-top:auto;padding:14px 18px;font-size:.66rem;color:#6A7383;line-height:1.6;border-top:1px solid #2A3240}
+nav .foot b{color:#4ADE9C}
 
-/* ---- content ---- */
-main{flex:1;padding:30px 40px 80px;max-width:1240px}
-.page{display:none}.page.active{display:block}
-h1{font-size:1.5rem;font-weight:700;margin-bottom:2px}
-.sub{color:var(--ink-soft);font-size:.85rem;margin-bottom:26px}
-h2{font-size:1.0rem;font-weight:600;margin:34px 0 12px;padding-left:10px;
-  border-left:4px solid var(--ink)}
-h2 small{font-weight:400;color:var(--grey);font-size:.8rem;margin-left:8px}
-.note{font-size:.78rem;color:var(--grey);margin:8px 0 0;line-height:1.5;max-width:70ch}
+main{flex:1;padding:22px 30px 70px;max-width:1300px;width:100%}
+.head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;gap:14px;flex-wrap:wrap}
+h1{font-size:1.5rem;font-weight:700;letter-spacing:-.02em}
+.head .sub{color:var(--muted);font-size:.83rem;margin-top:3px;max-width:66ch;line-height:1.5}
 
-/* figures strip */
-.figs{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--hair);background:var(--panel)}
-.figs div{padding:14px 22px;border-right:1px solid var(--hair);min-width:150px}
-.figs div:last-child{border-right:none}
-.figs .l{font-size:.72rem;color:var(--grey);margin-bottom:3px}
-.figs .v{font-size:1.28rem;font-weight:700;font-variant-numeric:tabular-nums}
-.pos{color:var(--green)}.neg{color:var(--red)}.amb{color:var(--amber)}
+/* scenario toggle */
+.scnToggle{display:inline-flex;background:var(--line2);border-radius:9px;padding:3px;gap:2px}
+.scnToggle button{border:none;background:transparent;padding:7px 15px;border-radius:7px;font-size:.8rem;font-weight:600;color:var(--muted);cursor:pointer}
+.scnToggle button.on{background:var(--ink);color:#fff}
+.scnToggle button.on.astgt{background:var(--cpx)}
+
+.page{display:none}.page.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:18px 20px}
+.card.p0{padding:0;overflow:hidden}
+.eyebrow{font-size:.72rem;color:var(--muted);font-weight:600;margin-bottom:2px}
+.card h3{font-size:1.05rem;font-weight:600;letter-spacing:-.01em}
+.card .csub{font-size:.75rem;color:var(--muted);margin-top:1px}
+.col12{grid-column:span 12}.col8{grid-column:span 8}.col7{grid-column:span 7}.col6{grid-column:span 6}
+.col5{grid-column:span 5}.col4{grid-column:span 4}.col3{grid-column:span 3}
+@media(max-width:1080px){.col8,.col7,.col6,.col5,.col4,.col3{grid-column:span 12}}
+
+.big{font-size:2rem;font-weight:700;letter-spacing:-.02em;line-height:1.05;margin-top:6px}
+.big.sm{font-size:1.45rem}
+.big small{font-size:.8rem;font-weight:500;color:var(--muted)}
+.klab{font-size:.72rem;color:var(--muted);line-height:1.3}
+.ksub{font-size:.72rem;color:var(--muted);margin-top:4px}
+.pos{color:var(--green)}.neg{color:var(--red)}.brand{color:var(--cpx)}.mut{color:var(--muted)}
+.spark{margin-top:8px;height:30px}
+
+.delta{display:inline-flex;align-items:center;gap:3px;font-size:.72rem;font-weight:600;padding:1px 8px;border-radius:11px}
+.delta.up{background:var(--green-lt);color:var(--green)}
+.delta.dn{background:var(--red-lt);color:var(--red)}
+
+.verdict .r{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line2)}
+.verdict .r:last-child{border:none}
+.verdict .k{font-size:.78rem;color:var(--muted)}
+.verdict .v{font-size:1.1rem;font-weight:700;font-variant-numeric:tabular-nums}
+.verdict .hero{text-align:center;padding:4px 0 10px}
+.verdict .hero .n{font-size:2.7rem;font-weight:700;letter-spacing:-.02em;line-height:1}
+.verdict .hero .c{font-size:.74rem;color:var(--muted);margin-top:3px}
+.scnbox .sr{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line2);font-size:.84rem}
+.scnbox .sr:last-child{border-bottom:none}
+.scnbox .sr span{color:var(--muted)}
+.scnbox .sr b{font-weight:700;font-variant-numeric:tabular-nums;font-size:.98rem}
+.scnbox .sr.sub{padding:6px 0}
+.scnbox .sr.sub span,.scnbox .sr.sub b{font-size:.76rem;color:var(--muted)}
+.scnbox .sr.big-r{padding:12px 0}
+.scnbox .sr.big-r span{font-weight:600;color:var(--ink)}
+table.cmp th{text-align:right;font-size:.72rem}
+table.cmp th:first-child{text-align:left}
+table.cmp .th-sub{font-weight:400;color:var(--faint);font-size:.64rem}
+table.cmp td{padding:9px 12px;font-size:.86rem}
+table.cmp td:first-child{font-weight:500}
+table.cmp .c-asis{color:var(--muted)}
+table.cmp .c-tgt{color:var(--cpx)}
+table.cmp tbody tr:hover td,table.cmp tbody tr:hover td:first-child{background:var(--cpx-wash)}
+
+.ch{position:relative;width:100%}
+.legend{display:flex;gap:15px;font-size:.72rem;color:var(--muted);flex-wrap:wrap}
+.legend i{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:5px;vertical-align:0}
 
 /* tables */
-table{border-collapse:collapse;width:100%;background:var(--panel);
-  border:1px solid var(--hair);font-size:.8rem}
-th,td{padding:6px 9px;border-bottom:1px solid var(--hair);white-space:nowrap}
-th{background:#EEF1F5;color:var(--ink);font-weight:600;text-align:right;font-size:.74rem}
-th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:inherit}
-tbody tr{background:var(--panel)}
-tbody tr:hover{background:#F3F6FA}
-td{font-variant-numeric:tabular-nums;text-align:right}
-tr.band td{background:#F0F3F7;font-weight:600}
-td.actual{color:var(--green)}
-td.projected{color:var(--blue)}
-td.ask{color:var(--red);background:var(--red-soft)}
-td.dash{color:var(--grey);text-align:center}
-.scrollx{overflow-x:auto}
-.chip{display:inline-block;padding:1px 8px;border-radius:9px;font-size:.7rem;font-weight:600}
-.chip.up{background:var(--green-soft);color:var(--green)}
-.chip.down{background:var(--red-soft);color:var(--red)}
-.chip.flat{background:#EDEFF3;color:var(--ink-soft)}
-.chip.new{background:var(--amber-soft);color:var(--amber)}
+.twrap{overflow-x:auto;border-radius:11px;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;font-size:.79rem;background:var(--card)}
+th,td{padding:7px 11px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+th{background:#FAFBFC;color:var(--muted);font-weight:600;font-size:.71rem;border-bottom:1px solid var(--line);position:sticky;top:0}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--card)}
+th:first-child{background:#FAFBFC}
+tbody tr:hover td,tbody tr:hover td:first-child{background:var(--cpx-wash)}
+td{border-bottom:1px solid var(--line2)}
+tr.band td,tr.band td:first-child{background:var(--ink)!important;color:#fff;font-weight:600}
+tr.sub-r td{color:var(--muted)}
+.c-asis{color:var(--muted)}
+.c-tgt{color:var(--cpx);font-weight:500}
+.c-act{color:var(--ink);font-weight:600}
+.c-proj{color:var(--cpx-mid)}
+.c-dash{color:var(--faint);text-align:center}
+.c-ask{color:var(--cpx);background:var(--cpx-wash)!important;font-weight:500}
+
+.chip{display:inline-block;padding:1px 9px;border-radius:11px;font-size:.69rem;font-weight:600}
+.chip.up{background:var(--green-lt);color:var(--green)}
+.chip.dn{background:var(--red-lt);color:var(--red)}
+.chip.fl{background:var(--line2);color:var(--muted)}
+.chip.nw{background:var(--cpx-wash);color:var(--cpx)}
 
 /* levers */
-.levers{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
-.lever{background:var(--panel);border:1px solid var(--hair);padding:14px 16px}
-.lever label{font-size:.78rem;color:var(--ink-soft);display:block;margin-bottom:6px}
-.lever .cur{font-size:.68rem;color:var(--grey)}
-.lever input,.lever select{width:100%;padding:7px 9px;font:inherit;font-size:.95rem;
-  border:1px solid var(--hair);background:#FBFCFD;font-variant-numeric:tabular-nums}
-.lever input:focus,.lever select:focus{outline:2px solid var(--blue);border-color:var(--blue)}
-.btnrow{margin:16px 0 6px;display:flex;gap:8px;flex-wrap:wrap}
-button{font:inherit;font-size:.8rem;font-weight:600;padding:8px 14px;cursor:pointer;
-  border:1px solid var(--ink);background:var(--panel);color:var(--ink)}
-button:hover{background:var(--ink);color:#fff}
-button.primary{background:var(--ink);color:#fff}
-button.primary:hover{background:#2A4270}
-.impact{background:var(--panel);border:1px solid var(--hair);border-top:4px solid var(--ink);
-  padding:20px 24px;margin-top:20px}
-.impact .big{font-size:2.6rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
-.impact .row{display:flex;gap:34px;flex-wrap:wrap;margin-top:12px}
-.impact .row div{min-width:130px}
-.impact .l{font-size:.72rem;color:var(--grey)}
-.impact .v{font-size:1.05rem;font-weight:600;font-variant-numeric:tabular-nums}
+.lev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.lev{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:14px 15px}
+.lev label{font-size:.8rem;font-weight:600;display:block;margin-bottom:3px}
+.lev .hint{font-size:.7rem;color:var(--muted);line-height:1.4;margin-bottom:9px;min-height:2.6em}
+.lev input,.lev select{width:100%;padding:8px 10px;font:inherit;font-size:1rem;font-variant-numeric:tabular-nums;
+  border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--ink)}
+.lev input:focus,.lev select:focus{outline:none;border-color:var(--cpx);box-shadow:0 0 0 3px var(--cpx-wash)}
+.lev .plan{font-size:.68rem;color:var(--faint);margin-top:5px}
+.lev .live{font-size:.72rem;color:var(--cpx);margin-top:5px;font-weight:600;min-height:1.2em}
+.lev.hero-lev{border-color:var(--cpx);border-width:1.5px;background:var(--cpx-wash)}
+.btnrow{margin:15px 0;display:flex;gap:9px;flex-wrap:wrap}
+button.act{font:inherit;font-size:.82rem;font-weight:600;padding:9px 16px;border-radius:8px;cursor:pointer;border:1px solid var(--ink);background:#fff;color:var(--ink)}
+button.act:hover{background:var(--ink);color:#fff}
+button.act.primary{background:var(--cpx);border-color:var(--cpx);color:#fff}
+button.act.primary:hover{background:#E0431A}
+.impact{background:var(--ink);color:#fff;border-radius:13px;padding:22px 26px}
+.impact .n{font-size:3rem;font-weight:700;letter-spacing:-.02em;line-height:1}
+.impact .lab{font-size:.72rem;color:#9AA3B2}
+.impact .row{display:flex;gap:32px;flex-wrap:wrap;margin-top:16px}
+.impact .k{font-size:.7rem;color:#9AA3B2}
+.impact .v{font-size:1.25rem;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums}
+.impact .pos{color:#4ADE9C}.impact .neg{color:#FF8A6B}.impact .brand{color:var(--cpx-lt)}
 
-/* scenario cards */
-.scen{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
-.scen .card{background:var(--panel);border:1px solid var(--hair);padding:16px 18px}
-.scen .card h3{font-size:.9rem;font-weight:600;margin-bottom:2px}
-.scen .card .lbl{font-size:.74rem;color:var(--grey);margin-bottom:10px}
-.scen .ne{font-size:1.5rem;font-weight:700;font-variant-numeric:tabular-nums}
-.scen .meta{font-size:.76rem;color:var(--ink-soft);margin-top:6px}
-.scen .card button{margin-top:12px;font-size:.72rem;padding:5px 10px}
+/* scenarios */
+.scen{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:13px}
+.scard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:17px 18px}
+.scard.cur{border-color:var(--cpx);border-width:1.5px}
+.scard .tag{font-size:1rem;font-weight:700}
+.scard .lbl{font-size:.73rem;color:var(--muted);margin:2px 0 10px;line-height:1.4}
+.scard .ne{font-size:1.8rem;font-weight:700;letter-spacing:-.02em}
+.scard .assume{list-style:none;margin:11px 0 0;padding:11px 0 0;border-top:1px solid var(--line2)}
+.scard .assume li{font-size:.72rem;color:var(--muted);padding:2px 0;display:flex;justify-content:space-between;gap:8px}
+.scard .assume li b{color:var(--ink);font-weight:600}
+.scard .meta{font-size:.72rem;color:var(--muted);margin-top:9px}
+.scard button.act{margin-top:12px;width:100%;font-size:.74rem;padding:7px}
 
-svg text{font-family:"IBM Plex Sans",Roboto,sans-serif}
-.legend{display:flex;gap:18px;font-size:.74rem;color:var(--ink-soft);margin:6px 0 2px;flex-wrap:wrap}
-.legend span::before{content:"";display:inline-block;width:10px;height:10px;margin-right:5px;vertical-align:-1px}
-.legend .l-act::before{background:var(--green)}
-.legend .l-proj::before{background:#fff;border:2px solid var(--blue);width:8px;height:8px}
-.legend .l-tgt::before{background:var(--ink);height:2px;width:14px;vertical-align:2px}
-.legend .l-rev::before{background:var(--amber)}
+.method h2{font-size:1.12rem;font-weight:600;margin:22px 0 8px;letter-spacing:-.01em}
+.method p{font-size:.86rem;color:#414A59;line-height:1.65;max-width:76ch;margin-bottom:6px}
+.method .box{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--cpx);border-radius:10px;padding:13px 16px;margin:10px 0;font-size:.83rem;line-height:1.6;max-width:76ch}
+.method b{color:var(--ink)}
 
 @media(max-width:900px){
   body{flex-direction:column}
   nav{width:100%;height:auto;position:static;flex-direction:row;flex-wrap:wrap;align-items:center}
-  nav .brand{border:none;padding:12px 16px}
-  nav a{border-left:none;border-bottom:3px solid transparent;padding:10px 12px}
-  nav a.active{border-bottom-color:#5FA871;border-left:none}
-  nav .foot{display:none}
-  main{padding:20px 16px 60px}
+  nav .grp,nav .foot{display:none}
+  nav .brand{border:none}
+  nav a{margin:4px}
+  main{padding:16px 13px 50px}
 }
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <nav>
-  <div class="brand"><b>CPX 2026</b><span>Unit Economics · ITCAN</span></div>
+  <div class="brand">
+    <div class="logo"><svg viewBox="0 0 100 100"><path fill="#000" d="M18 24 Q54 39 47 50 Q54 61 18 76 Q39 55 39 50 Q39 45 18 24Z M51 29 L71 50 L51 71 Q67 56 67 50 Q67 44 51 29Z"/></svg></div>
+    <div><b>CPX</b><span>Unit Economics</span></div>
+  </div>
+  <div class="grp">Overview</div>
   <a data-page="cockpit" class="active">Cockpit</a>
   <a data-page="targets">Targets vs Actuals</a>
+  <a data-page="path">Path to Profit</a>
+  <div class="grp">Model</div>
   <a data-page="levers">Levers</a>
   <a data-page="pnl">P&amp;L</a>
-  <a data-page="brands">Brand Pipeline</a>
-  <a data-page="affiliates">Affiliate Pipeline</a>
-  <a data-page="path">Path to Profit</a>
-  <a data-page="method">Method &amp; Updates</a>
-  <div class="foot">Data through <b id="footMonth"></b><br>Reconciled to P&amp;L, diff = 0<br><span id="footStamp"></span></div>
+  <a data-page="cohorts">Brand Build</a>
+  <div class="grp">Pipeline</div>
+  <a data-page="brands">Brands</a>
+  <a data-page="affiliates">Affiliates</a>
+  <div class="grp">Reference</div>
+  <a data-page="method">Method</a>
+  <div class="foot">Through <b id="footMonth"></b><br>Reconciled to P&amp;L · diff 0<br><span id="footStamp"></span></div>
 </nav>
 <main>
 
 <section class="page active" id="page-cockpit">
-  <h1>Cockpit</h1>
-  <div class="sub">Where the year stands, at current lever settings. Data through <span class="mLatest"></span>.</div>
-  <div id="runway"></div>
-  <div class="legend"><span class="l-act">Actual commission</span><span class="l-proj">Projected (levers)</span><span class="l-tgt">Target pace</span></div>
-  <div class="figs" id="cockpitFigs"></div>
-  <h2>Next month's asks <small>catch-up basis: remaining target re-spread over months left</small></h2>
-  <div class="figs" id="askFigs"></div>
-  <h2>Health signals <small>latest month vs prior</small></h2>
-  <div class="figs" id="healthFigs"></div>
+  <div class="head">
+    <div><h1>Cockpit</h1><div class="sub" id="cockHeading"></div></div>
+  </div>
+  <div class="grid">
+    <div class="card col8 p0"><div style="padding:16px 18px 4px"><div class="eyebrow">Net commission — actual vs <span id="rw-mode">projected</span> revenue</div></div>
+      <div class="ch" style="padding:0 12px 10px"><canvas id="cRunway" height="248"></canvas></div>
+      <div class="legend" style="padding:0 18px 15px" id="runwayLegend"></div>
+    </div>
+    <div class="card col4 verdict" id="verdict"></div>
+
+    <div class="card col12"><div class="eyebrow" style="margin-bottom:4px">As-Is vs Target — full-year outcome</div>
+      <div class="csub" style="margin-bottom:10px">As-Is freezes today's business; Target applies your levers. Uplift is what the plan adds.</div>
+      <div class="twrap" id="cmpTable" style="border-radius:10px"></div>
+    </div>
+
+    <div class="card col3" id="ask0"></div>
+    <div class="card col3" id="ask1"></div>
+    <div class="card col3" id="ask2"></div>
+    <div class="card col3 p0"><div style="padding:16px 18px 0"><div class="eyebrow">Client concentration · <span class="mLatest"></span></div></div>
+      <div class="ch" style="padding:6px 14px 15px"><canvas id="cConc" height="146"></canvas></div>
+    </div>
+
+    <div class="card col12 p0" id="scnTablePanel"><div style="padding:16px 18px 0"><div class="eyebrow" id="scnTableTitle">Scenario detail — monthly</div></div>
+      <div class="twrap" id="scnTable" style="border:none;border-radius:13px;margin-top:8px"></div>
+    </div>
+
+    <div class="card col12"><div class="eyebrow" style="margin-bottom:12px">Health signals — latest month vs prior</div>
+      <div class="grid" id="healthRow"></div>
+    </div>
+  </div>
 </section>
 
 <section class="page" id="page-targets">
-  <h1>Targets vs Actuals</h1>
-  <div class="sub">Every metric on the same three lines: what the target pace asks, what actually landed, and the revised ask after misses. Target pace derives from the live target, so it responds to the OpEx lever.</div>
+  <div class="head"><div><h1>Targets vs Actuals</h1><div class="sub">Every metric on four lines: <b>As-Is</b> (frozen business), <b>Target</b> (levers applied), <b>Actual</b> (booked), and the <b>revised ask</b> once misses carry forward. Brands shown both at 20K-unit output and at nominal run-rate. Hover charts for exact figures.</div></div></div>
   <div id="targetBlocks"></div>
 </section>
 
+<section class="page" id="page-path">
+  <div class="head"><div><h1>Path to Profit</h1><div class="sub">Five scenarios, each computed live by the same engine. The assumptions behind every scenario are listed on its card. Apply one to load it into the levers.</div></div></div>
+  <div class="scen" id="scenCards"></div>
+</section>
+
 <section class="page" id="page-levers">
-  <h1>Levers</h1>
-  <div class="sub">The committed plan is 207 brands at AED 420K/month OpEx. Change anything below — every page recomputes instantly. Nothing is saved: reload restores the plan.</div>
-  <div class="levers" id="leverGrid"></div>
-  <div class="btnrow">
-    <button class="primary" id="btnApply">Recalculate</button>
-    <button id="btnReset">Reset to committed plan</button>
-  </div>
+  <div class="head"><div><h1>Levers</h1><div class="sub">Set the revenue target directly — profit falls out below. Every other lever shapes how that revenue is produced. Nothing is saved; reload restores the committed plan.</div></div></div>
+  <div class="lev-grid" id="leverGrid"></div>
+  <div class="btnrow"><button class="act primary" id="btnApply">Recalculate</button><button class="act" id="btnReset">Reset to committed plan</button></div>
   <div class="impact" id="leverImpact"></div>
 </section>
 
 <section class="page" id="page-pnl">
-  <h1>P&amp;L — CPX + MARS combined SBU</h1>
-  <div class="sub">Jan–<span class="mLatest"></span> are booked actuals reconciled to the live P&amp;L. Later months are projections at current lever settings. CPX = the direct CPX line only; MARS = everything else, variances included.</div>
-  <div class="scrollx" id="pnlTable"></div>
-  <div id="cumChart"></div>
-  <p class="note" id="pnlNote"></p>
+  <div class="head"><div><h1>P&amp;L — CPX + MARS combined SBU</h1><div class="sub">Jan–<span class="mLatest"></span> are booked actuals, tied to the live P&amp;L to the dirham. Later months project at current levers. CPX = the direct CPX line; MARS = all other channels, variances included.</div></div></div>
+  <div class="grid">
+    <div class="card col12 p0"><div style="padding:15px 18px 0"><div class="eyebrow">Cumulative net earnings</div></div><div class="ch" style="padding:6px 12px 12px"><canvas id="cCum" height="140"></canvas></div></div>
+    <div class="card col12 p0"><div class="twrap" id="pnlTable" style="border:none;border-radius:13px"></div></div>
+  </div>
+  <p style="font-size:.8rem;color:var(--muted);line-height:1.6;margin-top:10px;max-width:80ch" id="pnlNote"></p>
 </section>
 
 <section class="page" id="page-brands">
-  <h1>Brand Pipeline</h1>
-  <div class="sub">Per-brand net commission (operational export). Recognized revenue reconciles via the adjustment line.</div>
-  <div class="figs" id="brandFigs"></div>
-  <h2>Concentration</h2>
-  <div id="concBars"></div>
-  <h2>All brands <small>Jan–<span class="mLatest"></span> actuals</small></h2>
-  <div class="scrollx" id="brandTable"></div>
+  <div class="head"><div><h1>Brand Pipeline</h1><div class="sub">Per-brand net commission from the operational export. Recognized revenue reconciles through the adjustment line.</div></div></div>
+  <div class="grid">
+    <div class="card col7" id="brandFigs" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px"></div>
+    <div class="card col5 p0"><div style="padding:16px 18px 0"><div class="eyebrow">Top brands · share of <span class="mLatest"></span> commission</div></div><div class="ch" style="padding:6px 14px 15px"><canvas id="cBrandConc" height="178"></canvas></div></div>
+    <div class="card col12 p0"><div class="twrap" id="brandTable" style="border:none;border-radius:13px"></div></div>
+  </div>
 </section>
 
 <section class="page" id="page-affiliates">
-  <h1>Affiliate Pipeline</h1>
-  <div class="sub">Top 50 affiliates by order volume. Orders per month, payout to date, tier and trend.</div>
-  <div class="figs" id="affFigs"></div>
-  <h2>Top 50 <small>orders per month</small></h2>
-  <div class="scrollx" id="affTable"></div>
+  <div class="head"><div><h1>Affiliate Pipeline</h1><div class="sub">Top 50 affiliates by order volume — monthly orders, payout to date, tier and trend.</div></div></div>
+  <div class="grid">
+    <div class="card col12" id="affFigs" style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px"></div>
+    <div class="card col12 p0"><div class="twrap" id="affTable" style="border:none;border-radius:13px"></div></div>
+  </div>
 </section>
 
-<section class="page" id="page-path">
-  <h1>Path to Profit</h1>
-  <div class="sub">Five committed scenario definitions, computed live by the same engine — these always agree with the levers page. Apply any scenario to explore it.</div>
-  <div class="scen" id="scenCards"></div>
-  <p class="note">Every scenario keeps churn 5%, expansion 10%, margin 70% unless stated. "Fast ramp" = new brands productive on the 30/50/70/85/95/100 curve instead of 10/20/35/55/75/90.</p>
+<section class="page" id="page-cohorts">
+  <div class="head"><div><h1>Brand Build</h1><div class="sub">How new-brand revenue stacks up as each monthly cohort ramps. Six cohorts sign <span id="coh-per"></span> brands each from Jul–Dec; every cohort climbs its own ramp curve and churns <span id="coh-churn"></span>/month. July has passed, so the build shown is Aug onward. Recomputes with the levers.</div></div></div>
+  <div class="grid">
+    <div class="card col12 p0"><div style="padding:15px 18px 0"><div class="eyebrow">New-brand revenue by cohort — the stack</div></div>
+      <div class="ch" style="padding:6px 12px 12px"><canvas id="cCohort" height="150"></canvas></div>
+    </div>
+    <div class="card col12 p0"><div class="twrap" id="cohortTable" style="border:none;border-radius:13px"></div></div>
+    <div class="card col12" id="cohortNote" style="font-size:.82rem;color:var(--muted);line-height:1.6"></div>
+  </div>
 </section>
 
-<section class="page" id="page-method">
-  <h1>Method &amp; Updates</h1>
-  <div class="sub">How this model works and how it gets updated each month.</div>
+<section class="page method" id="page-method">
+  <div class="head"><div><h1>Method</h1><div class="sub">How the model works.</div></div></div>
   <div id="methodBody"></div>
 </section>
 
 </main>
 <script>
-/* ============================================================
-   CPX UNIT ECONOMICS DASHBOARD — ITCAN / Moontech
-   Engine is an exact port of CPX_Unit_Economics_2026_JulyUpdated.xlsx
-   (parity-verified: baseline, targets, all Path-to-Profit scenarios).
-   MONTHLY UPDATE: replace the CPX_DATA object below, nothing else.
-   ============================================================ */
-const CPX_DATA = {"meta":{"latest":7,"latestLabel":"Jul-26","updated":"Aug 2026 cycle","runRate":7025},"seasonality":[0.0747,0.1133,0.0802,0.0734,0.0829,0.0734,0.0747,0.0747,0.0802,0.0734,0.1256,0.0734],"actuals":{"ncOps":[204243,311187,235296,195589,209667,149793,148435],"cpxRec":[199065,301631,213485,195439,220560,150339,133480],"cpxCos":[65432,68175,85883,58842,66393,39391,35639],"marsRev":[96282,86617,191853,51705,79276,61595,8307],"marsCos":[35816,54068,32067,36628,31552,33735,32380],"opex":[421526,382411,356484,400792,336637,457106,488309],"brands":[28,30,32,32,32,27,26],"affiliates":[211,236,205,194,199,170,107],"orders":[5813,7033,5353,4915,5694,4187,3932],"payout":[69786,74222,84710,58652,58005,38814,40539],"pnlNE":[-227427,-116406,-69096,-249118,-134746,-318298,-414541]},"marsStatic":{"rev":82234,"cos":36607},"adjustments":{"julOps":148435,"julRecognized":133480,"julAdj":-14958},"brands":[{"name":"Sephora","m":[122396,239243,120375,109899,110810,100071,89145],"status":"\u2193 Declining"},{"name":"Nayomi","m":[24860,29715,53242,45666,48284,12763,26775],"status":"\u2713 Active"},{"name":"DKNY","m":[6108,4770,12100,8546,10592,2507,7207],"status":"\u2713 Active"},{"name":"OnTime","m":[5344,6677,9912,2072,4837,4272,3070],"status":"\u2193 Declining"},{"name":"Riva","m":[4581,5072,5674,3105,5996,3307,2545],"status":"\u2193 Declining"},{"name":"Cole Haan","m":[3150,2090,8348,9518,1670,1723,1307],"status":"\u2713 Active"},{"name":"Bloomingdales","m":[2533,2320,2961,2641,7663,6956,5061],"status":"\u2193 Declining"},{"name":"Izil","m":[5009,4376,3324,2161,2817,1858,2094],"status":"\u2713 Active"},{"name":"Level Shoes","m":[8294,2635,739,658,4437,6614,2426],"status":"\u2713 Active"},{"name":"Mamas & Papas","m":[2989,2320,1661,1377,2096,1752,1921],"status":"\u2713 Active"},{"name":"Bath and Body Works","m":[4761,1425,1593,882,1010,1517,1172],"status":"\u2713 Active"},{"name":"Mumzworld","m":[1872,1982,2389,1906,1458,1065,1404],"status":"\u2713 Active"},{"name":"Charlotte Tilburry","m":[1151,572,2275,921,2693,907,1378],"status":"\u2713 Active"},{"name":"H&M","m":[992,1137,1387,1137,1410,6,0],"status":"\u2192 Watch"},{"name":"Ounass","m":[1092,1045,1967,1313,0,0,0],"status":"\u2593 Inactive"},{"name":"Squatwolf","m":[251,892,1636,872,1229,2235,1000],"status":"\u2713 Active"},{"name":"Swarovski","m":[1513,854,705,77,0,0,0],"status":"\u2593 Inactive"},{"name":"Mother Care","m":[552,400,517,517,317,447,447],"status":"\u2713 Active"},{"name":"Dabdoob - GZ","m":[965,707,324,0,0,0,0],"status":"\u2593 Inactive"},{"name":"Vogacloset","m":[1047,386,541,594,261,440,228],"status":"\u2713 Active"},{"name":"Victoria's Secret","m":[235,308,705,206,279,235,250],"status":"\u2713 Active"},{"name":"Triumph","m":[104,122,805,526,0,0,0],"status":"\u2593 Inactive"},{"name":"GAP","m":[424,351,312,117,279,0,0],"status":"\u26a0 At Risk"},{"name":"Sun & Sands Sports","m":[704,211,29,75,84,264,14],"status":"\u2713 Active"},{"name":"Banana republic","m":[180,82,482,266,48,13,16],"status":"\u2713 Active"},{"name":"Adidas - RKT","m":[250,216,279,87,153,260,197],"status":"\u2713 Active"},{"name":"Allbirds","m":[298,427,200,19,0,0,0],"status":"\u2593 Inactive"},{"name":"New Balance","m":[269,147,146,140,207,131,206],"status":"\u2713 Active"},{"name":"Noon - GZ","m":[469,0,0,0,324,190,241],"status":"\u2713 Active"},{"name":"Styli","m":[382,142,114,25,214,62,45],"status":"\u2193 Declining"},{"name":"6th Street - GZ","m":[365,266,144,0,0,0,0],"status":"\u2593 Inactive"},{"name":"MetroBrazil","m":[739,0,0,0,0,0,0],"status":"\u2593 Inactive"},{"name":"Namshi - GZ","m":[36,78,209,25,107,71,57],"status":"\u2193 Declining"},{"name":"American Eagle","m":[153,94,106,65,18,0,0],"status":"\u26a0 At Risk"},{"name":"Airalo","m":[83,118,63,165,268,92,214],"status":"\u2713 Active"},{"name":"Footlocker","m":[0,0,0,0,106,35,18],"status":"\u2193 Declining"},{"name":"Eyewa","m":[25,0,32,11,0,0,0],"status":"\u2593 Inactive"},{"name":"Under Armour","m":[0,7,0,0,0,0,0],"status":"\u2593 Inactive"},{"name":"Nice One","m":[0,0,0,0,1,0,0],"status":"\u26a0 At Risk"},{"name":"Reef Perfumes - GZ","m":[0,0,0,0,0,0,0],"status":"\u2014 Too early"}],"affiliates":[{"name":"Alaa Ghawi","m":[1051,1724,986,1135,1209,1059,785],"payout":58501,"tier":"Anchor","status":"\u2193 Declining"},{"name":"Dima","m":[886,1236,894,835,812,598,754],"payout":68842,"tier":"Anchor","status":"\u2713 Active"},{"name":"Abdulaziz","m":[399,610,411,411,381,196,291],"payout":31634,"tier":"Core","status":"\u2713 Active"},{"name":"Muhammad","m":[263,275,114,185,203,132,418],"payout":17655,"tier":"Core","status":"\u2713 Active"},{"name":"Sahseh","m":[199,196,207,121,272,221,210],"payout":19736,"tier":"Core","status":"\u2193 Declining"},{"name":"Ragad Essa Aldahous","m":[147,239,176,178,187,82,44],"payout":17745,"tier":"Growing","status":"\u2193 Declining"},{"name":"Amal","m":[203,141,167,134,232,104,73],"payout":27783,"tier":"Growing","status":"\u2193 Declining"},{"name":"Mohamed","m":[209,230,218,194,201,69,135],"payout":25658,"tier":"Core","status":"\u2713 Active"},{"name":"Abdulrhaman","m":[110,153,146,84,118,50,37],"payout":5702,"tier":"Growing","status":"\u2193 Declining"},{"name":"Nawaf\u2605","m":[94,158,153,98,102,48,84],"payout":3505,"tier":"Growing","status":"\u2713 Active"},{"name":"Rofayda Ali","m":[68,161,118,106,148,129,1],"payout":104,"tier":"Growing","status":"\u2193 Declining"},{"name":"Geeks","m":[105,60,120,126,156,162,181],"payout":11175,"tier":"Growing","status":"\u2191 Scaling"},{"name":"Eslam","m":[88,102,180,106,99,29,6],"payout":17594,"tier":"Growing","status":"\u2193 Declining"},{"name":"Abanob Hamdy","m":[448,34,21,13,15,52,23],"payout":3577,"tier":"Growing","status":"\u2713 Active"},{"name":"Magdalena","m":[195,173,36,27,42,30,0],"payout":1130,"tier":"Growing","status":"\u2192 Dormant"},{"name":"Rahman","m":[52,79,59,132,90,65,8],"payout":1681,"tier":"Growing","status":"\u2193 Declining"},{"name":"Gift","m":[82,38,100,57,97,57,70],"payout":4966,"tier":"Growing","status":"\u2713 Active"},{"name":"a","m":[56,72,108,85,66,2,2],"payout":3334,"tier":"Growing","status":"\u2713 Active"},{"name":"Mahmoud","m":[92,73,78,52,42,13,37],"payout":2814,"tier":"Growing","status":"\u2713 Active"},{"name":"Rabea","m":[65,117,49,42,47,35,2],"payout":5376,"tier":"Growing","status":"\u2193 Declining"},{"name":"Mohanad","m":[61,45,69,59,54,30,25],"payout":3271,"tier":"Growing","status":"\u2193 Declining"},{"name":"Donia Hesham","m":[12,44,128,31,49,26,19],"payout":4649,"tier":"Growing","status":"\u2193 Declining"},{"name":"Amani","m":[57,65,63,25,25,10,19],"payout":5050,"tier":"Growing","status":"\u2713 Active"},{"name":"Mariam Khalid Althawadi","m":[101,53,25,15,29,9,39],"payout":5809,"tier":"Growing","status":"\u2713 Active"},{"name":"Kumail Raza","m":[55,16,43,14,82,154,52],"payout":9575,"tier":"Growing","status":"\u2713 Active"},{"name":"Tasneem Mohamed Kamel","m":[2,2,2,6,134,173,137],"payout":9466,"tier":"Growing","status":"\u2713 Active"},{"name":"Yash","m":[15,55,23,35,18,8,3],"payout":734,"tier":"Tail","status":"\u2193 Declining"},{"name":"Saudi Coupon","m":[14,23,29,29,42,47,45],"payout":3324,"tier":"Growing","status":"\u2713 Active"},{"name":"Mahmoud Abd Elrhman","m":[29,19,27,22,35,13,14],"payout":5502,"tier":"Tail","status":"\u2713 Active"},{"name":"Mohamed","m":[209,230,218,194,201,69,135],"payout":25658,"tier":"Core","status":"\u2713 Active"},{"name":"CPX SPAM\u2757","m":[10,18,26,22,33,22,34],"payout":2601,"tier":"Tail","status":"\u2713 Active"},{"name":"Raja","m":[17,23,3,19,50,41,27],"payout":3724,"tier":"Tail","status":"\u2193 Declining"},{"name":"Ashwaq","m":[17,30,10,23,18,4,0],"payout":297,"tier":"Tail","status":"\u2192 Dormant"},{"name":"Mahmoud Kharoof","m":[11,51,6,2,26,30,0],"payout":283,"tier":"Tail","status":"\u2192 Dormant"},{"name":"Mohamed","m":[209,230,218,194,201,69,135],"payout":25658,"tier":"Core","status":"\u2713 Active"},{"name":"Ahmed","m":[51,54,38,52,80,60,62],"payout":4752,"tier":"Growing","status":"\u2713 Active"},{"name":"R","m":[6,46,14,10,13,2,1],"payout":299,"tier":"Tail","status":"\u2193 Declining"},{"name":"Wegdan","m":[17,21,25,6,8,3,2],"payout":614,"tier":"Tail","status":"\u2193 Declining"},{"name":"Kareem","m":[37,27,22,17,23,18,6],"payout":1929,"tier":"Tail","status":"\u2193 Declining"},{"name":"Amal","m":[203,141,167,134,232,104,73],"payout":27783,"tier":"Growing","status":"\u2193 Declining"},{"name":"Rahman Hussain","m":[16,13,4,13,25,5,10],"payout":1052,"tier":"Tail","status":"\u2713 Active"},{"name":"Kamal Alotiby","m":[15,31,16,5,1,2,0],"payout":202,"tier":"Tail","status":"\u2192 Dormant"},{"name":"Omar","m":[19,7,15,14,10,10,9],"payout":968,"tier":"Tail","status":"\u2713 Active"},{"name":"Karam","m":[10,6,13,15,14,9,1],"payout":863,"tier":"Tail","status":"\u2193 Declining"},{"name":"Mahmoud Hassan","m":[9,9,7,10,18,4,3],"payout":510,"tier":"Tail","status":"\u2193 Declining"},{"name":"Weaam","m":[18,10,14,8,4,1,1],"payout":212,"tier":"Tail","status":"\u2713 Active"},{"name":"Tamer","m":[21,17,13,31,30,10,25],"payout":634,"tier":"Tail","status":"\u2713 Active"},{"name":"Jory","m":[6,13,19,2,10,6,12],"payout":979,"tier":"Tail","status":"\u2713 Active"},{"name":"Nasrsalem","m":[6,22,7,7,8,3,5],"payout":596,"tier":"Tail","status":"\u2713 Active"},{"name":"Alaa","m":[18,14,31,5,11,2,1],"payout":1337,"tier":"Tail","status":"\u2193 Declining"}]};
+/* CPX DASHBOARD v3 — two scenarios (As-Is / Target), revenue-target lever */
+const CPX_DATA = {"meta":{"latest":7,"latestLabel":"Jul-26","updated":"Aug 2026 cycle","runRate":7025,"pipelineOrders":[6083,7206,5636,5140,6003,4077,4056]},"seasonality":[0.0747,0.1133,0.0802,0.0734,0.0829,0.0734,0.0747,0.0747,0.0802,0.0734,0.1256,0.0734],"actuals":{"ncOps":[204243,311187,235296,195589,209667,149793,148435],"cpxRec":[199065,301631,213485,195439,220560,150339,133480],"cpxCos":[65432,68175,85883,58842,66393,39391,35639],"marsRev":[96282,86617,191853,51705,79276,61595,8307],"marsCos":[35816,54068,32067,36628,31552,33735,32380],"opex":[421526,382411,356484,400792,336637,457106,488309],"brands":[28,30,32,32,32,27,26],"affiliates":[211,236,205,194,199,170,107],"orders":[5813,7033,5353,4915,5694,4187,3932],"payout":[69786,74222,84710,58652,58005,38814,40539],"pnlNE":[-227427,-116406,-69096,-249118,-134746,-318298,-414541]},"marsStatic":{"rev":82234,"cos":36607},"adjustments":{"julOps":148435,"julRecognized":133480,"julAdj":-14958},"brands":[{"name":"Sephora","m":[122396,239243,120375,109899,110810,100071,89145],"status":"\u2193 Declining"},{"name":"Nayomi","m":[24860,29715,53242,45666,48284,12763,26775],"status":"\u2713 Active"},{"name":"DKNY","m":[6108,4770,12100,8546,10592,2507,7207],"status":"\u2713 Active"},{"name":"OnTime","m":[5344,6677,9912,2072,4837,4272,3070],"status":"\u2193 Declining"},{"name":"Riva","m":[4581,5072,5674,3105,5996,3307,2545],"status":"\u2193 Declining"},{"name":"Cole Haan","m":[3150,2090,8348,9518,1670,1723,1307],"status":"\u2713 Active"},{"name":"Bloomingdales","m":[2533,2320,2961,2641,7663,6956,5061],"status":"\u2193 Declining"},{"name":"Izil","m":[5009,4376,3324,2161,2817,1858,2094],"status":"\u2713 Active"},{"name":"Level Shoes","m":[8294,2635,739,658,4437,6614,2426],"status":"\u2713 Active"},{"name":"Mamas & Papas","m":[2989,2320,1661,1377,2096,1752,1921],"status":"\u2713 Active"},{"name":"Bath and Body Works","m":[4761,1425,1593,882,1010,1517,1172],"status":"\u2713 Active"},{"name":"Mumzworld","m":[1872,1982,2389,1906,1458,1065,1404],"status":"\u2713 Active"},{"name":"Charlotte Tilburry","m":[1151,572,2275,921,2693,907,1378],"status":"\u2713 Active"},{"name":"H&M","m":[992,1137,1387,1137,1410,6,0],"status":"\u2192 Watch"},{"name":"Ounass","m":[1092,1045,1967,1313,0,0,0],"status":"\u2593 Inactive"},{"name":"Squatwolf","m":[251,892,1636,872,1229,2235,1000],"status":"\u2713 Active"},{"name":"Swarovski","m":[1513,854,705,77,0,0,0],"status":"\u2593 Inactive"},{"name":"Mother Care","m":[552,400,517,517,317,447,447],"status":"\u2713 Active"},{"name":"Dabdoob - GZ","m":[965,707,324,0,0,0,0],"status":"\u2593 Inactive"},{"name":"Vogacloset","m":[1047,386,541,594,261,440,228],"status":"\u2713 Active"},{"name":"Victoria's Secret","m":[235,308,705,206,279,235,250],"status":"\u2713 Active"},{"name":"Triumph","m":[104,122,805,526,0,0,0],"status":"\u2593 Inactive"},{"name":"GAP","m":[424,351,312,117,279,0,0],"status":"\u26a0 At Risk"},{"name":"Sun & Sands Sports","m":[704,211,29,75,84,264,14],"status":"\u2713 Active"},{"name":"Banana republic","m":[180,82,482,266,48,13,16],"status":"\u2713 Active"},{"name":"Adidas - RKT","m":[250,216,279,87,153,260,197],"status":"\u2713 Active"},{"name":"Allbirds","m":[298,427,200,19,0,0,0],"status":"\u2593 Inactive"},{"name":"New Balance","m":[269,147,146,140,207,131,206],"status":"\u2713 Active"},{"name":"Noon - GZ","m":[469,0,0,0,324,190,241],"status":"\u2713 Active"},{"name":"Styli","m":[382,142,114,25,214,62,45],"status":"\u2193 Declining"},{"name":"6th Street - GZ","m":[365,266,144,0,0,0,0],"status":"\u2593 Inactive"},{"name":"MetroBrazil","m":[739,0,0,0,0,0,0],"status":"\u2593 Inactive"},{"name":"Namshi - GZ","m":[36,78,209,25,107,71,57],"status":"\u2193 Declining"},{"name":"American Eagle","m":[153,94,106,65,18,0,0],"status":"\u26a0 At Risk"},{"name":"Airalo","m":[83,118,63,165,268,92,214],"status":"\u2713 Active"},{"name":"Footlocker","m":[0,0,0,0,106,35,18],"status":"\u2193 Declining"},{"name":"Eyewa","m":[25,0,32,11,0,0,0],"status":"\u2593 Inactive"},{"name":"Under Armour","m":[0,7,0,0,0,0,0],"status":"\u2593 Inactive"},{"name":"Nice One","m":[0,0,0,0,1,0,0],"status":"\u26a0 At Risk"},{"name":"Reef Perfumes - GZ","m":[0,0,0,0,0,0,0],"status":"\u2014 Too early"}],"affiliates":[{"name":"Alaa Ghawi","m":[1051,1724,986,1135,1209,1059,785],"payout":58501,"tier":"Anchor","status":"\u2193 Declining"},{"name":"Dima","m":[886,1236,894,835,812,598,754],"payout":68842,"tier":"Anchor","status":"\u2713 Active"},{"name":"Abdulaziz","m":[399,610,411,411,381,196,291],"payout":31634,"tier":"Core","status":"\u2713 Active"},{"name":"Muhammad","m":[263,275,114,185,203,132,418],"payout":17655,"tier":"Core","status":"\u2713 Active"},{"name":"Sahseh","m":[199,196,207,121,272,221,210],"payout":19736,"tier":"Core","status":"\u2193 Declining"},{"name":"Ragad Essa Aldahous","m":[147,239,176,178,187,82,44],"payout":17745,"tier":"Growing","status":"\u2193 Declining"},{"name":"Amal","m":[203,141,167,134,232,104,73],"payout":27783,"tier":"Growing","status":"\u2193 Declining"},{"name":"Mohamed","m":[209,230,218,194,201,69,135],"payout":25658,"tier":"Core","status":"\u2713 Active"},{"name":"Abdulrhaman","m":[110,153,146,84,118,50,37],"payout":5702,"tier":"Growing","status":"\u2193 Declining"},{"name":"Nawaf\u2605","m":[94,158,153,98,102,48,84],"payout":3505,"tier":"Growing","status":"\u2713 Active"},{"name":"Rofayda Ali","m":[68,161,118,106,148,129,1],"payout":104,"tier":"Growing","status":"\u2193 Declining"},{"name":"Geeks","m":[105,60,120,126,156,162,181],"payout":11175,"tier":"Growing","status":"\u2191 Scaling"},{"name":"Eslam","m":[88,102,180,106,99,29,6],"payout":17594,"tier":"Growing","status":"\u2193 Declining"},{"name":"Abanob Hamdy","m":[448,34,21,13,15,52,23],"payout":3577,"tier":"Growing","status":"\u2713 Active"},{"name":"Magdalena","m":[195,173,36,27,42,30,0],"payout":1130,"tier":"Growing","status":"\u2192 Dormant"},{"name":"Rahman","m":[52,79,59,132,90,65,8],"payout":1681,"tier":"Growing","status":"\u2193 Declining"},{"name":"Gift","m":[82,38,100,57,97,57,70],"payout":4966,"tier":"Growing","status":"\u2713 Active"},{"name":"a","m":[56,72,108,85,66,2,2],"payout":3334,"tier":"Growing","status":"\u2713 Active"},{"name":"Mahmoud","m":[92,73,78,52,42,13,37],"payout":2814,"tier":"Growing","status":"\u2713 Active"},{"name":"Rabea","m":[65,117,49,42,47,35,2],"payout":5376,"tier":"Growing","status":"\u2193 Declining"},{"name":"Mohanad","m":[61,45,69,59,54,30,25],"payout":3271,"tier":"Growing","status":"\u2193 Declining"},{"name":"Donia Hesham","m":[12,44,128,31,49,26,19],"payout":4649,"tier":"Growing","status":"\u2193 Declining"},{"name":"Amani","m":[57,65,63,25,25,10,19],"payout":5050,"tier":"Growing","status":"\u2713 Active"},{"name":"Mariam Khalid Althawadi","m":[101,53,25,15,29,9,39],"payout":5809,"tier":"Growing","status":"\u2713 Active"},{"name":"Kumail Raza","m":[55,16,43,14,82,154,52],"payout":9575,"tier":"Growing","status":"\u2713 Active"},{"name":"Tasneem Mohamed Kamel","m":[2,2,2,6,134,173,137],"payout":9466,"tier":"Growing","status":"\u2713 Active"},{"name":"Yash","m":[15,55,23,35,18,8,3],"payout":734,"tier":"Tail","status":"\u2193 Declining"},{"name":"Saudi Coupon","m":[14,23,29,29,42,47,45],"payout":3324,"tier":"Growing","status":"\u2713 Active"},{"name":"Mahmoud Abd Elrhman","m":[29,19,27,22,35,13,14],"payout":5502,"tier":"Tail","status":"\u2713 Active"},{"name":"Mohamed","m":[209,230,218,194,201,69,135],"payout":25658,"tier":"Core","status":"\u2713 Active"},{"name":"CPX SPAM\u2757","m":[10,18,26,22,33,22,34],"payout":2601,"tier":"Tail","status":"\u2713 Active"},{"name":"Raja","m":[17,23,3,19,50,41,27],"payout":3724,"tier":"Tail","status":"\u2193 Declining"},{"name":"Ashwaq","m":[17,30,10,23,18,4,0],"payout":297,"tier":"Tail","status":"\u2192 Dormant"},{"name":"Mahmoud Kharoof","m":[11,51,6,2,26,30,0],"payout":283,"tier":"Tail","status":"\u2192 Dormant"},{"name":"Mohamed","m":[209,230,218,194,201,69,135],"payout":25658,"tier":"Core","status":"\u2713 Active"},{"name":"Ahmed","m":[51,54,38,52,80,60,62],"payout":4752,"tier":"Growing","status":"\u2713 Active"},{"name":"R","m":[6,46,14,10,13,2,1],"payout":299,"tier":"Tail","status":"\u2193 Declining"},{"name":"Wegdan","m":[17,21,25,6,8,3,2],"payout":614,"tier":"Tail","status":"\u2193 Declining"},{"name":"Kareem","m":[37,27,22,17,23,18,6],"payout":1929,"tier":"Tail","status":"\u2193 Declining"},{"name":"Amal","m":[203,141,167,134,232,104,73],"payout":27783,"tier":"Growing","status":"\u2193 Declining"},{"name":"Rahman Hussain","m":[16,13,4,13,25,5,10],"payout":1052,"tier":"Tail","status":"\u2713 Active"},{"name":"Kamal Alotiby","m":[15,31,16,5,1,2,0],"payout":202,"tier":"Tail","status":"\u2192 Dormant"},{"name":"Omar","m":[19,7,15,14,10,10,9],"payout":968,"tier":"Tail","status":"\u2713 Active"},{"name":"Karam","m":[10,6,13,15,14,9,1],"payout":863,"tier":"Tail","status":"\u2193 Declining"},{"name":"Mahmoud Hassan","m":[9,9,7,10,18,4,3],"payout":510,"tier":"Tail","status":"\u2193 Declining"},{"name":"Weaam","m":[18,10,14,8,4,1,1],"payout":212,"tier":"Tail","status":"\u2713 Active"},{"name":"Tamer","m":[21,17,13,31,30,10,25],"payout":634,"tier":"Tail","status":"\u2713 Active"},{"name":"Jory","m":[6,13,19,2,10,6,12],"payout":979,"tier":"Tail","status":"\u2713 Active"},{"name":"Nasrsalem","m":[6,22,7,7,8,3,5],"payout":596,"tier":"Tail","status":"\u2713 Active"},{"name":"Alaa","m":[18,14,31,5,11,2,1],"payout":1337,"tier":"Tail","status":"\u2193 Declining"}]};
+const MO=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const PER_ORDER=490*0.082*0.65, ORD_PER_AFF=27;
+const PLAN={opex:420000,brands:207,exChurn:0.05,newChurn:0.05,expansion:0.10,arpa:240000,margin:0.70,fast:false};
+const N=CPX_DATA.meta.latest, A=CPX_DATA.actuals, S=CPX_DATA.seasonality;
+const MARSGP=CPX_DATA.marsStatic.rev-CPX_DATA.marsStatic.cos;
+const IMPLIED_BASE=A.ncOps.reduce((a,b)=>a+b,0)/S.slice(0,N).reduce((a,b)=>a+b,0);
+const OPEX_RUN=A.opex.slice(0,N).reduce((a,b)=>a+b,0)/N;
 
-const MO = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const PER_ORDER = 490*0.082*0.65;      // AED 26.117 net commission per order
-const ORD_PER_AFF = 27;                // blended orders per active affiliate
-const PLAN = { opex:420000, brands:207, exChurn:0.05, newChurn:0.05,
-               expansion:0.10, arpa:240000, margin:0.70, profitGoal:500000, fast:false };
-const SCENARIOS = {
-  A:{label:"OpEx 300K · 100 brands · std ramp", lv:{opex:300000,brands:100,fast:false}},
-  B:{label:"OpEx 300K · 80 brands · fast ramp", lv:{opex:300000,brands:80, fast:true }},
-  C:{label:"OpEx 260K · 80 brands · fast ramp", lv:{opex:260000,brands:80, fast:true }},
-  D:{label:"OpEx 300K · ARPA 360K · fast ramp", lv:{opex:300000,brands:60, arpa:360000, fast:true}},
-  E:{label:"OpEx 300K · 100 brands · fast ramp",lv:{opex:300000,brands:100,fast:true }},
-};
+let LV={...PLAN}, MODE="target", CH={};
 
+/* ---------- TARGET engine (levers applied) ---------- */
 function engine(L){
-  const D=CPX_DATA, A=D.actuals, S=D.seasonality, N=D.meta.latest;
-  const base = A.ncOps.reduce((a,b)=>a+b,0) / S.slice(0,N).reduce((a,b)=>a+b,0);
-  const ramp = L.fast ? [0.30,0.50,0.70,0.85,0.95,1.0,1.0]
-                      : [0.10,0.20,0.35,0.55,0.75,0.90,1.0];
-  const mARPA = L.arpa/12;
-  const existing=[], newRev=[], total=[];
+  const ramp=L.fast?[.30,.50,.70,.85,.95,1,1]:[.10,.20,.35,.55,.75,.90,1];
+  const mARPA=L.arpa/12, total=[], existing=[], newRev=[];
   for(let m=1;m<=12;m++){
-    let ex;
-    if(m<=N) ex = A.ncOps[m-1];
-    else { const n=m-N;
-      ex = base*S[m-1]*Math.pow(1-L.exChurn,n)*Math.pow(1+L.expansion,n/(12-N)); }
-    let nr=0;
-    for(let sc=7;sc<=12;sc++){
-      if(m>=sc){ const age=m-sc;
-        nr += (L.brands/6)*Math.pow(1-L.newChurn,age)*ramp[Math.min(age,6)]*mARPA; }
-    }
-    existing.push(ex); newRev.push(nr); total.push(ex+nr);
+    let ex;if(m<=N)ex=A.ncOps[m-1];else{const n=m-N;ex=IMPLIED_BASE*S[m-1]*Math.pow(1-L.exChurn,n)*Math.pow(1+L.expansion,n/(12-N));}
+    let nr=0;for(let sc=7;sc<=12;sc++)if(m>=sc){const age=m-sc;nr+=(L.brands/6)*Math.pow(1-L.newChurn,age)*ramp[Math.min(age,6)]*mARPA;}
+    existing.push(ex);newRev.push(nr);total.push(ex+nr);
   }
-  const opexTot = A.opex.reduce((a,b)=>a+b,0) + (12-N)*L.opex;
-  const marsGP  = D.marsStatic.rev - D.marsStatic.cos;
-  const target  = Math.round((L.profitGoal + opexTot - marsGP*12)/L.margin);
-  const rows={cpxS:[],cpxC:[],mR:[],mC:[],ox:[],ne:[],cum:[]}; let run=0;
+  const rows={cpxS:[],cpxC:[],mR:[],mC:[],ox:[],ne:[],cum:[]};let run=0;
   for(let m=1;m<=12;m++){
     let cpxS,cpxC,mR,mC,ox;
-    if(m<=N){ cpxS=A.cpxRec[m-1]; cpxC=A.cpxCos[m-1];
-              mR=A.marsRev[m-1]; mC=A.marsCos[m-1]; ox=A.opex[m-1]; }
-    else { cpxS=total[m-1]; cpxC=0.3*total[m-1];
-           mR=D.marsStatic.rev; mC=D.marsStatic.cos; ox=L.opex; }
+    if(m<=N){cpxS=A.cpxRec[m-1];cpxC=A.cpxCos[m-1];mR=A.marsRev[m-1];mC=A.marsCos[m-1];ox=A.opex[m-1];}
+    else{cpxS=total[m-1];cpxC=.3*total[m-1];mR=CPX_DATA.marsStatic.rev;mC=CPX_DATA.marsStatic.cos;ox=L.opex;}
     const v=(cpxS-cpxC)+(mR-mC)-ox;
-    rows.cpxS.push(cpxS); rows.cpxC.push(cpxC); rows.mR.push(mR);
-    rows.mC.push(mC); rows.ox.push(ox); rows.ne.push(v);
-    run+=v; rows.cum.push(run);
+    rows.cpxS.push(cpxS);rows.cpxC.push(cpxC);rows.mR.push(mR);rows.mC.push(mC);rows.ox.push(ox);rows.ne.push(v);run+=v;rows.cum.push(run);
   }
-  let be="Never";
-  for(let m=1;m<=12;m++) if(rows.ne[m-1]>=0){ be=MO[m-1]; break; }
-  const banked = A.ncOps.reduce((a,b)=>a+b,0);
-  const remaining = Math.max(0, target - banked);
-  const remSeas = S.slice(N).reduce((a,b)=>a+b,0);
-  const catchup = S.map((s,i)=> i<N ? null : remaining*s/remSeas);
-  return { proj: total.reduce((a,b)=>a+b,0), target, banked, remaining,
-           neFY: rows.ne.reduce((a,b)=>a+b,0), be, rows, total, existing,
-           newRev, catchup, base };
+  let monthPos="Never";for(let m=1;m<=12;m++)if(rows.ne[m-1]>=0){monthPos=MO[m-1];break;}
+  let recovers="Not in-year";for(let m=1;m<=12;m++)if(rows.cum[m-1]>=0){recovers=MO[m-1];break;}
+  const be=recovers;
+  const proj=total.reduce((a,b)=>a+b,0);
+  const banked=A.ncOps.reduce((a,b)=>a+b,0),remaining=Math.max(0,proj-banked);
+  const remSeas=S.slice(N).reduce((a,b)=>a+b,0);
+  const catchup=S.map((s,i)=>i<N?null:remaining*s/remSeas);
+  return{proj,revTarget:proj,neFY:rows.ne.reduce((a,b)=>a+b,0),be,monthPos,recovers,rows,total,existing,newRev,catchup,remaining};
 }
 
-/* ---------- helpers ---------- */
+/* ---------- AS-IS engine (today frozen flat) ---------- */
+function asIs(){
+  const total=[],rows={ne:[],cum:[]};let run=0;
+  for(let m=1;m<=12;m++){
+    let r; if(m<=N)r=A.ncOps[m-1]; else r=IMPLIED_BASE*S[m-1]; // frozen, no churn/expansion, no new
+    total.push(r);
+    let cpxS,cpxC,mR,mC,ox;
+    if(m<=N){cpxS=A.cpxRec[m-1];cpxC=A.cpxCos[m-1];mR=A.marsRev[m-1];mC=A.marsCos[m-1];ox=A.opex[m-1];}
+    else{cpxS=r;cpxC=.3*r;mR=CPX_DATA.marsStatic.rev;mC=CPX_DATA.marsStatic.cos;ox=OPEX_RUN;}
+    const v=(cpxS-cpxC)+(mR-mC)-ox;rows.ne.push(v);run+=v;rows.cum.push(run);
+  }
+  let monthPos="Never";for(let m=1;m<=12;m++)if(rows.ne[m-1]>=0){monthPos=MO[m-1];break;}
+  let recovers="Not in-year";for(let m=1;m<=12;m++)if(rows.cum[m-1]>=0){recovers=MO[m-1];break;}
+  const be=recovers;
+  return{proj:total.reduce((a,b)=>a+b,0),neFY:rows.ne.reduce((a,b)=>a+b,0),be,monthPos,recovers,total,rows};
+}
+
+/* ---------- scenario definitions with explicit assumptions ---------- */
+const SCEN={
+  A:{label:"Steady scale",lv:{opex:300000,brands:100,fast:false},
+     assume:[["New brands","100"],["OpEx/mo","300K"],["Ramp","Standard"],["ARPA","240K"]]},
+  B:{label:"Lean + fast ramp",lv:{opex:300000,brands:80,fast:true},
+     assume:[["New brands","80"],["OpEx/mo","300K"],["Ramp","Fast"],["ARPA","240K"]]},
+  C:{label:"Deep cost cut",lv:{opex:260000,brands:80,fast:true},
+     assume:[["New brands","80"],["OpEx/mo","260K"],["Ramp","Fast"],["ARPA","240K"]]},
+  D:{label:"Premium brands",lv:{opex:300000,brands:60,arpa:360000,fast:true},
+     assume:[["New brands","60"],["OpEx/mo","300K"],["Ramp","Fast"],["ARPA","360K"]]},
+  E:{label:"Full push",lv:{opex:300000,brands:100,fast:true},
+     assume:[["New brands","100"],["OpEx/mo","300K"],["Ramp","Fast"],["ARPA","240K"]]},
+};
+
+/* ---------- fmt & chart theme ---------- */
 const $=s=>document.querySelector(s);
-const fmt=(v,dec)=> v==null?"—":Math.round(v).toLocaleString("en-US");
-const fmtS=v=> (v<0?"−":"")+fmt(Math.abs(v));
-const cls=v=> v>=0?"pos":"neg";
-let LV={...PLAN};
-const N=CPX_DATA.meta.latest, A=CPX_DATA.actuals;
+const f0=v=>v==null?"—":Math.round(v).toLocaleString("en-US");
+const fS=v=>(v<0?"−":"")+f0(Math.abs(v));
+const fK=v=>Math.abs(v)>=1e6?(v/1e6).toFixed(2)+"M":Math.round(v/1000)+"K";
+const cls=v=>v>=0?"pos":"neg";
+const INK="#1A2230",MUT="#6A7382",CPX="#FA5523",CPXMID="#F5915F",CPXLT="#FBC4AF",GREEN="#12805A",GRID="#EEF0F4";
+Chart.defaults.font.family="'Inter',sans-serif";Chart.defaults.color=MUT;
+const money=v=>"AED "+Math.round(v).toLocaleString("en-US");
+function destroy(id){if(CH[id]){CH[id].destroy();delete CH[id];}}
+function tip(fmt){return{backgroundColor:"#1A2230",titleColor:"#fff",bodyColor:"#E6E9EF",borderColor:"#2A3446",borderWidth:1,padding:10,cornerRadius:6,
+  callbacks:{label:c=>" "+c.dataset.label+": "+(fmt?fmt(c.parsed.y):money(c.parsed.y))}};}
+function spark(cv,vals,color){destroy(cv.id);
+  CH[cv.id]=new Chart(cv,{type:"line",data:{labels:vals.map((_,i)=>i),datasets:[{data:vals,borderColor:color||CPX,borderWidth:2,pointRadius:0,pointHoverRadius:4,tension:.3,
+    fill:true,backgroundColor:x=>{const g=x.chart.ctx.createLinearGradient(0,0,0,32);g.addColorStop(0,(color||CPX)+"2E");g.addColorStop(1,(color||CPX)+"00");return g;}}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false},tooltip:{...tip(v=>Math.round(v).toLocaleString())}},scales:{x:{display:false},y:{display:false}},interaction:{intersect:false,mode:"index"}}});}
 
-/* ---------- SVG charts (hand-drawn, no libraries) ---------- */
-function chartMonthly(opts){
-  // bars: [{vals, actualUpTo, color}], line: vals or null, W responsive via viewBox
-  const W=920,H=230,padL=58,padR=8,padT=14,padB=26;
-  const iw=(W-padL-padR)/12;
-  const all=[...(opts.line||[]),...opts.bars.flatMap(b=>b.vals)].filter(v=>v!=null);
-  const max=Math.max(...all)*1.08||1;
-  const y=v=>padT+(H-padT-padB)*(1-v/max);
-  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" style="width:100%;background:#fff;border:1px solid var(--hair)">`;
-  // gridlines
-  for(let g=0;g<=4;g++){const gv=max*g/4, gy=y(gv);
-    s+=`<line x1="${padL}" y1="${gy}" x2="${W-padR}" y2="${gy}" stroke="#EDF0F4"/>`;
-    s+=`<text x="${padL-6}" y="${gy+4}" font-size="10" fill="#7A8494" text-anchor="end">${gv>=1e6?(gv/1e6).toFixed(1)+"M":Math.round(gv/1000)+"K"}</text>`;}
-  opts.bars.forEach(b=>{
-    b.vals.forEach((v,i)=>{ if(v==null)return;
-      const x=padL+iw*i+iw*0.18, bw=iw*0.64, yy=y(v), hh=H-padB-yy;
-      if(i<b.actualUpTo) s+=`<rect x="${x}" y="${yy}" width="${bw}" height="${hh}" fill="${b.color}"/>`;
-      else s+=`<rect x="${x}" y="${yy}" width="${bw}" height="${hh}" fill="#fff" stroke="${b.stroke||'#2B5FA3'}" stroke-width="1.6"/>`;
-    });});
-  if(opts.line){
-    let d="";
-    opts.line.forEach((v,i)=>{ if(v==null)return;
-      const x=padL+iw*i+iw/2; d+=(d?"L":"M")+x+","+y(v);});
-    s+=`<path d="${d}" fill="none" stroke="#1B2E52" stroke-width="2" stroke-dasharray="${opts.lineDash||''}"/>`;
-  }
-  MO.forEach((m,i)=>{ s+=`<text x="${padL+iw*i+iw/2}" y="${H-8}" font-size="10.5" fill="#44536F" text-anchor="middle">${m}</text>`;});
-  s+="</svg>";
-  return s;
-}
-function lineChart(vals,W,H){
-  W=W||920;H=H||190;const padL=64,padR=8,padT=12,padB=24;
-  const iw=(W-padL-padR)/12;
-  const mx=Math.max(...vals.map(Math.abs))*1.1||1;
-  const y=v=>padT+(H-padT-padB)*(1-(v+mx)/(2*mx));
-  let s=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;background:#fff;border:1px solid var(--hair)">`;
-  s+=`<line x1="${padL}" y1="${y(0)}" x2="${W-padR}" y2="${y(0)}" stroke="#B9C2CE" stroke-width="1"/>`;
-  s+=`<text x="${padL-6}" y="${y(0)+4}" font-size="10" fill="#7A8494" text-anchor="end">0</text>`;
-  let d="";
-  vals.forEach((v,i)=>{const x=padL+iw*i+iw/2; d+=(d?"L":"M")+x+","+y(v);
-    s+=`<circle cx="${x}" cy="${y(v)}" r="3" fill="${i<N?'#21744A':'#2B5FA3'}"/>`;});
-  s+=`<path d="${d}" fill="none" stroke="#1B2E52" stroke-width="2"/>`;
-  MO.forEach((m,i)=>{s+=`<text x="${padL+iw*i+iw/2}" y="${H-6}" font-size="10.5" fill="#44536F" text-anchor="middle">${m}</text>`;});
-  s+="</svg>";
-  return s;
+function tileHTML(host,{lab,big,bigCls,sub,sparkVals,sparkColor}){
+  const id="sp"+Math.random().toString(36).slice(2,8);
+  host.innerHTML=`<div class="klab">${lab}</div><div class="big sm ${bigCls||''}">${big}</div>`+(sub?`<div class="ksub">${sub}</div>`:"")+(sparkVals?`<div class="spark"><canvas id="${id}"></canvas></div>`:"");
+  if(sparkVals)requestAnimationFrame(()=>spark(document.getElementById(id),sparkVals,sparkColor));
 }
 
-/* ---------- page renderers ---------- */
-function figBlock(items){
-  return items.map(i=>`<div><div class="l">${i.l}</div><div class="v ${i.c||''}">${i.v}</div></div>`).join("");
+/* ================= COCKPIT ================= */
+function renderCockpit(){
+  const t=engine(LV), ai=asIs();
+  // hero chart always shows Target projection (the plan); As-Is lives in the table below
+  const projBars=MO.map((_,i)=>i<N?null:t.total[i]);
+  const actBars=MO.map((_,i)=>i<N?A.ncOps[i]:null);
+  const asisBars=MO.map((_,i)=>i<N?null:ai.total[i]);
+  destroy("cRunway");
+  CH.cRunway=new Chart($("#cRunway"),{type:"bar",data:{labels:MO,datasets:[
+    {label:"Actual booked",data:actBars,backgroundColor:INK,borderRadius:3,barPercentage:.72,categoryPercentage:.8},
+    {label:"Target projected",data:projBars,backgroundColor:CPXLT,borderColor:CPX,borderWidth:1.4,borderRadius:3,barPercentage:.72,categoryPercentage:.8},
+    {type:"line",label:"As-Is (frozen)",data:MO.map((_,i)=>i<N?A.ncOps[i]:ai.total[i]),borderColor:MUT,borderWidth:1.5,borderDash:[4,4],pointRadius:0,pointHoverRadius:4,tension:.25},
+  ]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:600},interaction:{intersect:false,mode:"index"},
+    plugins:{legend:{display:false},tooltip:tip()},scales:{x:{grid:{display:false},ticks:{color:MUT}},y:{grid:{color:GRID},ticks:{color:MUT,callback:fK},beginAtZero:true}}}});
+  $("#runwayLegend").innerHTML=`<span><i style="background:${INK}"></i>Actual booked (Jan–${MO[N-1]})</span>`+
+    `<span><i style="background:${CPXLT}"></i>Target projected (levers)</span>`+
+    `<span><i style="background:${MUT};height:2px;border-radius:0"></i>As-Is (frozen, no changes)</span>`;
+
+  // live heading reflecting current levers
+  $("#cockHeading").innerHTML=`Levers: <b>${LV.brands} brands</b> · OpEx <b>${f0(LV.opex)}</b>/mo · ${LV.fast?"fast":"standard"} ramp · ARPA <b>${f0(LV.arpa)}</b>`;
+
+  // verdict = the Target outcome (the plan)
+  $("#verdict").innerHTML=`<div class="eyebrow" style="color:var(--cpx);font-weight:700">TARGET PLAN · FY OUTCOME</div>
+    <div class="hero"><div class="n ${cls(t.neFY)}">${fS(t.neFY)}</div>
+      <div class="c">FY profit${t.recovers==="Not in-year"?" · H1 loss not recovered in-year":" · recovers by "+t.recovers}</div></div>
+    <div class="r"><span class="k">Revenue target (from levers)</span><span class="v">${f0(t.proj)}</span></div>
+    <div class="r"><span class="k">Projected profit</span><span class="v ${cls(t.neFY)}">${fS(t.neFY)}</span></div>
+    <div class="r"><span class="k">YTD profit (Jan–${MO[N-1]})</span><span class="v neg">${fS(A.pnlNE.reduce((a,b)=>a+b,0))}</span></div>`;
+
+  // combined As-Is vs Target comparison — all metrics, one table
+  const rt=t.proj, ra=ai.proj, mARPA=LV.arpa/12;
+  const rows=[
+    ["Revenue (net commission)", ra, rt, 0],
+    ["Profit (net earnings)", ai.neFY, t.neFY, 1],
+    ["Orders", ra/PER_ORDER, rt/PER_ORDER, 0],
+    ["Active affiliates (avg/mo)", ra/PER_ORDER/ORD_PER_AFF/12, rt/PER_ORDER/ORD_PER_AFF/12, 0],
+    ["Brands @ 20K output", ra/mARPA, rt/mARPA, 0],
+    ["Brands @ nominal run-rate", ra/CPX_DATA.meta.runRate, rt/CPX_DATA.meta.runRate, 0],
+    ["Recovers H1 loss", null, null, 2],
+  ];
+  let ch=`<table class="cmp"><thead><tr><th>FY metric</th><th>As-Is<br><span class="th-sub">frozen</span></th><th>Target<br><span class="th-sub">levers</span></th><th>Uplift<br><span class="th-sub">Target − As-Is</span></th></tr></thead><tbody>`;
+  rows.forEach(([name,a,b,kind])=>{
+    if(kind===2){
+      ch+=`<tr><td>${name}</td><td class="c-asis">${ai.recovers}</td><td class="c-tgt">${t.recovers}</td><td class="c-dash">—</td></tr>`;
+    } else {
+      const up=b-a, f=kind===1?fS:f0;
+      ch+=`<tr><td>${name}</td><td class="c-asis">${f(a)}</td><td class="c-tgt"><b>${f(b)}</b></td><td class="${up>=0?'pos':'neg'}">${(up>=0?'+':'−')+f0(Math.abs(up))}</td></tr>`;
+    }
+  });
+  ch+="</tbody></table>";
+  $("#cmpTable").innerHTML=ch;
+
+  // next-month asks (from Target catch-up)
+  const cu=t.catchup[N], nm=MO[N];
+  tileHTML($("#ask0"),{lab:`${nm} commission needed<br>to stay on plan`,big:f0(cu),bigCls:"brand",sub:`FY target ${f0(t.proj)}`,sparkVals:[...A.ncOps,cu],sparkColor:CPX});
+  tileHTML($("#ask1"),{lab:`${nm} orders needed<br>(at 26.117 / order)`,big:f0(cu/PER_ORDER),bigCls:"brand",sub:`${MO[N-1]} actual ${f0(A.orders[N-1])}`,sparkVals:[...A.orders,cu/PER_ORDER],sparkColor:CPX});
+  tileHTML($("#ask2"),{lab:`${nm} affiliates needed<br>(at 27 orders each)`,big:f0(cu/PER_ORDER/ORD_PER_AFF),bigCls:"brand",sub:`${MO[N-1]} actual ${A.affiliates[N-1]}`,sparkVals:[...A.affiliates,cu/PER_ORDER/ORD_PER_AFF],sparkColor:CPX});
+
+  const B=CPX_DATA.brands.slice().sort((a,b)=>b.m[N-1]-a.m[N-1]);
+  const top=B.slice(0,4), rest=A.ncOps[N-1]-top.reduce((a,b)=>a+b.m[N-1],0);
+  destroy("cConc");
+  CH.cConc=new Chart($("#cConc"),{type:"doughnut",data:{labels:[...top.map(b=>b.name),"All others"],
+    datasets:[{data:[...top.map(b=>b.m[N-1]),rest],backgroundColor:[CPX,CPXMID,CPXLT,"#F6D9C9","#E6E9EF"],borderColor:"#fff",borderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:"58%",plugins:{legend:{position:"right",labels:{boxWidth:9,font:{size:10},color:INK}},tooltip:tip(v=>money(v)+" · "+Math.round(100*v/A.ncOps[N-1])+"%")}}});
+
+  const H=[
+    {lab:"Active brands",cur:A.brands[N-1],prev:A.brands[N-2],unit:"brand",series:A.brands},
+    {lab:"Active affiliates",cur:A.affiliates[N-1],prev:A.affiliates[N-2],unit:"affiliate",series:A.affiliates},
+    {lab:"Orders",cur:A.orders[N-1],prev:A.orders[N-2],unit:"order",series:A.orders},
+    {lab:"Commission / order",cur:+(A.ncOps[N-1]/A.orders[N-1]).toFixed(1),prev:+(A.ncOps[N-2]/A.orders[N-2]).toFixed(1),unit:"AED",series:A.ncOps.map((v,i)=>v/A.orders[i])},
+    {lab:"Net commission",cur:A.ncOps[N-1],prev:A.ncOps[N-2],unit:"AED",series:A.ncOps},
+  ];
+  $("#healthRow").innerHTML=H.map((h,i)=>{const d=h.cur-h.prev,up=d>=0;
+    const dtxt=(up?"+":"−")+f0(Math.abs(d))+" "+h.unit+(Math.abs(d)===1?"":"s")+" vs "+MO[N-2];
+    return `<div class="col3" style="grid-column:span 2;min-width:0"><div class="klab">${h.lab} · ${MO[N-1]}</div>
+      <div class="big sm">${f0(h.cur)}</div><div style="margin-top:5px"><span class="delta ${up?'up':'dn'}">${up?'▲':'▼'} ${dtxt}</span></div>
+      <div class="spark"><canvas id="hs${i}"></canvas></div></div>`;}).join("");
+  H.forEach((h,i)=>requestAnimationFrame(()=>spark(document.getElementById("hs"+i),h.series,(h.cur-h.prev)>=0?GREEN:CPX)));
+
+  renderScnTable(t,ai);
 }
 
-function renderCockpit(r){
-  const tgtPace=CPX_DATA.seasonality.map(s=>s*r.target);
-  $("#runway").innerHTML=chartMonthly({
-    bars:[{vals:r.total.map((v,i)=>i<N?A.ncOps[i]:v),actualUpTo:N,color:"#21744A"}],
-    line:tgtPace});
-  $("#cockpitFigs").innerHTML=figBlock([
-    {l:"Banked Jan–"+MO[N-1]+" (operational)",v:fmt(r.banked)},
-    {l:"Recognized (P&L)",v:fmt(A.cpxRec.reduce((a,b)=>a+b,0))},
-    {l:"Locked net earnings Jan–"+MO[N-1],v:fmtS(A.pnlNE.reduce((a,b)=>a+b,0)),c:"neg"},
-    {l:"FY projection @ levers",v:fmt(r.proj)},
-    {l:"FY target (500K profit)",v:fmt(r.target)},
-    {l:"FY net earnings @ levers",v:fmtS(r.neFY),c:cls(r.neFY)},
-    {l:"Breakeven month",v:r.be},
-  ]);
-  const cu=r.catchup[N]; // next month
-  $("#askFigs").innerHTML=figBlock([
-    {l:MO[N]+" commission ask",v:fmt(cu),c:"amb"},
-    {l:MO[N]+" orders ask",v:fmt(cu/PER_ORDER),c:"amb"},
-    {l:MO[N]+" active affiliates ask",v:fmt(cu/PER_ORDER/ORD_PER_AFF),c:"amb"},
-    {l:MO[N]+" brands @20K output",v:fmt(cu/(LV.arpa/12)),c:"amb"},
-    {l:MO[N]+" brands @nominal ("+fmt(CPX_DATA.meta.runRate)+")",v:fmt(cu/CPX_DATA.meta.runRate),c:"amb"},
-  ]);
-  const d=(a,b)=>{const p=(a-b); return `<span class="${p>=0?'pos':'neg'}">${p>=0?'+':''}${fmt(p)}</span>`;};
-  const conc=CPX_DATA.brands[0];
-  $("#healthFigs").innerHTML=figBlock([
-    {l:"Active brands "+MO[N-1],v:A.brands[N-1]+" ("+(A.brands[N-1]-A.brands[N-2]>=0?"+":"")+(A.brands[N-1]-A.brands[N-2])+")",c:A.brands[N-1]>=A.brands[N-2]?"pos":"neg"},
-    {l:"Active affiliates",v:A.affiliates[N-1]+" ("+(A.affiliates[N-1]-A.affiliates[N-2]>=0?"+":"")+(A.affiliates[N-1]-A.affiliates[N-2])+")",c:A.affiliates[N-1]>=A.affiliates[N-2]?"pos":"neg"},
-    {l:"Orders",v:fmt(A.orders[N-1])+" ("+(A.orders[N-1]-A.orders[N-2]>=0?"+":"")+fmt(A.orders[N-1]-A.orders[N-2])+")",c:A.orders[N-1]>=A.orders[N-2]?"pos":"neg"},
-    {l:"Top-brand concentration ("+conc.name+")",v:Math.round(100*conc.m[N-1]/A.ncOps[N-1])+"%",c:"neg"},
-    {l:"Commission / order",v:(A.ncOps[N-1]/A.orders[N-1]).toFixed(1)},
-  ]);
+function renderScnTable(t,ai){
+  $("#scnTableTitle").innerHTML=`Target plan — monthly &nbsp;<span style="color:var(--faint);font-weight:400">projected months in orange · As-Is shown as the dashed floor above</span>`;
+  const cur=t;
+  const rowsDef=[
+    ["Net commission", cur.total, 0],
+    ["Cumulative commission", cur.total.map((_,i)=>cur.total.slice(0,i+1).reduce((a,b)=>a+b,0)), 0],
+    ["Net earnings", cur.rows.ne, 1],
+    ["Cumulative net earnings", cur.rows.cum, 1],
+  ];
+  let h=`<table><thead><tr><th></th>${MO.map((m,i)=>`<th>${m}${i<N?"":" ·P"}</th>`).join("")}<th>FY</th></tr></thead><tbody>`;
+  rowsDef.forEach(([name,vals,signed])=>{
+    const fy=name.startsWith("Cumulative")?vals[11]:vals.reduce((a,b)=>a+b,0);
+    h+=`<tr><td>${name}</td>`;
+    vals.forEach((v,i)=>{h+=`<td class="${i<N?'c-act':'c-proj'}">${signed?fS(v):f0(v)}</td>`;});
+    h+=`<td><b>${signed?fS(fy):f0(fy)}</b></td></tr>`;});
+  h+="</tbody></table>";
+  $("#scnTable").innerHTML=h;
 }
 
-function renderTargets(r){
-  const metrics=[
-    {name:"Revenue (net commission, AED)",div:1,act:A.ncOps},
+/* ================= TARGETS (4-line: As-Is / Target / Actual / Revised) ================= */
+function renderTargets(){
+  const t=engine(LV), ai=asIs();
+  const mets=[
+    {name:"Net commission (AED)",div:1,act:A.ncOps},
     {name:"Orders",div:PER_ORDER,act:A.orders},
     {name:"Active affiliates",div:PER_ORDER*ORD_PER_AFF,act:A.affiliates},
-    {name:"Brands @ 20K units (output)",div:LV.arpa/12,act:A.ncOps.map(v=>v/(LV.arpa/12))},
-    {name:"Brands @ nominal run-rate ("+fmt(CPX_DATA.meta.runRate)+"/brand)",div:CPX_DATA.meta.runRate,act:A.brands},
+    {name:"Brands — 20K units (output-equivalent)",div:LV.arpa/12,act:A.ncOps.map(v=>v/(LV.arpa/12))},
+    {name:`Brands — nominal run-rate (${f0(CPX_DATA.meta.runRate)}/brand)`,div:CPX_DATA.meta.runRate,act:A.brands},
   ];
   let html="";
-  metrics.forEach(mt=>{
-    const tgt=CPX_DATA.seasonality.map(s=>s*r.target/mt.div);
-    const act=MO.map((_,i)=>i<N?mt.act[i]:null);
-    const rev=r.catchup.map(c=>c==null?null:c/mt.div);
-    html+=`<h2>${mt.name}</h2>`;
-    html+=chartMonthly({bars:[{vals:act,actualUpTo:N,color:"#21744A"}],line:tgt});
-    html+=`<div class="scrollx"><table><thead><tr><th></th>${MO.map(m=>`<th>${m}</th>`).join("")}<th>FY</th></tr></thead><tbody>`;
-    html+=`<tr><td>Target pace</td>${tgt.map(v=>`<td>${fmt(v)}</td>`).join("")}<td><b>${fmt(tgt.reduce((a,b)=>a+b,0))}</b></td></tr>`;
-    html+=`<tr><td>Actual</td>${act.map(v=>v==null?'<td class="dash">—</td>':`<td class="actual">${fmt(v)}</td>`).join("")}<td class="actual"><b>${fmt(mt.act.slice(0,N).reduce((a,b)=>a+b,0))}</b></td></tr>`;
-    html+=`<tr><td>Revised ask (catch-up)</td>${rev.map(v=>v==null?'<td class="dash">—</td>':`<td class="ask">${fmt(v)}</td>`).join("")}<td class="ask"><b>${fmt(rev.filter(v=>v!=null).reduce((a,b)=>a+b,0))}</b></td></tr>`;
-    html+=`</tbody></table></div>`;
+  mets.forEach((mt,mi)=>{
+    const asisL=ai.total.map(v=>v/mt.div), tgtL=t.total.map(v=>v/mt.div);
+    const act=MO.map((_,i)=>i<N?mt.act[i]:null), rev=t.catchup.map(c=>c==null?null:c/mt.div);
+    const fmt=mt.div===1?fK:(v=>Math.round(v).toLocaleString());
+    html+=`<div class="card" style="margin-bottom:14px"><div class="eyebrow" style="font-size:.9rem;color:var(--ink);font-weight:600">${mt.name}</div>
+      <div class="ch" style="height:168px;margin-top:8px"><canvas id="tc${mi}"></canvas></div>
+      <div class="twrap" style="margin-top:12px;border-radius:9px"><table><thead><tr><th></th>${MO.map(m=>`<th>${m}</th>`).join("")}<th>FY</th></tr></thead><tbody>
+      <tr class="sub-r"><td>As-Is (frozen)</td>${asisL.map((v,i)=>`<td class="c-asis">${f0(v)}</td>`).join("")}<td class="c-asis"><b>${f0(ai.total.reduce((a,b)=>a+b,0)/mt.div)}</b></td></tr>
+      <tr><td>Target (levers)</td>${tgtL.map(v=>`<td class="c-tgt">${f0(v)}</td>`).join("")}<td class="c-tgt"><b>${f0(t.total.reduce((a,b)=>a+b,0)/mt.div)}</b></td></tr>
+      <tr><td>Actual</td>${act.map(v=>v==null?'<td class="c-dash">—</td>':`<td class="c-act">${f0(v)}</td>`).join("")}<td class="c-act"><b>${f0(mt.act.slice(0,N).reduce((a,b)=>a+b,0))}</b></td></tr>
+      <tr><td>Revised ask (catch-up)</td>${rev.map(v=>v==null?'<td class="c-dash">—</td>':`<td class="c-ask">${f0(v)}</td>`).join("")}<td class="c-ask"><b>${f0(rev.filter(v=>v!=null).reduce((a,b)=>a+b,0))}</b></td></tr>
+      </tbody></table></div></div>`;
   });
-  html+=`<p class="note">Target pace = FY target spread on seasonality. Revised ask = remaining target (target − banked commission) re-spread over the months left, converted at 26.117/order, 27 orders/affiliate, and per-brand values. Affiliate and brand rows are average-productivity equivalents, not literal headcount quotas.</p>`;
   $("#targetBlocks").innerHTML=html;
+  mets.forEach((mt,mi)=>{
+    const asisL=ai.total.map(v=>v/mt.div), tgtL=t.total.map(v=>v/mt.div);
+    const act=MO.map((_,i)=>i<N?mt.act[i]:null);
+    destroy("tc"+mi);
+    CH["tc"+mi]=new Chart(document.getElementById("tc"+mi),{data:{labels:MO,datasets:[
+      {type:"line",label:"As-Is",data:asisL,borderColor:MUT,borderWidth:1.5,borderDash:[4,4],pointRadius:0,pointHoverRadius:4,tension:.25},
+      {type:"line",label:"Target",data:tgtL,borderColor:CPX,borderWidth:2,pointRadius:0,pointHoverRadius:5,tension:.25},
+      {type:"bar",label:"Actual",data:act,backgroundColor:INK,borderRadius:2,barPercentage:.55,categoryPercentage:.8},
+    ]},options:{responsive:true,maintainAspectRatio:false,animation:false,interaction:{intersect:false,mode:"index"},
+      plugins:{legend:{display:false},tooltip:tip(v=>Math.round(v).toLocaleString())},
+      scales:{x:{grid:{display:false},ticks:{color:MUT}},y:{grid:{color:GRID},ticks:{color:MUT,callback:v=>mt.div===1?fK(v):Math.round(v).toLocaleString()},beginAtZero:true}}}});
+  });
 }
 
+/* ================= LEVERS ================= */
+const LDEF=[
+  {k:"opex",label:"SBU OpEx / month (Aug on)",hint:"Operating expense assumed for each remaining month. The reduction lever.",plan:PLAN.opex,step:10000},
+  {k:"brands",label:"New brand signings (year)",hint:"20K-quality brands signed across the year in six ramping cohorts.",plan:PLAN.brands,step:1},
+  {k:"arpa",label:"New-brand ARPA (annual)",hint:"Annual revenue a fully-ramped new brand contributes.",plan:PLAN.arpa,step:10000},
+  {k:"exChurn",label:"Existing-brand churn / mo",hint:"Monthly revenue lost from the current book. Decimal (0.05 = 5%).",plan:PLAN.exChurn,step:0.01,pct:1},
+  {k:"newChurn",label:"New-brand churn / mo",hint:"Monthly attrition within new cohorts. Decimal.",plan:PLAN.newChurn,step:0.01,pct:1},
+  {k:"expansion",label:"Existing-brand expansion",hint:"Growth of surviving existing brands over the rest of the year. Decimal.",plan:PLAN.expansion,step:0.01,pct:1},
+  {k:"margin",label:"CPX GP margin",hint:"Gross margin (reference only in this view).",plan:PLAN.margin,step:0.05,pct:1},
+];
 function renderLevers(){
-  const defs=[
-    {k:"opex",label:"SBU OpEx per month, Aug onward (AED)",plan:PLAN.opex,step:10000},
-    {k:"brands",label:"New brand signings (annual, 20K quality)",plan:PLAN.brands,step:1},
-    {k:"arpa",label:"New-brand ARPA (annual, AED)",plan:PLAN.arpa,step:10000},
-    {k:"exChurn",label:"Existing-brand churn per month",plan:PLAN.exChurn,step:0.01,pct:1},
-    {k:"newChurn",label:"New-brand churn per month",plan:PLAN.newChurn,step:0.01,pct:1},
-    {k:"expansion",label:"Existing-brand expansion (rest of year)",plan:PLAN.expansion,step:0.01,pct:1},
-    {k:"margin",label:"CPX GP margin (target back-solve)",plan:PLAN.margin,step:0.05,pct:1},
-    {k:"profitGoal",label:"FY profit goal (AED)",plan:PLAN.profitGoal,step:50000},
-  ];
-  let html=defs.map(d=>`<div class="lever"><label>${d.label}</label>
-    <input type="number" id="lv-${d.k}" value="${d.pct?LV[d.k]:LV[d.k]}" step="${d.step}">
-    <div class="cur">plan: ${d.pct?(d.plan*100).toFixed(0)+"%":fmt(d.plan)}${d.pct?" — enter as decimal, e.g. 0.05":""}</div></div>`).join("");
-  html+=`<div class="lever"><label>New-brand ramp curve</label>
-    <select id="lv-fast"><option value="false"${!LV.fast?" selected":""}>Standard (10→90% over 6 mo)</option>
-    <option value="true"${LV.fast?" selected":""}>Fast (30→100% over 6 mo)</option></select>
-    <div class="cur">plan: Standard</div></div>`;
-  $("#leverGrid").innerHTML=html;
+  let h=LDEF.map(d=>`<div class="lev ${d.hero?'hero-lev':''}"><label>${d.label}</label><div class="hint">${d.hint}</div>
+    <input type="number" id="lv-${d.k}" value="${LV[d.k]}" step="${d.step}">
+    <div class="plan">plan: ${d.pct?(d.plan*100).toFixed(0)+"%":f0(d.plan)}</div>
+    <div class="live" id="live-${d.k}"></div></div>`).join("");
+  h+=`<div class="lev"><label>New-brand ramp curve</label><div class="hint">How fast new brands reach full productivity.</div>
+    <select id="lv-fast"><option value="false"${!LV.fast?" selected":""}>Standard · 10→90% / 6mo</option><option value="true"${LV.fast?" selected":""}>Fast · 30→100% / 6mo</option></select>
+    <div class="plan">plan: Standard</div><div class="live"></div></div>`;
+  $("#leverGrid").innerHTML=h;
 }
-function readLevers(){
-  ["opex","brands","arpa","exChurn","newChurn","expansion","margin","profitGoal"].forEach(k=>{
-    const v=parseFloat($("#lv-"+k).value); if(!isNaN(v)) LV[k]=v;});
-  LV.fast = $("#lv-fast").value==="true";
-}
-function renderImpact(r){
-  const gap=r.proj-r.target;
-  $("#leverImpact").innerHTML=`
-    <div class="l" style="font-size:.74rem;color:var(--grey)">FY net earnings at these settings</div>
-    <div class="big ${cls(r.neFY)}">${fmtS(r.neFY)}</div>
+function readLevers(){LDEF.forEach(d=>{const v=parseFloat($("#lv-"+d.k).value);if(!isNaN(v))LV[d.k]=v;});LV.fast=$("#lv-fast").value==="true";}
+function renderImpact(){
+  const r=engine(LV), base=engine(PLAN).neFY;
+  $("#leverImpact").innerHTML=`<div class="lab">These levers produce — revenue, then profit</div>
+    <div class="n ${cls(r.neFY)}">${fS(r.neFY)}</div>
     <div class="row">
-      <div><div class="l">FY projection</div><div class="v">${fmt(r.proj)}</div></div>
-      <div><div class="l">FY target</div><div class="v">${fmt(r.target)}</div></div>
-      <div><div class="l">Projection vs target</div><div class="v ${cls(gap)}">${fmtS(gap)}</div></div>
-      <div><div class="l">Breakeven month</div><div class="v">${r.be}</div></div>
-      <div><div class="l">vs committed plan NE</div><div class="v ${cls(r.neFY-engine(PLAN).neFY)}">${fmtS(r.neFY-engine(PLAN).neFY)}</div></div>
-    </div>`;
+      <div><div class="k">Revenue target (from levers)</div><div class="v brand">${f0(r.proj)}</div></div>
+      <div><div class="k">Orders needed</div><div class="v">${f0(r.proj/PER_ORDER)}</div></div>
+      <div><div class="k">Affiliates (avg/mo)</div><div class="v">${f0(r.proj/PER_ORDER/ORD_PER_AFF/12)}</div></div>
+      <div><div class="k">Recovers H1 loss</div><div class="v ${r.recovers==="Not in-year"?"neg":"pos"}">${r.recovers}</div></div>
+      <div><div class="k">vs committed plan</div><div class="v ${cls(r.neFY-base)}">${fS(r.neFY-base)}</div></div></div>`;
+  $("#live-opex").textContent=`→ ${fS(r.neFY)} profit`;
+  $("#live-brands").textContent=`→ projection ${f0(r.proj)}`;
+  ["arpa","exChurn","newChurn","expansion","margin"].forEach(k=>{const e=$("#live-"+k);if(e)e.textContent="";});
 }
 
-function renderPnl(r){
-  const rows=[["CPX Revenue (recognized)",r.rows.cpxS],["CPX COS",r.rows.cpxC,-1],
-    ["CPX Gross Profit",r.rows.cpxS.map((v,i)=>v-r.rows.cpxC[i]),0,1],
-    ["MARS Revenue",r.rows.mR],["MARS COS",r.rows.mC,-1],
-    ["MARS Gross Profit",r.rows.mR.map((v,i)=>v-r.rows.mC[i]),0,1],
-    ["SBU OpEx",r.rows.ox,-1],
-    ["Net Earnings",r.rows.ne,0,1,true],["Cumulative NE",r.rows.cum,0,0,true]];
+/* ================= PNL ================= */
+function renderPnl(){
+  const r=engine(LV);
+  destroy("cCum");
+  CH.cCum=new Chart($("#cCum"),{type:"line",data:{labels:MO,datasets:[{label:"Cumulative NE",data:r.rows.cum,borderColor:INK,borderWidth:2.5,
+    pointRadius:3,pointBackgroundColor:r.rows.cum.map((_,i)=>i<N?INK:CPX),tension:.2,fill:true,
+    backgroundColor:x=>{const g=x.chart.ctx.createLinearGradient(0,0,0,140);g.addColorStop(0,"rgba(250,85,35,.10)");g.addColorStop(1,"rgba(250,85,35,.01)");return g;}}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:500},interaction:{intersect:false,mode:"index"},
+      plugins:{legend:{display:false},tooltip:tip()},scales:{x:{grid:{display:false},ticks:{color:MUT}},y:{grid:{color:GRID},ticks:{color:MUT,callback:fK}}}}});
+  const rows=[["CPX Revenue (recognized)",r.rows.cpxS],["CPX COS",r.rows.cpxC],
+    ["CPX Gross Profit",r.rows.cpxS.map((v,i)=>v-r.rows.cpxC[i]),1,1],
+    ["MARS Revenue",r.rows.mR],["MARS COS",r.rows.mC],
+    ["MARS Gross Profit",r.rows.mR.map((v,i)=>v-r.rows.mC[i]),1,1],
+    ["SBU OpEx",r.rows.ox],["Net Earnings",r.rows.ne,1,1,1],["Cumulative NE",r.rows.cum,1,0,1]];
   let h=`<table><thead><tr><th></th>${MO.map((m,i)=>`<th>${m}${i<N?"":" ·P"}</th>`).join("")}<th>FY</th></tr></thead><tbody>`;
-  rows.forEach(([name,vals,neg,band,signed])=>{
-    const fy=name.startsWith("Cumulative")?vals[11]:vals.reduce((a,b)=>a+b,0);
+  rows.forEach(([name,vals,band,,signed])=>{const fy=name.startsWith("Cumulative")?vals[11]:vals.reduce((a,b)=>a+b,0);
     h+=`<tr${band?' class="band"':''}><td>${name}</td>`;
-    vals.forEach((v,i)=>{
-      const c=i<N?"actual":"projected";
-      const shade=signed?(v<0?' style="color:var(--red)"':' style="color:var(--green)"'):"";
-      h+=`<td class="${c}"${shade}>${signed?fmtS(v):fmt(v)}</td>`;});
-    h+=`<td><b>${signed?fmtS(fy):fmt(fy)}</b></td></tr>`;});
-  h+="</tbody></table>";
-  $("#pnlTable").innerHTML=h;
-  $("#cumChart").innerHTML=lineChart(r.rows.cum);
-  $("#pnlNote").textContent=`Operational July commission was ${fmt(CPX_DATA.adjustments.julOps)}; the P&L recognizes ${fmt(CPX_DATA.adjustments.julRecognized)} (adjustment ${fmt(CPX_DATA.adjustments.julAdj)} — recognition timing). Actual columns tie to the live P&L net earnings exactly. Projected months: CPX COS at 30% of commission, MARS at its Jan–${MO[N-1]} average GP of ${fmt(CPX_DATA.marsStatic.rev-CPX_DATA.marsStatic.cos)}/month.`;
+    vals.forEach((v,i)=>{h+=`<td class="${band?'':(i<N?'c-act':'c-proj')}">${signed?fS(v):f0(v)}</td>`;});
+    h+=`<td><b>${signed?fS(fy):f0(fy)}</b></td></tr>`;});
+  h+="</tbody></table>";$("#pnlTable").innerHTML=h;
+  $("#pnlNote").innerHTML=`Operational ${MO[N-1]} commission was ${f0(CPX_DATA.adjustments.julOps)}; the P&L recognizes ${f0(CPX_DATA.adjustments.julRecognized)} (adjustment ${f0(CPX_DATA.adjustments.julAdj)} — recognition timing). Actual columns tie to the live P&L exactly. Projected months use CPX COS at 30% of commission and MARS at its Jan–${MO[N-1]} average gross profit of ${f0(MARSGP)}/month.`;
 }
 
+/* ================= BRANDS ================= */
 function renderBrands(){
-  const B=CPX_DATA.brands;
-  const tot=A.ncOps[N-1], top=B[0];
-  const top3=B.slice().sort((a,b)=>b.m[N-1]-a.m[N-1]).slice(0,3);
-  $("#brandFigs").innerHTML=figBlock([
-    {l:"Active brands "+MO[N-1],v:A.brands[N-1]},
-    {l:"Commission "+MO[N-1],v:fmt(tot)},
-    {l:top3[0].name+" share",v:Math.round(100*top3[0].m[N-1]/tot)+"%",c:"neg"},
-    {l:"Top-3 share",v:Math.round(100*top3.reduce((a,b)=>a+b.m[N-1],0)/tot)+"%",c:"amb"},
-    {l:"Recognized (P&L) "+MO[N-1],v:fmt(CPX_DATA.adjustments.julRecognized)},
-  ]);
-  let cb="";
-  top3.forEach(b=>{const p=100*b.m[N-1]/tot;
-    cb+=`<div style="margin:6px 0;max-width:640px"><div style="display:flex;justify-content:space-between;font-size:.78rem"><span>${b.name}</span><span class="num">${fmt(b.m[N-1])} · ${p.toFixed(0)}%</span></div>
-    <div style="height:10px;background:#EDF0F4"><div style="height:10px;width:${p}%;background:${p>50?'var(--red)':'var(--ink)'}"></div></div></div>`;});
-  $("#concBars").innerHTML=cb;
-  const chip=s=> s.includes("Grow")?'<span class="chip up">▲ Growing</span>'
-    : s.includes("Decl")?'<span class="chip down">▼ Declining</span>'
-    : s.includes("New")?'<span class="chip new">New</span>'
-    : s.includes("Stable")?'<span class="chip flat">Stable</span>'
-    : `<span class="chip flat">${s||"—"}</span>`;
-  let h=`<table><thead><tr><th>Brand</th>${MO.slice(0,N).map(m=>`<th>${m}</th>`).join("")}<th>Avg (active)</th><th>Status</th></tr></thead><tbody>`;
-  B.slice().sort((a,b)=>b.m[N-1]-a.m[N-1]).forEach(b=>{
-    const act=b.m.filter(v=>v>0);
-    const avg=act.length?act.reduce((x,y)=>x+y,0)/act.length:0;
-    h+=`<tr><td>${b.name}</td>${b.m.map(v=>`<td>${v?fmt(v):'<span style="color:#B9C2CE">·</span>'}</td>`).join("")}<td><b>${fmt(avg)}</b></td><td style="text-align:left">${chip(b.status)}</td></tr>`;});
-  h+="</tbody></table>";
-  $("#brandTable").innerHTML=h;
+  const B=CPX_DATA.brands.slice().sort((a,b)=>b.m[N-1]-a.m[N-1]);
+  const tot=A.ncOps[N-1], t3=B.slice(0,3);
+  const fig=$("#brandFigs");fig.innerHTML="";
+  [["Active brands · "+MO[N-1],A.brands[N-1],""],["Commission · "+MO[N-1],f0(tot),""],
+   [t3[0].name+" share",Math.round(100*t3[0].m[N-1]/tot)+"%","neg"],["Recognized (P&L) · "+MO[N-1],f0(CPX_DATA.adjustments.julRecognized),""]
+  ].forEach(([l,v,c])=>{const d=document.createElement("div");d.innerHTML=`<div class="klab">${l}</div><div class="big sm ${c}">${v}</div>`;fig.appendChild(d);});
+  const top=B.slice(0,6);
+  destroy("cBrandConc");
+  CH.cBrandConc=new Chart($("#cBrandConc"),{type:"bar",data:{labels:top.map(b=>b.name),datasets:[{label:"Commission",data:top.map(b=>b.m[N-1]),
+    backgroundColor:top.map((b,i)=>i===0?CPX:i===1?CPXMID:CPXLT),borderRadius:3}]},
+    options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:tip(v=>money(v)+" · "+Math.round(100*v/tot)+"%")},
+      scales:{x:{grid:{color:GRID},ticks:{color:MUT,callback:fK}},y:{grid:{display:false},ticks:{color:INK,font:{size:11}}}}}});
+  const chip=s=>s.includes("Grow")?'<span class="chip up">▲ Growing</span>':s.includes("Decl")?'<span class="chip dn">▼ Declining</span>':s.includes("New")?'<span class="chip nw">New</span>':s.includes("Stable")?'<span class="chip fl">Stable</span>':`<span class="chip fl">${s||"—"}</span>`;
+  let h=`<table><thead><tr><th>Brand</th>${MO.slice(0,N).map(m=>`<th>${m}</th>`).join("")}<th>Avg</th><th>Status</th></tr></thead><tbody>`;
+  B.forEach(b=>{const act=b.m.filter(v=>v>0),avg=act.length?act.reduce((x,y)=>x+y,0)/act.length:0;
+    h+=`<tr><td>${b.name}</td>${b.m.map(v=>`<td>${v?f0(v):'<span style="color:#C7CDD6">·</span>'}</td>`).join("")}<td><b>${f0(avg)}</b></td><td style="text-align:left">${chip(b.status)}</td></tr>`;});
+  h+="</tbody></table>";$("#brandTable").innerHTML=h;
 }
 
+/* ================= AFFILIATES (Top-50 fix) ================= */
 function renderAffiliates(){
-  const F=CPX_DATA.affiliates;
-  $("#affFigs").innerHTML=figBlock([
-    {l:"Active affiliates "+MO[N-1],v:A.affiliates[N-1],c:A.affiliates[N-1]<A.affiliates[N-2]?"neg":"pos"},
-    {l:"Orders "+MO[N-1],v:fmt(A.orders[N-1])},
-    {l:"Payout Jan–"+MO[N-1],v:fmt(A.payout.reduce((a,b)=>a+b,0))},
-    {l:"Orders / affiliate "+MO[N-1],v:(A.orders[N-1]/A.affiliates[N-1]).toFixed(1)},
-    {l:"Top-50 share of orders",v:Math.round(100*F.reduce((a,b)=>a+b.m[N-1],0)/A.orders[N-1])+"%"},
-  ]);
-  const tierChip=t=>({Anchor:'<span class="chip up">Anchor</span>',Core:'<span class="chip flat">Core</span>',
-    Growing:'<span class="chip new">Growing</span>'}[t]||`<span class="chip flat">${t||"Tail"}</span>`);
-  const stChip=s=> s.includes("Decl")?'<span class="chip down">▼</span>': s.includes("Grow")?'<span class="chip up">▲</span>':'<span class="chip flat">·</span>';
+  const F=CPX_DATA.affiliates.slice().sort((a,b)=>b.m[N-1]-a.m[N-1]);
+  const pipeTot=CPX_DATA.meta.pipelineOrders[N-1]; // honest denominator
+  const fig=$("#affFigs");fig.innerHTML="";
+  [["Active affiliates · "+MO[N-1],A.affiliates[N-1],A.affiliates[N-1]<A.affiliates[N-2]?"neg":""],
+   ["Orders · "+MO[N-1],f0(A.orders[N-1]),""],
+   ["Payout · Jan–"+MO[N-1],f0(A.payout.reduce((a,b)=>a+b,0)),""],
+   ["Orders / affiliate",(A.orders[N-1]/A.affiliates[N-1]).toFixed(1),""],
+   ["Top-50 share of "+MO[N-1]+" orders",Math.round(100*F.slice(0,50).reduce((a,b)=>a+b.m[N-1],0)/pipeTot)+"%",""]
+  ].forEach(([l,v,c])=>{const d=document.createElement("div");d.innerHTML=`<div class="klab">${l}</div><div class="big sm ${c}">${v}</div>`;fig.appendChild(d);});
+  const tier=t=>({Anchor:'<span class="chip up">Anchor</span>',Core:'<span class="chip fl">Core</span>',Growing:'<span class="chip nw">Growing</span>'}[t]||`<span class="chip fl">${t||"Tail"}</span>`);
+  const st=s=>s.includes("Decl")?'<span class="chip dn">▼</span>':s.includes("Grow")?'<span class="chip up">▲</span>':'<span class="chip fl">·</span>';
   let h=`<table><thead><tr><th>Affiliate</th>${MO.slice(0,N).map(m=>`<th>${m}</th>`).join("")}<th>Payout</th><th>Tier</th><th>Trend</th></tr></thead><tbody>`;
-  F.slice().sort((a,b)=>b.m[N-1]-a.m[N-1]).forEach(f=>{
-    h+=`<tr><td>${f.name}</td>${f.m.map(v=>`<td>${v?fmt(v):'<span style="color:#B9C2CE">·</span>'}</td>`).join("")}<td>${fmt(f.payout)}</td><td style="text-align:left">${tierChip(f.tier)}</td><td style="text-align:left">${stChip(f.status||"")}</td></tr>`;});
-  h+="</tbody></table>";
-  $("#affTable").innerHTML=h;
+  F.forEach(f=>{h+=`<tr><td>${f.name}</td>${f.m.map(v=>`<td>${v?f0(v):'<span style="color:#C7CDD6">·</span>'}</td>`).join("")}<td>${f0(f.payout)}</td><td style="text-align:left">${tier(f.tier)}</td><td style="text-align:left">${st(f.status||"")}</td></tr>`;});
+  h+=`</tbody></table>`;$("#affTable").innerHTML=h;
+  const cap=document.getElementById("affCap");if(cap)cap.remove();
+  $("#affTable").insertAdjacentHTML("afterend",`<p id="affCap" style="font-size:.75rem;color:var(--muted);line-height:1.5;margin-top:10px;max-width:80ch">Order counts here are per affiliate-brand relationship (an affiliate promoting several brands appears once per brand), so the pipeline total (${f0(pipeTot)} in ${MO[N-1]}) runs slightly above the deduplicated active-order total (${f0(A.orders[N-1])}). Shares above use the pipeline total as the denominator.</p>`);
 }
 
+/* ================= PATH (with assumptions) ================= */
 function renderPath(){
   const cur=engine(LV);
-  let h=`<div class="card" style="background:var(--panel);border:1px solid var(--hair);border-top:4px solid var(--ink);padding:16px 18px;margin-bottom:14px">
-    <h3 style="font-size:.9rem">Current levers</h3>
-    <div class="ne ${cls(cur.neFY)}" style="font-size:1.5rem;font-weight:700">${fmtS(cur.neFY)}</div>
-    <div class="meta" style="font-size:.76rem;color:var(--ink-soft)">OpEx ${fmt(LV.opex)} · ${LV.brands} brands · ${LV.fast?"fast":"standard"} ramp · breakeven ${cur.be}</div></div><div class="scen">`;
-  Object.entries(SCENARIOS).forEach(([k,s])=>{
-    const r=engine({...PLAN,...s.lv});
-    h+=`<div class="card"><h3>Scenario ${k}</h3><div class="lbl">${s.label}</div>
-      <div class="ne ${cls(r.neFY)}">${fmtS(r.neFY)}</div>
-      <div class="meta">Breakeven ${r.be} · projection ${fmt(r.proj)}<br>vs 500K goal: <span class="${cls(r.neFY-500000)}">${fmtS(r.neFY-500000)}</span></div>
-      <button data-scen="${k}">Apply to levers</button></div>`;});
-  h+="</div>";
+  let h=`<div class="scard cur"><div class="tag">Current levers</div><div class="lbl">What the Levers page is set to now</div>
+    <div class="ne ${cls(cur.neFY)}">${fS(cur.neFY)}</div>
+    <div class="meta">Recovers H1 loss: <b style="color:${cur.recovers==="Not in-year"?"var(--red)":"var(--green)"}">${cur.recovers}</b> · profitable monthly from ${cur.monthPos}<br>Projection ${f0(cur.proj)}</div></div>`;
+  Object.entries(SCEN).forEach(([k,s])=>{const r=engine({...PLAN,...s.lv});
+    h+=`<div class="scard"><div class="tag">${s.label}</div><div class="lbl">Scenario ${k}</div>
+      <div class="ne ${cls(r.neFY)}">${fS(r.neFY)}</div>
+      <div class="meta">Recovers H1 loss: <b style="color:${r.recovers==="Not in-year"?"var(--red)":"var(--green)"}">${r.recovers}</b> · profitable monthly from ${r.monthPos}<br>Projection ${f0(r.proj)}</div>
+      <ul class="assume">${s.assume.map(([a,b])=>`<li><span>${a}</span><b>${b}</b></li>`).join("")}</ul>
+      <button class="act" data-scen="${k}">Apply to levers</button></div>`;});
   $("#scenCards").innerHTML=h;
-  document.querySelectorAll("[data-scen]").forEach(b=>b.addEventListener("click",()=>{
-    LV={...PLAN,...SCENARIOS[b.dataset.scen].lv};
-    renderLevers(); recompute(); showPage("levers");
-  }));
+  document.querySelectorAll("[data-scen]").forEach(b=>b.onclick=()=>{LV={...PLAN,...SCEN[b.dataset.scen].lv};renderLevers();recompute();show("levers");});
+}
+
+/* ================= BRAND BUILD (cohort schedule) ================= */
+function renderCohorts(){
+  const L=LV;
+  const ramp=L.fast?[.30,.50,.70,.85,.95,1,1]:[.10,.20,.35,.55,.75,.90,1];
+  const perCohort=L.brands/6, mARPA=L.arpa/12;
+  const startCohort=Math.max(7,N+1); // July passed → Aug onward
+  const cohorts=[7,8,9,10,11,12];
+  const months=[];for(let m=N+1;m<=12;m++)months.push(m); // Aug..Dec
+  // matrix[cohort][month] revenue
+  const matrix={}, totals={}, survivors={};
+  cohorts.forEach(sc=>{matrix[sc]={};});
+  months.forEach(m=>{totals[m]=0;survivors[m]=0;
+    cohorts.forEach(sc=>{
+      if(m>=sc){const age=m-sc;const rev=perCohort*Math.pow(1-L.newChurn,age)*ramp[Math.min(age,6)]*mARPA;
+        matrix[sc][m]=rev;totals[m]+=rev;survivors[m]+=perCohort*Math.pow(1-L.newChurn,age);}
+    });});
+  $("#coh-per").textContent=perCohort.toFixed(1);
+  $("#coh-churn").textContent=(L.newChurn*100).toFixed(0)+"%";
+
+  // stacked bar chart
+  const palette=[CPX,"#F5915F","#F7B38C","#F9CDB2","#FBE0D0","#1A2230"];
+  destroy("cCohort");
+  CH.cCohort=new Chart($("#cCohort"),{type:"bar",data:{labels:months.map(m=>MO[m-1]),
+    datasets:cohorts.map((sc,i)=>({label:MO[sc-1]+" cohort",data:months.map(m=>matrix[sc][m]||0),
+      backgroundColor:palette[i],borderRadius:2,stack:"s"}))},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:500},interaction:{intersect:false,mode:"index"},
+      plugins:{legend:{position:"bottom",labels:{boxWidth:9,font:{size:10},color:INK,padding:8}},tooltip:tip()},
+      scales:{x:{stacked:true,grid:{display:false},ticks:{color:MUT}},y:{stacked:true,grid:{color:GRID},ticks:{color:MUT,callback:fK},beginAtZero:true}}}});
+
+  // matrix table
+  let h=`<table><thead><tr><th>Cohort signed</th><th>Brands</th>${months.map(m=>`<th>${MO[m-1]}</th>`).join("")}<th>FY new</th></tr></thead><tbody>`;
+  cohorts.forEach(sc=>{
+    const rowFY=months.reduce((a,m)=>a+(matrix[sc][m]||0),0);
+    if(sc<startCohort && !months.some(m=>matrix[sc][m])){return;}
+    h+=`<tr><td>${MO[sc-1]} cohort</td><td class="c-asis">${perCohort.toFixed(1)}</td>`;
+    months.forEach(m=>{h+=matrix[sc][m]?`<td class="c-proj">${f0(matrix[sc][m])}</td>`:'<td class="c-dash">—</td>';});
+    h+=`<td><b>${f0(rowFY)}</b></td></tr>`;});
+  h+=`<tr class="band"><td>New-brand revenue (total)</td><td></td>${months.map(m=>`<td>${f0(totals[m])}</td>`).join("")}<td><b>${f0(months.reduce((a,m)=>a+totals[m],0))}</b></td></tr>`;
+  h+=`<tr class="sub-r"><td>Surviving new brands (count)</td><td></td>${months.map(m=>`<td>${survivors[m].toFixed(1)}</td>`).join("")}<td><b>${survivors[months[months.length-1]].toFixed(1)}</b></td></tr>`;
+  h+="</tbody></table>";
+  $("#cohortTable").innerHTML=h;
+
+  const fyNew=months.reduce((a,m)=>a+totals[m],0);
+  $("#cohortNote").innerHTML=`At current levers, ${L.brands} signings across six cohorts add <b style="color:var(--cpx)">${f0(fyNew)}</b> of new-brand commission from ${MO[startCohort-1]}–Dec. Each cohort is ${perCohort.toFixed(1)} brands ramping on the ${L.fast?"fast (30→100%)":"standard (10→90%)"} curve at AED ${f0(mARPA)}/brand/month, less ${(L.newChurn*100).toFixed(0)}% monthly churn. The stack shows why the year is back-loaded: December carries all six cohorts at once, the earliest ones near full productivity.`;
 }
 
 function renderMethod(){
   const D=CPX_DATA;
   $("#methodBody").innerHTML=`
+  <h2>Two scenarios</h2>
+  <p><b>As-Is</b> freezes the business as it stands today: existing brands held at their current run-rate with no churn, no expansion, no new signings, and OpEx at the current actual run-rate (${f0(OPEX_RUN)}/mo). It's the honest "if nothing changes" floor. <b>Target</b> applies the levers — new-brand acquisition, ramp, churn, expansion, OpEx — to show what the plan can achieve.</p>
   <h2>Unit economics</h2>
-  <p class="note">One order carries AED 490 average value × 8.2% commission × 65% CPX share = <b>AED 26.117 net commission</b>. A blended active affiliate produces <b>27 orders/month</b> (~AED 705). A standard brand unit is <b>AED 20K/month</b> (240K ARPA). The current per-brand nominal run-rate is <b>AED ${fmt(D.meta.runRate)}</b>/month (Jan–${MO[N-1]} commission ÷ brand-months).</p>
-  <h2>Engine</h2>
-  <p class="note">Existing-brand revenue projects from an implied base (banked commission ÷ seasonality of actual months), decayed by monthly churn and lifted by expansion. New brands arrive in six equal cohorts Jul–Dec and ramp on the selected curve with 5%/month cohort churn. The FY target back-solves from the profit goal: (goal + full-year OpEx − 12× static MARS GP) ÷ CPX margin. Projected CPX COS runs at 30% of commission. MARS holds at its Jan–${MO[N-1]} average (rev ${fmt(D.marsStatic.rev)}, COS ${fmt(D.marsStatic.cos)}).</p>
+  <p>One order carries AED 490 average value × 8.2% commission × 65% CPX share = <b>AED 26.117 net commission</b>. A blended active affiliate produces <b>27 orders/month</b>. A standard brand unit is <b>AED 20K/month</b> (240K ARPA). Current nominal run-rate is <b>AED ${f0(D.meta.runRate)}</b>/brand/month.</p>
+  <h2>How revenue projects</h2>
+  <p>Existing brands project from an implied base (banked commission ÷ seasonality of actual months), decayed by churn and lifted by expansion. New brands arrive in six equal cohorts Jul–Dec, ramping on the chosen curve with 5%/mo cohort churn. The <b>revenue target is set directly</b> as a lever; <b>profit is the output</b> — projected CPX COS at 30% of commission, MARS at its Jan–${MO[N-1]} average gross profit of ${f0(MARSGP)}/month, less OpEx.</p>
   <h2>Reconciliation</h2>
-  <p class="note">Actual months tie to the live ITCAN P&L net earnings to the dirham: CPX = the direct CPX lines only; MARS = all remaining channels (Coupon Rush, Code 71, Fixed Fee, Unassigned) <b>including Variances Live</b>. Operational commission (performance export) and recognized revenue (P&L) differ by booking timing; the brand-pipeline adjustment reconciles them (${MO[N-1]}: ${fmt(D.adjustments.julOps)} operational vs ${fmt(D.adjustments.julRecognized)} recognized, adjustment ${fmt(D.adjustments.julAdj)}).</p>
-  <h2>Monthly update</h2>
-  <p class="note">1&nbsp;— Send the monthly performance export and the P&L. 2&nbsp;— The Excel model is updated and verified first (reconciliation battery, zero errors). 3&nbsp;— The data block at the top of this page's script is regenerated from the verified file. 4&nbsp;— Commit the new <b>index.html</b> to the GitHub repository; Pages redeploys automatically within a minute. Levers, targets, catch-up, P&L and Path to Profit all recompute from the new actuals — no other code changes.</p>
-  <h2>Changelog</h2>
-  <p class="note"><b>${D.meta.updated}</b> — July actuals loaded (commission ${fmt(A.ncOps[6])}, 26 brands, 107 affiliates, 3,932 orders). P&L restated twice; final basis flips variances into MARS, halving static MARS GP to ${fmt(D.marsStatic.rev-D.marsStatic.cos)}/month and lifting the FY target to ${fmt(engine(PLAN).target)}. OpEx forecast held at 420K/month (P&L's own Aug–Dec forecast runs ~447K — flagged, awaiting plan-of-record decision).</p>`;
+  <p>Actual months tie to the live ITCAN P&L net earnings to the dirham. <b>CPX</b> = the direct CPX line only; <b>MARS</b> = every other channel (Coupon Rush, Code 71, Fixed Fee, Unassigned) <b>including Variances Live</b>. Operational commission (export) and recognized revenue (P&L) differ by booking timing; the brand-pipeline adjustment reconciles them.</p>
+  <h2>This month</h2>
+  <p><b>${D.meta.updated}</b> — July loaded (commission ${f0(A.ncOps[6])}, 26 brands, 107 affiliates, 3,932 orders). P&L restated; variances moved into MARS, halving static MARS GP to ${f0(MARSGP)}/month. OpEx held at 420K in the plan.</p>`;
 }
 
-/* ---------- wiring ---------- */
+/* ================= wiring ================= */
 function recompute(){
-  readLeversSafe();
-  const r=engine(LV);
-  renderCockpit(r); renderTargets(r); renderImpact(r); renderPnl(r); renderPath();
+  if($("#lv-opex"))readLevers();
+  renderCockpit();renderTargets();renderPnl();renderPath();renderCohorts();
+  if($("#lv-opex"))renderImpact();
 }
-function readLeversSafe(){ try{ if($("#lv-opex")) readLevers(); }catch(e){} }
-function showPage(id){
+function show(id){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.querySelectorAll("nav a").forEach(a=>a.classList.remove("active"));
   $("#page-"+id).classList.add("active");
   document.querySelector(`nav a[data-page="${id}"]`).classList.add("active");
-  window.scrollTo(0,0);
+  window.scrollTo(0,0);Object.values(CH).forEach(c=>{try{c.resize();}catch(e){}});
 }
-document.querySelectorAll("nav a").forEach(a=>a.addEventListener("click",()=>showPage(a.dataset.page)));
-document.addEventListener("click",e=>{
-  if(e.target.id==="btnApply"){ recompute(); }
-  if(e.target.id==="btnReset"){ LV={...PLAN}; renderLevers(); recompute(); }
-});
-document.addEventListener("change",e=>{ if(e.target.closest("#leverGrid")) recompute(); });
-
+document.querySelectorAll("nav a").forEach(a=>a.onclick=()=>show(a.dataset.page));
+document.addEventListener("click",e=>{if(e.target.id==="btnApply")recompute();if(e.target.id==="btnReset"){LV={...PLAN};renderLevers();recompute();}});
+document.addEventListener("change",e=>{if(e.target.closest("#leverGrid"))recompute();});
 document.querySelectorAll(".mLatest").forEach(el=>el.textContent=MO[N-1]+"-26");
-$("#footMonth").textContent=MO[N-1]+" 2026";
-$("#footStamp").textContent=CPX_DATA.meta.updated;
-renderLevers(); renderBrands(); renderAffiliates(); renderMethod(); recompute();
+$("#footMonth").textContent=MO[N-1]+" 2026";$("#footStamp").textContent=CPX_DATA.meta.updated;
+renderLevers();renderBrands();renderAffiliates();renderMethod();recompute();
 
 </script>
 </body>
