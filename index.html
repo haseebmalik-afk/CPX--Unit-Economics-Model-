@@ -247,7 +247,7 @@ button.act.primary:hover{background:#E0431A}
 
 <!-- ===== 01 KPIs ===== -->
 <section class="page active" id="page-kpis">
-  <div class="head"><div><div class="pagenum">OVERVIEW · 01</div><h1>Key metrics at a glance</h1><div class="sub">The headline numbers management tracks, for the selected period. Revenue, ARPA, GMV, NMV, ROAS, take rate and orders per affiliate follow the period; ARR and active brands are as at the end of it; churn is the 12-month rate measured within it. Definitions on the Data Quality &amp; Control page.</div></div></div>
+  <div class="head"><div><div class="pagenum">OVERVIEW · 01</div><h1>Key metrics at a glance</h1><div class="sub">The headline numbers management tracks, for the selected period. Revenue, ARPA, GMV, NMV, ROAS, take rate and orders per affiliate follow the period; ARR and active brands are as at the end of it; churn and NRR are measured within it. Definitions on the Data Quality &amp; Control page.</div></div></div>
   <div class="pbar" data-pbar="kpi"></div>
   <div class="grid" id="kpiGrid"></div>
   <div class="grid" style="margin-top:14px">
@@ -520,6 +520,10 @@ function churnStats(a,b){ // period [a,b] 1-based: logo churn = brands crossing 
   const names=idx.map(k=>CPX_DATA.brands[k].name);
   return {measurable:true,churned,base,logo:base?churned/base:0,revChurn:totRev?lostRev/totRev:0,lostRev,first,names};
 }
+// Same-client revenue churn & NRR: each month vs the month before, pooled over [a,b]; brands with no revenue in the prior month are excluded
+function revRetention(a,b){let loss=0,prev=0,cur=0;const B=CPX_DATA.brands;
+  for(let m=Math.max(a,2);m<=b;m++)B.forEach(br=>{const p=br.m[m-2],c=br.m[m-1];if(p>0){prev+=p;cur+=c;loss+=Math.max(p-c,0);}});
+  return {measurable:prev>0,gross:prev?loss/prev:0,nrr:prev?cur/prev:0,prev,cur,loss,from:Math.max(a,2)};}
 // Affiliate statuses, computed month by month
 let AFFSTAT=null;
 function affStatuses(){
@@ -556,7 +560,7 @@ function renderKpis(){
   const brandMonths=sum(sl(A.brands)), arpa=brandMonths?rev/brandMonths:0;
   const gmv=sum(sl(A.gmv)), nmv=sum(sl(A.nmv)), canc=gmv?1-nmv/gmv:0;
   const actB=A.brands[i1], actPrev=i1>0?A.brands[i1-1]:null;
-  const cs=churnStats(a,b), risk=atRiskAt(i1);
+  const cs=churnStats(a,b), risk=atRiskAt(i1), rr0=revRetention(a,b);
   const roasB=ops?nmv/ops:0;
   const rr=CPX_DATA.brands.map(br=>{const c=sum(br.m.slice(i0,i1+1)),n=sum(br.nmv.slice(i0,i1+1));return c>0&&n>0?n/c:null;}).filter(v=>v!=null);
   const roasMean=mean(rr);
@@ -566,15 +570,16 @@ function renderKpis(){
   const len=b-a+1; let dRev=null,dTxt="";
   if(a-len>=1){const prev=sum(A.cpxS.slice(a-1-len,a-1));dRev=rev-prev;dTxt=pct(prev?dRev/prev:0,0)+" vs "+(len===1?MO[a-2]:MO[a-1-len]+"–"+MO[a-2]);}
   const tiles=[
-    kpiTile({hero:true,lab:`Revenue · ${rangeLabel()}`,val:f0(rev),unit:FX.code,delta:dRev,deltaTxt:dTxt,sub:`Net commission as per P&amp;L (CPX line) · export basis <b>${f0(ops)}</b> · adjustment <b>${fS(rev-ops)}</b>`}),
-    kpiTile({hero:true,lab:`ARR · as at ${MO[i1]}`,val:f0(arr),unit:FX.code,sub:`${arrFrom}–${MO[i1]} each ÷ its seasonality weight, averaged · run-rate <b>${f0(arr/12)}</b>/month · provisional CPX curve (equals YTD ÷ 80% until the year closes)`}),
+    kpiTile({hero:true,lab:`Revenue · ${rangeLabel()}`,val:f0(Math.round(rev/1000))+"K",unit:FX.code,delta:dRev,deltaTxt:dTxt,sub:`Net commission as per P&amp;L (CPX line) · exact <b>${f0(rev)}</b> · export basis <b>${f0(ops)}</b> · adjustment <b>${fS(rev-ops)}</b>`}),
+    kpiTile({hero:true,lab:`ARR · as at ${MO[i1]}`,val:f0(Math.round(arr/1000))+"K",unit:FX.code,sub:`Annual run-rate: what CPX earns in a full year at the pace of ${arrFrom}–${MO[i1]} once seasonality is removed — each month's commission ÷ its share of the year, averaged · <b>${f0(arr/12)}</b>/month · exact ${f0(arr)}`}),
     kpiTile({hero:true,lab:`ARPA · ${rangeLabel()}`,val:f0(arpa),unit:FX.code+"/mo",sub:`Net commission ÷ active brand-months (${f0(brandMonths)}) · annualised <b>${f0(arpa*12)}</b> · ${MO[i1]} alone <b>${f0(A.brands[i1]?A.cpxS[i1]/A.brands[i1]:0)}</b>`}),
     kpiTile({lab:`Take rate`,val:pct(take),sub:`Net commission ÷ net revenue (export) · blended ROAS is its inverse`}),
     kpiTile({lab:`GMV · ${rangeLabel()}`,val:fM(gmv),unit:FX.code,sub:`Gross revenue through the platform (export) · <b>${f0(gmv)}</b>`}),
     kpiTile({lab:`NMV · ${rangeLabel()}`,val:fM(nmv),unit:FX.code,sub:`Net revenue after cancellations and returns · <b>${f0(nmv)}</b>`}),
     kpiTile({lab:`Cancellation rate`,val:pct(canc),sub:`GMV → NMV: <b>${f0(gmv-nmv)}</b> cancelled or returned`}),
     kpiTile({lab:`Active brands · ${MO[i1]}`,val:f0(actB),delta:actPrev!=null?actB-actPrev:null,deltaTxt:actPrev!=null?Math.abs(actB-actPrev)+" vs "+MO[i1-1]:"",sub:`Brands with &gt; 0 ${FX.code} commission in the month · period average <b>${f1(mean(sl(A.brands)))}</b>`}),
-    kpiTile({lab:`Churn · ${rangeLabel()}`,val:cs.measurable?pct(cs.logo,0):"n/a",unit:cs.measurable?"logos":"",sub:cs.measurable?`<b>${cs.churned}</b> brand${cs.churned===1?"":"s"} crossed six quiet months (&lt; 100 AED) in ${a===b?MO[i1]:MO[cs.first-1]+"–"+MO[i1]} ÷ <b>${cs.base}</b> active at the start · revenue churn <b>${pct(cs.revChurn)}</b> (their ${f0(cs.lostRev)} of ${f0(sum(A.cpxS.slice(0,b)))} YTD) · at risk now (3 quiet months): <b class="${risk?"risk":""}">${risk}</b>`:`Measurable from Jul-26 (needs six consecutive months). At risk now (3 quiet months): <b>${risk}</b>`}),
+    kpiTile({lab:`Churn · ${rangeLabel()}`,val:cs.measurable?pct(cs.logo,0):"n/a",unit:cs.measurable?"logos":"",sub:(cs.measurable?`<b>${cs.churned}</b> brand${cs.churned===1?"":"s"} crossed six quiet months (&lt; 100 AED) in ${a===b?MO[i1]:MO[cs.first-1]+"–"+MO[i1]} ÷ <b>${cs.base}</b> active at the start`:`Logo churn measurable from Jul-26 (needs six quiet months)`)+` · <b>Revenue churn ${rr0.measurable?pct(rr0.gross):"n/a"}</b> — same brands vs the month before${a===b?"":", pooled "+MO[rr0.from-1]+"–"+MO[i1]} · at risk (3 quiet months): <b class="${risk?"risk":""}">${risk}</b>`}),
+    kpiTile({lab:`NRR · ${rangeLabel()}`,val:rr0.measurable?pct(rr0.nrr,0):"n/a",sub:rr0.measurable?`Net revenue retention: same brands' commission this month ÷ their commission the month before${a===b?"":", pooled "+MO[rr0.from-1]+"–"+MO[i1]} · <b>${f0(rr0.cur)}</b> ÷ <b>${f0(rr0.prev)}</b> · brands new in a month excluded · seasonal by nature`:`Needs a prior month`}),
     kpiTile({lab:`ROAS · blended`,val:f1(roasB)+"×",sub:`Σ net revenue ÷ Σ net commission · simple mean across ${rr.length} active clients <b>${f1(roasMean)}×</b>`}),
     kpiTile({lab:`Orders per active affiliate`,val:f1(ordPerAff),sub:`${f0(sum(sl(A.orders)))} net orders ÷ active affiliates (avg <b>${f1(mean(activeAff))}</b>/mo · active = ordered in the month)`}),
   ];
@@ -946,11 +951,12 @@ function renderDqc(){
   <div class="def">
     ${def("Revenue (KPI)","Net commission as per the live P&amp;L — the direct CPX line. Export (operational) commission is shown alongside as a sub-metric; the difference is booking timing. Jan–"+MO[N-1]+": <b>"+f0(sum(A.cpxS))+"</b> vs export "+f0(sum(A.ncOps))+".")}
     ${def("Seasonality curve","Provisional CPX curve: Jan–"+MO[N-1]+" = 2026 actual CPX P&amp;L shape scaled to 80% of the year; Nov 12%, Dec 8% (cross-checked against the Excel row 12.6/7.3 and the 2026 targets file 9.9/9.1). Replaced with full-year 2026 shares in the January cycle. Weights: "+S.map((s,i)=>MO[i]+" "+(s*100).toFixed(1)+"%").join(" · ")+".")}
-    ${def("ARR","Each of the last three months' P&amp;L commission ÷ its seasonality weight, averaged. As at "+MO[N-1]+": <b>"+f0(mean(t3(A.cpxS).map((v,i)=>v/S[N-3+i])))+"</b>. Because the provisional curve's Jan–"+MO[N-1]+" weights are the 2026 actual shape, every closed month deseasonalises to the same pace, so ARR = YTD ÷ 80% until the curve is replaced in January.")}
     ${def("ARPA","Net commission ÷ active brand-months (active = &gt; 0 commission in the month). Jan–"+MO[N-1]+": "+f0(sum(A.cpxS))+" ÷ "+sum(A.brands)+" = <b>"+f0(sum(A.cpxS)/sum(A.brands))+"</b>/brand/month. Distinct from the 20K/month ARPA assumed for new brand units in the sandbox.")}
     ${def("GMV · NMV · cancellation","Export Gross Revenue and Net Revenue summed over the period; cancellation rate = 1 − NMV ÷ GMV. Jan–"+MO[N-1]+": "+pct(1-sum(A.nmv)/sum(A.gmv))+".")}
     ${def("Active brands","The export's count of brands with &gt; 0 commission in the month, taken from each month's own update and never restated from later exports (the export history is agreed as published — later files have dropped or corrected rows, e.g. DKNY). "+MO[N-1]+": <b>"+A.brands[N-1]+"</b>. Series: "+A.brands.join(", ")+".")}
-    ${def("Brand churn","A brand churns in the first month where it has earned ≥ 100 AED in an earlier 2026 month and has been &lt; 100 AED for six consecutive months ending that month. Measurable from Jul-26; 2025 history is not loaded so earlier losses are not captured. Logo churn for a period = brands crossing that rule in the period ÷ active brands at the period's opening; revenue churn = those brands' 2026 commission ÷ total commission to date. Not annualised. Jan–"+MO[N-1]+": "+(cs.measurable?cs.churned+" brands ("+cs.names.join(", ")+") ÷ "+cs.base+" = <b>"+pct(cs.logo,0)+"</b> of logos, <b>"+pct(cs.revChurn)+"</b> of revenue":"n/a")+". At-risk = three consecutive quiet months.")}
+    ${def("Brand churn","A brand churns in the first month where it has earned ≥ 100 AED in an earlier 2026 month and has been &lt; 100 AED for six consecutive months ending that month. Measurable from Jul-26; 2025 history is not loaded so earlier losses are not captured. Logo churn for a period = brands crossing that rule in the period ÷ active brands at the period's opening. Not annualised. Jan–"+MO[N-1]+": "+(cs.measurable?cs.churned+" brands ("+cs.names.join(", ")+") ÷ "+cs.base+" = <b>"+pct(cs.logo,0)+"</b> of logos, <b>"+pct(cs.revChurn)+"</b> of revenue":"n/a")+". At-risk = three consecutive quiet months.")}
+    ${def("Revenue churn · NRR","Same-client, month over month: for every brand that earned in the previous month, revenue churn = Σ falls (rises count as zero) ÷ Σ previous-month commission; NRR = Σ this month ÷ Σ previous month. Brands with nothing in the previous month are excluded. Quarter and Year views pool the month-over-month comparisons inside the period. Seasonal by nature — a peak month unwinding reads as churn. Jan–"+MO[N-1]+": revenue churn <b>"+pct(revRetention(1,N).gross)+"</b>, NRR <b>"+pct(revRetention(1,N).nrr,0)+"</b>.")}
+    ${def("ARR","Annual run-rate: each of the last three months' commission ÷ that month's share of the year (provisional CPX curve), averaged — i.e. what a full year earns at the current pace with seasonality removed. As at "+MO[N-1]+": <b>"+f0(mean(t3(A.cpxS).map((v,i)=>v/S[N-3+i])))+"</b>. Because the provisional curve's Jan–"+MO[N-1]+" weights are the 2026 actual shape, every closed month deseasonalises to the same pace, so ARR = YTD ÷ 80% until the curve is replaced in January.")}
     ${def("ROAS","Blended = Σ net revenue ÷ Σ net commission (export). The simple mean across clients is shown as a sub-metric because small brands dominate it.")}
     ${def("Take rate","Net commission ÷ net revenue (export). Jan–"+MO[N-1]+": "+pct(sum(A.ncOps)/sum(A.nmv))+".")}
     ${def("Orders per affiliate","Net orders ÷ active affiliates (export count), pooled over the period — the same ratio the target back-solve uses.")}
