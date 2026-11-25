@@ -164,6 +164,11 @@ th.c-shade{background:#FFF3EE!important}
 .lev input:focus,.lev select:focus{outline:none;border-color:var(--cpx);box-shadow:0 0 0 3px var(--cpx-wash)}
 .lev .plan{font-size:.68rem;color:var(--faint);margin-top:5px}
 .lev .live{font-size:.72rem;color:var(--cpx);margin-top:5px;font-weight:600;min-height:1.2em}
+.lev .curstat{display:flex;gap:7px;align-items:flex-start;margin-top:9px;padding-top:8px;border-top:1px dashed var(--line);font-size:.7rem;color:var(--muted);line-height:1.45}
+.lev .curstat .cl{flex-shrink:0;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--ink);background:var(--line2);border-radius:4px;padding:2px 5px;margin-top:1px}
+.lev .curstat b{color:var(--ink)}
+.lev .curstat .usecur{margin-left:auto;flex-shrink:0;font:inherit;font-size:.66rem;font-weight:600;color:var(--cpx);background:#fff;border:1px solid var(--cpx-lt);border-radius:5px;padding:2px 7px;cursor:pointer}
+.lev .curstat .usecur:hover{background:var(--cpx);color:#fff}
 .btnrow{margin:15px 0;display:flex;gap:9px;flex-wrap:wrap}
 button.act{font:inherit;font-size:.82rem;font-weight:600;padding:9px 16px;border-radius:8px;cursor:pointer;border:1px solid var(--ink);background:#fff;color:var(--ink)}
 button.act:hover{background:var(--ink);color:#fff}
@@ -276,7 +281,7 @@ button.act.primary:hover{background:#E0431A}
 
 <!-- ===== 01 KPIs ===== -->
 <section class="page active" id="page-kpis">
-  <div class="head"><div><div class="pagenum">OVERVIEW · 01</div><h1>Key metrics at a glance</h1><div class="sub">The headline numbers management tracks, for the selected period. Revenue, ARPA, GMV, NMV, ROAS, take rate and orders per affiliate follow the period; ARR and active brands are as at the end of it; churn and NRR are measured within it. Definitions on the Data Quality &amp; Control page.</div></div></div>
+  <div class="head"><div><div class="pagenum">OVERVIEW · 01</div><h1>Key metrics at a glance <span class="tag">· CPX only</span></h1><div class="sub">The headline numbers management tracks, for the selected period. Revenue, ARPA, GMV, NMV, ROAS, take rate and orders per affiliate follow the period; ARR and active brands are as at the end of it; churn and NRR are measured within it. Definitions on the Data Quality &amp; Control page.</div></div></div>
   <div class="pbar" data-pbar="kpi"></div>
   <div class="grid" id="kpiGrid"></div>
   <div class="grid" style="margin-top:14px">
@@ -290,11 +295,11 @@ button.act.primary:hover{background:#E0431A}
 
 <!-- ===== 02 Financials ===== -->
 <section class="page" id="page-fin">
-  <div class="head"><div><div class="pagenum">OVERVIEW · 02</div><h1>Financials <span class="tag">· CPX – SBU Profit &amp; Loss (CPX + MARS)</span></h1><div class="sub">Jan–<span class="mLatest"></span> are booked actuals tied to the live P&amp;L to the dirham. Later months are the <b>As-Is</b> projection — where the unit is headed on its own run-rate, no levers. Sales and COS split CPX / MARS; variances sit on their own Adjustment line.</div></div>
+  <div class="head"><div><div class="pagenum">OVERVIEW · 02</div><h1>Financials <span class="tag">· SBU (CPX + MARS)</span></h1><div class="sub">Jan–<span class="mLatest"></span> are booked actuals tied to the live P&amp;L to the dirham. Later months are the <b>As-Is</b> projection — where the unit is headed on its own run-rate, no levers. Sales and COS split CPX / MARS; variances sit on their own Adjustment line.</div></div>
     <div class="seg" id="finView"><button data-v="monthly" class="on">Monthly</button><button data-v="annual">Annual</button></div></div>
   <div class="grid" id="finTop"></div>
   <div class="grid" style="margin-top:14px">
-    <div class="card col12 p0"><div style="padding:15px 18px 0"><div class="eyebrow">Monthly net earnings and cumulative — actual, then As-Is</div></div><div class="ch" style="padding:6px 12px 4px"><canvas id="cFin" height="170"></canvas></div><div class="legend" style="padding:0 18px 14px" id="finLegend"></div></div>
+    <div class="card col12 p0"><div style="padding:15px 18px 0"><div class="eyebrow">Monthly net earnings and cumulative — actual, then As-Is &nbsp;<span style="color:var(--faint);font-weight:400">· SBU (CPX + MARS)</span></div></div><div class="ch" style="padding:6px 12px 4px"><canvas id="cFin" height="170"></canvas></div><div class="legend" style="padding:0 18px 14px" id="finLegend"></div></div>
     <div class="card col12 p0"><div class="twrap" id="finTable" style="border:none;border-radius:13px"></div></div>
     <div class="card col12" id="finNote" style="font-size:.8rem;color:var(--muted);line-height:1.6"></div>
   </div>
@@ -302,14 +307,14 @@ button.act.primary:hover{background:#E0431A}
 
 <!-- ===== 03 Target vs Actuals ===== -->
 <section class="page" id="page-targets">
-  <div class="head"><div><div class="pagenum">OVERVIEW · 03</div><h1>Target vs Actuals <span class="tag">· static plan</span></h1><div class="sub">The January 2026 plan is the static target for all twelve months; the Head of Business Unit's October plan is shown as a <b>Q4 revised</b> row for Nov–Dec. Orders, affiliates and brand units are back-solved from the commission plan at the year's own unit economics; Nov–Dec use the revised plan's explicit figures.</div></div></div>
+  <div class="head"><div><div class="pagenum">OVERVIEW · 03</div><h1>Target vs Actuals <span class="tag">· CPX only · MARS block shown separately</span></h1><div class="sub">The January 2026 plan is the static target for all twelve months; the Head of Business Unit's October plan is shown as a <b>Q4 revised</b> row for Nov–Dec. Orders, affiliates and brand units are back-solved from the commission plan at the year's own unit economics; Nov–Dec use the revised plan's explicit figures.</div></div></div>
   <div class="grid" id="tgtTiles"></div>
   <div class="grid" style="margin-top:14px" id="tgtBlocks"></div>
 </section>
 
 <!-- ===== 04 Segmentation ===== -->
 <section class="page" id="page-segm">
-  <div class="head"><div><div class="pagenum">OVERVIEW · 04</div><h1>Client &amp; Affiliate Segmentation</h1><div class="sub">Clients by size — <b>Enterprise</b> (&gt; AED 1M CPX commission in a year), <b>Growth</b> (parent revenue &gt; $50M) and <b>SME</b>; affiliates by activity — <b>Active</b>, <b>Major</b>, <b>New</b>, <b>Churned</b>. Click a segment for the per-client or per-affiliate breakdown for the selected period.</div></div></div>
+  <div class="head"><div><div class="pagenum">OVERVIEW · 04</div><h1>Client &amp; Affiliate Segmentation <span class="tag">· CPX only</span></h1><div class="sub">Clients by size — <b>Enterprise</b> (&gt; AED 1M CPX commission in a year), <b>Growth</b> (parent revenue &gt; $50M) and <b>SME</b>; affiliates by activity — <b>Active</b>, <b>Major</b>, <b>New</b>, <b>Churned</b>. Click a segment for the per-client or per-affiliate breakdown for the selected period.</div></div></div>
   <div class="pbar" data-pbar="seg"></div>
   <div class="grid" id="segGrid"></div>
 </section>
@@ -335,15 +340,15 @@ button.act.primary:hover{background:#E0431A}
 
 <!-- ===== Sandbox · Levers & P&L ===== -->
 <section class="page" id="page-sandbox">
-  <div class="head"><div><div class="pagenum">MODEL · SANDBOX · 01</div><h1>Levers &amp; P&amp;L</h1><div class="sub" id="sbHeading"></div></div></div>
+  <div class="head"><div><div class="pagenum">MODEL · SANDBOX · 01</div><h1>Levers &amp; P&amp;L <span class="tag">· revenue levers CPX only · profit SBU (CPX + MARS)</span></h1><div class="sub" id="sbHeading"></div></div></div>
   <div class="lev-grid" id="leverGrid"></div>
   <div class="btnrow"><button class="act primary" id="btnApply">Recalculate</button><button class="act" id="btnReset">Reset to committed plan</button></div>
   <div class="impact" id="leverImpact"></div>
   <div class="grid" style="margin-top:14px">
-    <div class="card col12 p0"><div style="padding:15px 18px 0"><div class="eyebrow">Cumulative net earnings — Target vs As-Is</div></div><div class="ch" style="padding:6px 12px 4px"><canvas id="cCum" height="150"></canvas></div><div class="legend" style="padding:0 18px 14px" id="cumLegend"></div></div>
+    <div class="card col12 p0"><div style="padding:15px 18px 0"><div class="eyebrow">Cumulative net earnings — Target vs As-Is &nbsp;<span style="color:var(--faint);font-weight:400">· SBU (CPX + MARS)</span></div></div><div class="ch" style="padding:6px 12px 4px"><canvas id="cCum" height="150"></canvas></div><div class="legend" style="padding:0 18px 14px" id="cumLegend"></div></div>
     <div class="card col6" id="pnlBoxTarget"></div>
     <div class="card col6" id="pnlBoxAsis"></div>
-    <div class="card col12 p0"><div style="padding:15px 18px 0"><div class="eyebrow">Target P&amp;L — monthly, levers applied &nbsp;<span style="color:var(--faint);font-weight:400">· As-Is net earnings shown underneath for comparison</span></div></div><div class="twrap" id="pnlTable" style="border:none;border-radius:13px;margin-top:8px"></div></div>
+    <div class="card col12 p0"><div style="padding:15px 18px 0"><div class="eyebrow">Target P&amp;L — monthly, levers applied &nbsp;<span style="color:var(--faint);font-weight:400">· SBU (CPX + MARS) · As-Is net earnings shown underneath</span></div></div><div class="twrap" id="pnlTable" style="border:none;border-radius:13px;margin-top:8px"></div></div>
   </div>
   <p style="font-size:.8rem;color:var(--muted);line-height:1.6;margin-top:10px;max-width:84ch" id="pnlNote"></p>
 </section>
@@ -352,7 +357,8 @@ button.act.primary:hover{background:#E0431A}
 <section class="page" id="page-cohorts">
   <div class="head"><div><div class="pagenum">MODEL · SANDBOX · 02</div><h1>Build a Brand <span class="tag">· CPX only</span></h1><div class="sub">How new-brand revenue stacks up as each monthly cohort ramps. <span id="coh-count"></span> cohorts sign <span id="coh-per"></span> brands each from <span id="coh-start"></span>–Dec; every cohort climbs its own ramp curve and churns <span id="coh-churn"></span>/month. <span id="coh-signed"></span> Recomputes with the levers.</div></div></div>
   <div class="grid">
-    <div class="card col12 p0"><div style="padding:15px 18px 0"><div class="eyebrow">New-brand revenue by cohort — the stack</div></div><div class="ch" style="padding:6px 12px 12px"><canvas id="cCohort" height="150"></canvas></div></div>
+    <div class="card col8 p0"><div style="padding:15px 18px 0"><div class="eyebrow">New-brand revenue by cohort — the stack, twelve months from the first signing</div></div><div class="ch" style="padding:6px 12px 12px;height:300px"><canvas id="cCohort"></canvas></div></div>
+    <div class="card col4 p0"><div style="padding:15px 18px 0"><div class="eyebrow">How one brand ramps · monthly ARPA</div></div><div class="ch" style="padding:6px 12px 12px;height:300px"><canvas id="cRamp"></canvas></div></div>
     <div class="card col12 p0"><div class="twrap" id="cohortTable" style="border:none;border-radius:13px"></div></div>
     <div class="card col12" id="cohortNote" style="font-size:.82rem;color:var(--muted);line-height:1.6"></div>
   </div>
@@ -360,7 +366,7 @@ button.act.primary:hover{background:#E0431A}
 
 <!-- ===== Sandbox · Path ===== -->
 <section class="page" id="page-path">
-  <div class="head"><div><div class="pagenum">MODEL · SANDBOX · 03</div><h1>Path to Profit</h1><div class="sub">Five scenarios, each computed live by the same engine. The new-brand build starts the month after the latest actuals. Each card lists its assumptions and its full-year outcome; the banner says how many paths reach profit. Apply any scenario to load it into the levers.</div></div></div>
+  <div class="head"><div><div class="pagenum">MODEL · SANDBOX · 03</div><h1>Path to Profit <span class="tag">· SBU (CPX + MARS) profit</span></h1><div class="sub">Five scenarios, each computed live by the same engine. The new-brand build starts the month after the latest actuals. Each card lists its assumptions and its full-year outcome; the banner says how many paths reach profit. Apply any scenario to load it into the levers.</div></div></div>
   <div class="scen" id="scenCards"></div>
 </section>
 
@@ -643,8 +649,8 @@ function renderFin(){
   const fyS=sum(r.cpxS)+sum(r.mS), ytdS=sum(A.cpxS)+sum(A.marsS), projS=fyS-ytdS;
   const ytdNE=sum(A.ne), projNE=sum(r.ne.slice(N));
   $("#finTop").innerHTML=
-    kpiTile({hero:true,span:"col6",key:"fySales",lab:"FY 2026 projected revenue · sales",val:f0(fyS),unit:FX.code,sub:`Actual Jan–${MO[N-1]} <b>${f0(ytdS)}</b> + As-Is ${MO[N]}–Dec <b>${f0(projS)}</b> · CPX <b>${f0(sum(r.cpxS))}</b> · MARS <b>${f0(sum(r.mS))}</b>`})+
-    kpiTile({span:"col6",key:"fyProfit",lab:"FY 2026 projected net profit",val:`<span class="${cls(ai.neFY)}">${fS(ai.neFY)}</span>`,sub:`YTD <b class="${cls(ytdNE)}">${fS(ytdNE)}</b> + As-Is ${MO[N]}–Dec <b class="${cls(projNE)}">${fS(projNE)}</b> · ${ai.recovers==="Not in-year"?"loss not recovered in-year":"cumulative positive by "+ai.recovers}`});
+    kpiTile({hero:true,span:"col6",key:"fySales",lab:"FY 2026 projected revenue · sales · SBU (CPX + MARS)",val:f0(fyS),unit:FX.code,sub:`Actual Jan–${MO[N-1]} <b>${f0(ytdS)}</b> + As-Is ${MO[N]}–Dec <b>${f0(projS)}</b> · CPX <b>${f0(sum(r.cpxS))}</b> · MARS <b>${f0(sum(r.mS))}</b>`})+
+    kpiTile({span:"col6",key:"fyProfit",lab:"FY 2026 projected net profit · SBU (CPX + MARS)",val:`<span class="${cls(ai.neFY)}">${fS(ai.neFY)}</span>`,sub:`YTD <b class="${cls(ytdNE)}">${fS(ytdNE)}</b> + As-Is ${MO[N]}–Dec <b class="${cls(projNE)}">${fS(projNE)}</b> · ${ai.recovers==="Not in-year"?"loss not recovered in-year":"cumulative positive by "+ai.recovers}`});
   // chart: monthly NE bars + cumulative
   destroy("cFin");
   CH.cFin=new Chart($("#cFin"),{data:{labels:MO,datasets:[
@@ -704,15 +710,15 @@ function renderTargets(){
   const planYTD=sum(ts.comm.plan.slice(0,N)), actYTD=sum(A.cpxS), planFY=sum(ts.comm.plan);
   const mPlanYTD=sum(ts.mars.plan.slice(0,N)), mActYTD=sum(A.marsS);
   $("#tgtTiles").innerHTML=
-    kpiTile({hero:true,span:"col4",key:"planFY",lab:"CPX commission · plan FY 2026",val:f0(planFY),unit:FX.code,sub:`Combined plan ${f0(sum(T.combined))} less MARS ${f0(T.marsPlan)}/mo · Q4 revised: ${MO[10]} ${f0(T.q4.nov.comm)}, ${MO[11]} ${f0(T.q4.dec.comm)}`})+
-    kpiTile({span:"col4",key:"attain",lab:`CPX attainment · Jan–${MO[N-1]}`,val:pct(actYTD/planYTD,0),sub:`Actual <b>${f0(actYTD)}</b> vs plan <b>${f0(planYTD)}</b> · missed <b class="neg">${fS(actYTD-planYTD)}</b>`})+
-    kpiTile({span:"col4",key:"attainM",lab:`MARS attainment · Jan–${MO[N-1]}`,val:pct(mActYTD/mPlanYTD,0),sub:`Actual <b>${f0(mActYTD)}</b> vs plan <b>${f0(mPlanYTD)}</b> (${f0(T.marsPlan)}/mo standing target)`});
+    kpiTile({hero:true,span:"col4",key:"planFY",lab:"Plan FY 2026 · CPX only",val:f0(planFY),unit:FX.code,sub:`Combined plan ${f0(sum(T.combined))} less MARS ${f0(T.marsPlan)}/mo · Q4 revised: ${MO[10]} ${f0(T.q4.nov.comm)}, ${MO[11]} ${f0(T.q4.dec.comm)}`})+
+    kpiTile({span:"col4",key:"attain",lab:`Attainment · CPX only · Jan–${MO[N-1]}`,val:pct(actYTD/planYTD,0),sub:`Actual <b>${f0(actYTD)}</b> vs plan <b>${f0(planYTD)}</b> · missed <b class="neg">${fS(actYTD-planYTD)}</b>`})+
+    kpiTile({span:"col4",key:"attainM",lab:`Attainment · MARS · Jan–${MO[N-1]}`,val:pct(mActYTD/mPlanYTD,0),sub:`Actual <b>${f0(mActYTD)}</b> vs plan <b>${f0(mPlanYTD)}</b> (${f0(T.marsPlan)}/mo standing target)`});
   const blocks=[
-    {k:"comm",name:"Net commission — CPX",tag:"P&L CPX line vs plan",fmt:f0,money:true},
-    {k:"mars",name:"MARS sales",tag:"clean basis vs the 100K standing target",fmt:f0,money:true},
-    {k:"orders",name:"Net orders",tag:"plan = CPX plan ÷ commission per order",fmt:f0},
-    {k:"aff",name:"Active affiliates",tag:"active = ordered in the month · plan = orders ÷ orders per affiliate · same basis as Segmentation",fmt:f0},
-    {k:"units",name:`Brand units @ ${kC(UNIT*FX.rate)}/mo ARPA`,tag:"achieved = actual commission ÷ 20K",fmt:f1},
+    {k:"comm",name:"Net commission · CPX only",tag:"P&L CPX line vs plan",fmt:f0,money:true},
+    {k:"mars",name:"MARS sales · MARS only",tag:"clean basis vs the 100K standing target",fmt:f0,money:true},
+    {k:"orders",name:"Net orders · CPX only",tag:"plan = CPX plan ÷ commission per order",fmt:f0},
+    {k:"aff",name:"Active affiliates · CPX only",tag:"active = ordered in the month · plan = orders ÷ orders per affiliate · same basis as Segmentation",fmt:f0},
+    {k:"units",name:`Brand units @ ${kC(UNIT*FX.rate)}/mo ARPA · CPX only`,tag:"achieved = actual commission ÷ 20K",fmt:f1},
   ];
   let html="";
   blocks.forEach((bk,bi)=>{
@@ -767,7 +773,7 @@ function renderSegm(){
     ${kpiTile({span:"col3",key:"conc",lab:`Client concentration · top 3`,val:pct(top3,0),sub:`${topNames.join(", ")} — share of period revenue`})}
     ${kpiTile({span:"col3",key:"segAff",lab:`Active affiliates · ${MO[i1]}`,val:f0(cnt("act")),sub:`Affiliates with &gt; 0 net orders in the month (export count) · Major <b>${cnt("major")}</b> · New <b>${cnt("isNew")}</b> · Churned <b>${cnt("churn")}</b>`})}
     ${kpiTile({span:"col3",key:"majShare",lab:`% orders from Major creators · ${rangeLabel()}`,val:pct(majShare,0),sub:`<b>${f0(majOrd)}</b> of <b>${f0(ordPeriod)}</b> net orders came from affiliates holding Major status in the month`})}
-    <div class="card col12 p0"><div style="padding:15px 18px 6px"><div class="eyebrow" style="font-size:.9rem;color:var(--ink);font-weight:600">Clients by segment · ${rangeLabel()}</div><div class="csub">Enterprise = &gt; AED 1M CPX commission in 2026 actuals · Growth = parent / global brand revenue &gt; $50M · SME = below. Click a segment for the breakdown.</div></div>
+    <div class="card col12 p0"><div style="padding:15px 18px 6px"><div class="eyebrow" style="font-size:.9rem;color:var(--ink);font-weight:600">Clients by segment · ${rangeLabel()} <span style="color:var(--faint);font-weight:400">· CPX only</span></div><div class="csub">Enterprise = &gt; AED 1M CPX commission in 2026 actuals · Growth = parent / global brand revenue &gt; $50M · SME = below. Click a segment for the breakdown.</div></div>
     <div class="twrap" style="border:none"><table><thead><tr><th>Segment</th><th>Brands</th><th>Active · ${MO[i1]}</th><th>Revenue</th><th>Share</th><th>ARPA /mo</th><th>Net orders</th><th>GMV</th><th>NMV</th><th>AOV</th></tr></thead><tbody>
     ${segs.map(s=>{const g=agg[s];return `<tr class="click${SEGSEL.client===s?" sel":""}" data-seg="${s}"><td>${s}</td><td>${g.count}</td><td>${g.active}</td><td><b>${f0(g.rev)}</b></td><td>${pct(totRev?g.rev/totRev:0,0)}</td><td>${f0(g.bm?g.rev/g.bm:0)}</td><td>${f0(g.ord)}</td><td>${f0(g.gmv)}</td><td>${f0(g.nmv)}</td><td>${f0(g.ord?g.nmv/g.ord:0)}</td></tr>`;}).join("")}
     <tr class="tot"><td>All clients</td><td>${B.length}</td><td>${sum(segs.map(s=>agg[s].active))}</td><td>${f0(totRev)}</td><td>100%</td><td>${f0(sum(segs.map(s=>agg[s].bm))?totRev/sum(segs.map(s=>agg[s].bm)):0)}</td><td>${f0(sum(segs.map(s=>agg[s].ord)))}</td><td>${f0(sum(segs.map(s=>agg[s].gmv)))}</td><td>${f0(sum(segs.map(s=>agg[s].nmv)))}</td><td>${f0(sum(segs.map(s=>agg[s].ord))?sum(segs.map(s=>agg[s].nmv))/sum(segs.map(s=>agg[s].ord)):0)}</td></tr>
@@ -780,7 +786,7 @@ function renderSegm(){
       </tbody></table></div></div>`;
   }
   const affSegs=[["act","Active","> 0 net orders in the month (same basis as the Target vs Actuals page)"],["major","Major","trailing-3 × 4 ≥ 5,000 net orders; stays until the pace drops below 2,500"],["isNew","New","first 2026 month with > 1 order (counted from February)"],["churn","Churned","was Active in an earlier month, not Active now"]];
-  h+=`<div class="card col12 p0"><div style="padding:15px 18px 6px"><div class="eyebrow" style="font-size:.9rem;color:var(--ink);font-weight:600">Affiliates by segment · status as at ${MO[i1]}, orders over ${rangeLabel()}</div><div class="csub">Counts are the export's monthly active-affiliate figures (agreed history); lists come from the ${F.length} affiliates in the latest export by record ID, so a list for an early month can differ slightly from its count. Click a segment for the list.</div></div>
+  h+=`<div class="card col12 p0"><div style="padding:15px 18px 6px"><div class="eyebrow" style="font-size:.9rem;color:var(--ink);font-weight:600">Affiliates by segment · status as at ${MO[i1]}, orders over ${rangeLabel()} <span style="color:var(--faint);font-weight:400">· CPX only</span></div><div class="csub">Counts are the export's monthly active-affiliate figures (agreed history); lists come from the ${F.length} affiliates in the latest export by record ID, so a list for an early month can differ slightly from its count. Click a segment for the list.</div></div>
     <div class="twrap" style="border:none"><table><thead><tr><th>Segment</th><th>Definition</th><th>Count · ${MO[i1]}</th>${MO.slice(i0,i1+1).map(m=>`<th>${m}</th>`).join("")}<th>Net orders · period</th><th>Payout · period</th></tr></thead><tbody>
     ${affSegs.map(([k,name,def])=>{const L=affList(k);const o=sum(L.map(f=>sum(f.o.slice(i0,i1+1)))),p=sum(L.map(f=>sum(f.p.slice(i0,i1+1))));
       const cAt=j=>k==="act"?A.affiliates[j]:st[k][j].size;return `<tr class="click${SEGSEL.aff===k?" sel":""}" data-aseg="${k}"><td>${name}</td><td style="white-space:normal;max-width:330px;color:var(--muted);font-size:.72rem">${def}</td><td><b>${cAt(i1)}</b></td>${MO.slice(i0,i1+1).map((_,j)=>`<td class="c-asis">${cAt(i0+j)}</td>`).join("")}<td>${f0(o)}</td><td>${f0(p)}</td></tr>`;}).join("")}
@@ -840,25 +846,41 @@ function renderAffiliates(){
 }
 
 /* ================= SANDBOX · LEVERS + P&L ================= */
-function getLDEF(){return [
-  {k:"opex",label:"SBU OpEx / month ("+MO[N]+" on)",hint:"Operating expense assumed for each remaining month. The reduction lever.",plan:PLAN.opex,step:Math.round(C(10000))},
-  {k:"brands",label:"New brand signings (year)",hint:kC(20000)+"-monthly-ARPA brands signed across the remaining months in equal cohorts (the unit build starts in "+MO[N]+").",plan:PLAN.brands,step:1},
-  {k:"arpa",label:"New-brand ARPA (annual)",hint:"Annual revenue a fully-ramped new brand contributes.",plan:PLAN.arpa,step:Math.round(C(10000))},
-  {k:"exChurn",label:"Existing-brand churn (% / mo)",hint:"Monthly revenue lost from the current book. Enter as percent, e.g. 5.",plan:PLAN.exChurn,step:1,pct:1},
-  {k:"newChurn",label:"New-brand churn (% / mo)",hint:"Monthly attrition within new cohorts. Enter as percent.",plan:PLAN.newChurn,step:1,pct:1},
-  {k:"expansion",label:"Existing-brand expansion (%)",hint:"Growth of surviving existing brands over the rest of the year. Enter as percent.",plan:PLAN.expansion,step:1,pct:1},
+function currentStats(){ // latest-data reference points for the levers
+  const rr=revRetention(N-2,N), cs=churnStats(7,N);
+  const arpaT3=sum(t3(A.cpxS))/sum(t3(A.brands))*12;
+  const nrrM=rr.measurable?Math.pow(rr.nrr,1):1; // pooled MoM over the last three pairs
+  return {
+    opex:{v:OPEX_RUN,txt:`SBU OpEx run-rate ${MO[N-3]}–${MO[N-1]}: <b>${f0(OPEX_RUN)}</b>/mo · Jan–${MO[N-1]} avg ${f0(mean(A.opex.slice(0,N)))}`},
+    brands:{txt:`Active brands ${MO[N-1]}: <b>${A.brands[N-1]}</b> · 20K-unit signings in 2026: <b>0</b> (pilot signings sit in the actual book)`},
+    arpa:{v:arpaT3,txt:`Actual ARPA ${MO[N-3]}–${MO[N-1]}: <b>${f0(arpaT3/12)}</b>/mo = <b>${f0(arpaT3)}</b>/yr (lever assumes ${f0(PLAN.arpa)})`},
+    exChurn:{v:rr.measurable?rr.gross:null,txt:rr.measurable?`Gross revenue churn, same brands MoM, ${MO[N-3]}–${MO[N-1]} pooled: <b>${pct(rr.gross)}</b>/mo`:"n/a"},
+    newChurn:{txt:cs.measurable?`No 20K units yet · logo churn Jul–${MO[N-1]}: ${cs.churned} of ${cs.base} ≈ <b>${pct(cs.logo/(N-6))}</b>/mo`:"n/a"},
+    expansion:{v:rr.measurable?Math.max(0,rr.nrr-1):null,txt:rr.measurable?`Existing book net change, same brands MoM, ${MO[N-3]}–${MO[N-1]}: NRR <b>${pct(rr.nrr,0)}</b> → <b>${(rr.nrr-1>=0?"+":"")+pct(rr.nrr-1)}</b>/mo (lever is the total over ${12-N} remaining months)`:"n/a"},
+    gpm:{txt:`CPX GP margin ${MO[N-3]}–${MO[N-1]} pooled: <b>${pct(GPM_CPX)}</b> (locked) · MARS ${pct(1-MARS_C_RUN/MARS_S_RUN)}`},
+  };
+}
+function getLDEF(){const cur=currentStats();return [
+  {k:"opex",label:"SBU OpEx / month ("+MO[N]+" on) · SBU",hint:"Operating expense assumed for each remaining month. The reduction lever.",plan:PLAN.opex,step:Math.round(C(10000)),cur:cur.opex},
+  {k:"brands",label:"New brand signings (year) · CPX",hint:kC(20000)+"-monthly-ARPA brands signed across the remaining months in equal cohorts (the unit build starts in "+MO[N]+").",plan:PLAN.brands,step:1,cur:cur.brands},
+  {k:"arpa",label:"New-brand ARPA (annual) · CPX",hint:"Annual revenue a fully-ramped new brand contributes.",plan:PLAN.arpa,step:Math.round(C(10000)),cur:cur.arpa},
+  {k:"exChurn",label:"Existing-brand churn (% / mo) · CPX",hint:"Monthly revenue lost from the current book. Enter as percent, e.g. 5.",plan:PLAN.exChurn,step:1,pct:1,cur:cur.exChurn},
+  {k:"newChurn",label:"New-brand churn (% / mo) · CPX",hint:"Monthly attrition within new cohorts. Enter as percent.",plan:PLAN.newChurn,step:1,pct:1,cur:cur.newChurn},
+  {k:"expansion",label:"Existing-brand expansion (%) · CPX",hint:"Growth of surviving existing brands over the rest of the year. Enter as percent.",plan:PLAN.expansion,step:1,pct:1,cur:cur.expansion},
 ];}
 let LDEF=getLDEF();
 function renderLevers(){
   LDEF=getLDEF();
+  const cur=currentStats();
   let h=LDEF.map(d=>`<div class="lev"><label>${d.label}</label><div class="hint">${d.hint}</div>
     <input type="number" id="lv-${d.k}" value="${d.pct?+(LV[d.k]*100).toFixed(1):Math.round(LV[d.k])}" step="${d.step}">
     <div class="plan">plan: ${d.pct?(d.plan*100).toFixed(0)+"%":f0(d.plan)}</div>
-    <div class="live" id="live-${d.k}"></div></div>`).join("");
-  h+=`<div class="lev" style="background:var(--line2)"><label>CPX GP margin — locked</label>
+    <div class="live" id="live-${d.k}"></div>
+    ${d.cur?`<div class="curstat"><span class="cl">Now</span><span>${d.cur.txt}</span>${d.cur.v!=null?`<button class="usecur" data-use="${d.k}" data-val="${d.cur.v}">use</button>`:""}</div>`:""}</div>`).join("");
+  h+=`<div class="lev" style="background:var(--line2)"><label>CPX GP margin — locked · CPX</label>
     <div class="hint">Held at the trailing-3 margin, not a lever. Projected CPX COS = sales × (1 − margin).</div>
     <div class="big sm" style="margin-top:2px">${(GPM_CPX*100).toFixed(1)}%</div>
-    <div class="plan">${MO[N-3]}–${MO[N-1]} pooled</div></div>`;
+    <div class="plan">${MO[N-3]}–${MO[N-1]} pooled</div><div class="curstat"><span class="cl">Now</span><span>${cur.gpm.txt}</span></div></div>`;
   h+=`<div class="lev"><label>New-brand ramp curve</label><div class="hint">How fast new brands reach full productivity.</div>
     <select id="lv-fast"><option value="false"${!LV.fast?" selected":""}>Standard · 10→90% / 6mo</option><option value="true"${LV.fast?" selected":""}>Fast · 30→100% / 6mo</option></select>
     <div class="plan">plan: Standard</div><div class="live"></div></div>`;
@@ -871,10 +893,10 @@ function readLevers(){
 function renderSandbox(){
   const r=engine(LV), ai=asIs(), base=engine(PLAN).neFY;
   $("#sbHeading").innerHTML=`Levers: <b>${LV.brands} brands</b> · OpEx <b>${f0(LV.opex)}</b>/mo · ${LV.fast?"fast":"standard"} ramp · ARPA <b>${f0(LV.arpa)}</b> — revenue is produced by the levers; profit falls out below. Nothing is saved; reload restores the committed plan.`;
-  $("#leverImpact").innerHTML=`<div class="lab">These levers produce — revenue, then profit (ITCAN unit · CPX + MARS)</div>
+  $("#leverImpact").innerHTML=`<div class="lab">These levers produce — revenue (CPX only), then profit (SBU · CPX + MARS)</div>
     <div class="n ${cls(r.neFY)}">${fS(r.neFY)}</div>
     <div class="row">
-      <div><div class="k">Revenue target (from levers) · CPX</div><div class="v brand">${f0(r.proj)}</div></div>
+      <div><div class="k">Revenue target (from levers) · CPX only</div><div class="v brand">${f0(r.proj)}</div></div>
       <div><div class="k">Orders needed</div><div class="v">${f0(r.proj/PER_ORDER)}</div></div>
       <div><div class="k">Affiliates (avg/mo)</div><div class="v">${f0(r.proj/PER_ORDER/ORD_PER_AFF/12)}</div></div>
       <div><div class="k">Recovers YTD loss</div><div class="v ${r.recovers==="Not in-year"?"neg":"pos"}">${r.recovers}</div></div>
@@ -902,8 +924,8 @@ function renderSandbox(){
         <div class="sr sub"><span>Recovers YTD loss</span><b class="${rec==='Not in-year'?'neg':'pos'}">${rec}</b></div>
       </div>`;
   }
-  pnlBox($("#pnlBoxTarget"),"TARGET P&L — LEVERS APPLIED","var(--cpx)",r.rows,r.recovers);
-  pnlBox($("#pnlBoxAsis"),"AS-IS P&L — OWN RUN-RATE, NO LEVERS","var(--muted)",ai.rows,ai.recovers);
+  pnlBox($("#pnlBoxTarget"),"TARGET P&L — LEVERS APPLIED · SBU (CPX + MARS)","var(--cpx)",r.rows,r.recovers);
+  pnlBox($("#pnlBoxAsis"),"AS-IS P&L — OWN RUN-RATE, NO LEVERS · SBU (CPX + MARS)","var(--muted)",ai.rows,ai.recovers);
   const rows=[["Sales — CPX",r.rows.cpxS],["Sales — MARS",r.rows.mS],["COS — CPX",r.rows.cpxC],["COS — MARS",r.rows.mC],["Adjustment (variances)",r.rows.adj,0,1],
     ["Gross profit",r.rows.gp,1,1],["SBU OpEx",r.rows.ox],["Net profit — Target",r.rows.ne,1,1],["Net profit — As-Is",ai.rows.ne,0,1,0,"c-asis"],["Cumulative — Target",r.rows.cum,0,1,1],["Cumulative — As-Is",ai.rows.cum,0,1,1,"c-asis"]];
   let h=`<table><thead><tr><th></th>${MO.map((m,i)=>`<th class="${i<N?"":"c-shade"}">${m}${i<N?"":" ·P"}</th>`).join("")}<th>FY</th></tr></thead><tbody>`;
@@ -923,7 +945,7 @@ function renderPath(){
   let h=`<div class="card col12" style="grid-column:1/-1;margin-bottom:4px;border-left:3px solid ${profitable.length?'var(--green)':'var(--red)'}">
     <div style="font-size:.95rem;font-weight:600;color:var(--ink)">${profitable.length} of ${results.length} scenarios reach full-year profit</div>
     <div style="font-size:.82rem;color:var(--muted);margin-top:3px;line-height:1.5">${profitable.length?`With the unit build starting only in ${MO[N]}, the paths that reach profit need faster onboarding <i>plus</i> a deeper OpEx cut, or more signing volume on top of it.`:`With only ${12-N} month${12-N>1?'s':''} of build left, no realistic lever set recovers 2026 in-year — even OpEx at zero from ${MO[N]} falls short. The scenarios below show the gradient: the decision now is the size of the full-year loss and the run-rate CPX carries into 2027.`} ${profitable.length?`Best realistic path: <b style="color:var(--green)">${profitable.sort((a,b)=>b.r.neFY-a.r.neFY)[0].s.label}</b>.`:""}</div></div>`;
-  h+=`<div class="scard cur"><div class="tag">Current levers</div><div class="lbl">What the sandbox is set to now</div>
+  h+=`<div class="scard cur"><div class="tag">Current levers</div><div class="lbl">What the sandbox is set to now · FY profit is SBU (CPX + MARS)</div>
     <div class="ne ${cls(cur.neFY)}">${fS(cur.neFY)}</div>
     <div class="meta">Recovers YTD loss: <b style="color:${cur.recovers==="Not in-year"?"var(--red)":"var(--green)"}">${cur.recovers}</b> · profitable monthly from ${cur.monthPos}<br>Revenue ${f0(cur.proj)}</div></div>`;
   results.forEach(({k,s,r})=>{const win=r.neFY>=0;
@@ -943,9 +965,11 @@ function renderCohorts(){
   const perCohort=L.brands/(12-N), mARPA=L.arpa/12;
   const cohorts=[];for(let sc=N+1;sc<=12;sc++)cohorts.push(sc);
   const months=[];for(let m=N+1;m<=12;m++)months.push(m);
+  const horizon=[];for(let m=N+1;m<=N+12;m++)horizon.push(m);   // 12 months from the first cohort: the visual build runs past December
+  const lbl=m=>m<=12?MO[m-1]:MO[m-13]+" '27";
   const matrix={},totals={},survivors={};
   cohorts.forEach(sc=>{matrix[sc]={};});
-  months.forEach(m=>{totals[m]=0;survivors[m]=0;cohorts.forEach(sc=>{if(m>=sc){const age=m-sc;const rev=perCohort*Math.pow(1-L.newChurn,age)*ramp[Math.min(age,6)]*mARPA;matrix[sc][m]=rev;totals[m]+=rev;survivors[m]+=perCohort*Math.pow(1-L.newChurn,age);}});});
+  horizon.forEach(m=>{totals[m]=0;survivors[m]=0;cohorts.forEach(sc=>{if(m>=sc){const age=m-sc;const rev=perCohort*Math.pow(1-L.newChurn,age)*ramp[Math.min(age,6)]*mARPA;matrix[sc][m]=rev;totals[m]+=rev;survivors[m]+=perCohort*Math.pow(1-L.newChurn,age);}});});
   $("#coh-per").textContent=perCohort.toFixed(1);
   $("#coh-churn").textContent=(L.newChurn*100).toFixed(0)+"%";
   $("#coh-count").textContent=["","One","Two","Three","Four","Five","Six"][12-N]||String(12-N);
@@ -955,20 +979,31 @@ function renderCohorts(){
     ? `${ns.names.length} brands signed in ${ns.month} (${ns.names.join(", ")}) at pilot scale — ${FX.code} ${f0(ns.commission)} combined. They sit inside the actual book and are not counted as ${kC(20000)}-ARPA units, so the unit build starts in ${MO[N]}.`
     : `No new brands were signed in ${MO[N-1]} (the earlier pilot signings remain inside the actual book and are not 20K-ARPA units), so the unit build starts in ${MO[N]}.`;
   const palette=[CPX,"#F5915F","#F7B38C","#F9CDB2","#FBE0D0","#1A2230"];
+  const fyLine={id:"fyLine",afterDraw(c){const x=c.scales.x,i=12-N-1;if(i<0||i>=horizon.length-1)return;const px=(x.getPixelForValue(i)+x.getPixelForValue(i+1))/2;const ctx=c.ctx;ctx.save();ctx.strokeStyle=MUT;ctx.setLineDash([4,4]);ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(px,c.chartArea.top);ctx.lineTo(px,c.chartArea.bottom);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=MUT;ctx.font="600 10px Inter";ctx.textAlign="right";ctx.fillText("FY 2026",px-6,c.chartArea.top+12);ctx.textAlign="left";ctx.fillText("2027 run-on · same cohorts, no new signings",px+6,c.chartArea.top+12);ctx.restore();}};
   destroy("cCohort");
-  CH.cCohort=new Chart($("#cCohort"),{type:"bar",data:{labels:months.map(m=>MO[m-1]),datasets:cohorts.map((sc,i)=>({label:MO[sc-1]+" cohort",data:months.map(m=>matrix[sc][m]||0),backgroundColor:palette[i],borderRadius:2,stack:"s"}))},
-    options:{responsive:true,maintainAspectRatio:false,animation:{duration:400},interaction:{intersect:false,mode:"index"},plugins:{legend:{position:"bottom",labels:{boxWidth:9,font:{size:10},color:INK,padding:8}},tooltip:tip()},
+  CH.cCohort=new Chart($("#cCohort"),{type:"bar",data:{labels:horizon.map(lbl),datasets:cohorts.map((sc,i)=>({label:MO[sc-1]+" cohort",data:horizon.map(m=>matrix[sc][m]||0),backgroundColor:palette[i],borderRadius:2,stack:"s",maxBarThickness:46}))},
+    plugins:[fyLine],options:{responsive:true,maintainAspectRatio:false,animation:{duration:400},interaction:{intersect:false,mode:"index"},plugins:{legend:{position:"bottom",labels:{boxWidth:9,font:{size:10},color:INK,padding:8}},tooltip:tip()},
       scales:{x:{stacked:true,grid:{display:false},ticks:{color:MUT}},y:{stacked:true,grid:{color:GRID},ticks:{color:MUT,callback:fK},beginAtZero:true}}}});
-  let h=`<table><thead><tr><th>Cohort signed</th><th>Brands</th>${months.map(m=>`<th>${MO[m-1]}</th>`).join("")}<th>FY new</th></tr></thead><tbody>`;
+  // one-brand ramp curve: how a single 20K-ARPA unit builds
+  const std=[.10,.20,.35,.55,.75,.90,1],fst=[.30,.50,.70,.85,.95,1,1];
+  destroy("cRamp");
+  if($("#cRamp"))CH.cRamp=new Chart($("#cRamp"),{type:"line",data:{labels:["Sign","+1","+2","+3","+4","+5","+6"],datasets:[
+    {label:"Standard ramp",data:std.map(r=>r*mARPA),borderColor:L.fast?CPXLT:CPX,borderWidth:L.fast?1.5:2.5,pointRadius:3,tension:.3},
+    {label:"Fast ramp",data:fst.map(r=>r*mARPA),borderColor:L.fast?CPX:CPXLT,borderWidth:L.fast?2.5:1.5,borderDash:L.fast?[]:[5,4],pointRadius:3,tension:.3},
+    {label:"Full ARPA",data:std.map(()=>mARPA),borderColor:MUT,borderWidth:1,borderDash:[2,3],pointRadius:0}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:400},interaction:{intersect:false,mode:"index"},plugins:{legend:{position:"bottom",labels:{boxWidth:9,font:{size:10},color:INK,padding:8}},tooltip:tip()},
+      scales:{x:{grid:{display:false},ticks:{color:MUT}},y:{grid:{color:GRID},ticks:{color:MUT,callback:fK},beginAtZero:true,max:Math.ceil(mARPA*1.1/1000)*1000}}}});
+  const last=horizon[horizon.length-1];
+  let h=`<table><thead><tr><th>Cohort signed</th><th>Brands</th>${months.map(m=>`<th>${MO[m-1]}</th>`).join("")}<th>FY 2026 new</th><th class="c-shade">${lbl(last)} run-rate</th></tr></thead><tbody>`;
   cohorts.forEach(sc=>{const rowFY=months.reduce((a,m)=>a+(matrix[sc][m]||0),0);
     h+=`<tr><td>${MO[sc-1]} cohort</td><td class="c-asis">${perCohort.toFixed(1)}</td>`;
     months.forEach(m=>{h+=matrix[sc][m]?`<td class="c-proj">${f0(matrix[sc][m])}</td>`:'<td class="c-dash">—</td>';});
-    h+=`<td><b>${f0(rowFY)}</b></td></tr>`;});
-  h+=`<tr class="band"><td>New-brand revenue (total)</td><td></td>${months.map(m=>`<td>${f0(totals[m])}</td>`).join("")}<td><b>${f0(months.reduce((a,m)=>a+totals[m],0))}</b></td></tr>`;
-  h+=`<tr class="sub-r"><td>Surviving new brands (count)</td><td></td>${months.map(m=>`<td>${survivors[m].toFixed(1)}</td>`).join("")}<td><b>${survivors[months[months.length-1]].toFixed(1)}</b></td></tr>`;
+    h+=`<td><b>${f0(rowFY)}</b></td><td class="c-shade">${f0(matrix[sc][last]||0)}<span class="mut" style="font-weight:400">/mo</span></td></tr>`;});
+  h+=`<tr class="band"><td>New-brand revenue (total)</td><td></td>${months.map(m=>`<td>${f0(totals[m])}</td>`).join("")}<td><b>${f0(months.reduce((a,m)=>a+totals[m],0))}</b></td><td>${f0(totals[last])}/mo</td></tr>`;
+  h+=`<tr class="sub-r"><td>Surviving new brands (count)</td><td></td>${months.map(m=>`<td>${survivors[m].toFixed(1)}</td>`).join("")}<td><b>${survivors[months[months.length-1]].toFixed(1)}</b></td><td class="c-shade">${survivors[last].toFixed(1)}</td></tr>`;
   h+="</tbody></table>";$("#cohortTable").innerHTML=h;
   const fyNew=months.reduce((a,m)=>a+totals[m],0);
-  $("#cohortNote").innerHTML=`At current levers, ${L.brands} signings across ${12-N} cohorts (${MO[N]}–Dec${ns&&ns.names.length?` — the ${ns.names.length} pilot signings in ${ns.month} are in the actual book, not counted as units`:` — no brands were signed in ${MO[N-1]}`}) add <b style="color:var(--cpx)">${f0(fyNew)}</b> of new-brand commission from ${MO[N]}–Dec. Each cohort is ${perCohort.toFixed(1)} brands ramping on the ${L.fast?"fast (30→100%)":"standard (10→90%)"} curve at ${FX.code} ${f0(mARPA)}/brand/month, less ${(L.newChurn*100).toFixed(0)}% monthly churn. The stack shows why the year is back-loaded: December carries all ${12-N} cohorts at once, the earliest ones near full productivity.`;
+  $("#cohortNote").innerHTML=`At current levers, ${L.brands} signings across ${12-N} cohorts (${MO[N]}–Dec${ns&&ns.names.length?` — the ${ns.names.length} pilot signings in ${ns.month} are in the actual book, not counted as units`:` — no brands were signed in ${MO[N-1]}`}) add <b style="color:var(--cpx)">${f0(fyNew)}</b> of new-brand commission from ${MO[N]}–Dec. Each cohort is ${perCohort.toFixed(1)} brands ramping on the ${L.fast?"fast (30→100%)":"standard (10→90%)"} curve at ${FX.code} ${f0(mARPA)}/brand/month, less ${(L.newChurn*100).toFixed(0)}% monthly churn. The chart runs the same cohorts twelve months out (no new signings assumed after December) so the build is visible: by ${lbl(last)} the ${12-N} cohorts would be worth <b>${f0(totals[last])}</b>/month with ${survivors[last].toFixed(1)} surviving brands — that is the run-rate 2026's signings would carry into 2027, not FY 2026 revenue.`;
 }
 
 /* ================= DATA QUALITY & CONTROL ================= */
@@ -1179,7 +1214,8 @@ function show(id){
   window.scrollTo(0,0);Object.values(CH).forEach(c=>{try{c.resize();}catch(e){}});
 }
 document.querySelectorAll("nav a").forEach(a=>a.onclick=()=>show(a.dataset.page));
-document.addEventListener("click",e=>{if(e.target.id==="btnApply")recompute();if(e.target.id==="btnReset"){LV={...PLAN};renderLevers();recompute();}});
+document.addEventListener("click",e=>{if(e.target.id==="btnApply")recompute();if(e.target.id==="btnReset"){LV={...PLAN};renderLevers();recompute();}
+  const u=e.target.closest("[data-use]");if(u){readLevers();const d=LDEF.find(x=>x.k===u.dataset.use);const v=parseFloat(u.dataset.val);LV[d.k]=d.pct?v:v;const el=$("#lv-"+d.k);if(el)el.value=d.pct?+(v*100).toFixed(1):Math.round(v);recompute();}});
 document.addEventListener("change",e=>{if(e.target.closest("#leverGrid"))recompute();});
 document.querySelectorAll(".mLatest").forEach(el=>el.textContent=MO[N-1]+"-26");
 $("#footMonth").textContent=MO[N-1]+" 2026";$("#footStamp").textContent=CPX_DATA.meta.updated;
