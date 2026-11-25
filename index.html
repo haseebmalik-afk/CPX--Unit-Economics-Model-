@@ -651,8 +651,8 @@ function renderFin(){
   const fyS=sum(r.cpxS)+sum(r.mS), ytdS=sum(A.cpxS)+sum(A.marsS), projS=fyS-ytdS;
   const ytdNE=sum(A.ne), projNE=sum(r.ne.slice(N));
   $("#finTop").innerHTML=
-    kpiTile({hero:true,span:"col6",key:"fySales",lab:"FY 2026 projected revenue · sales · SBU (CPX + MARS)",val:f0(fyS),unit:FX.code,sub:`Actual Jan–${MO[N-1]} <b>${f0(ytdS)}</b> + As-Is ${MO[N]}–Dec <b>${f0(projS)}</b> · CPX <b>${f0(sum(r.cpxS))}</b> · MARS <b>${f0(sum(r.mS))}</b>`})+
-    kpiTile({span:"col6",key:"fyProfit",lab:"FY 2026 projected net profit · SBU (CPX + MARS)",val:`<span class="${cls(ai.neFY)}">${fS(ai.neFY)}</span>`,sub:`YTD <b class="${cls(ytdNE)}">${fS(ytdNE)}</b> + As-Is ${MO[N]}–Dec <b class="${cls(projNE)}">${fS(projNE)}</b> · ${ai.recovers==="Not in-year"?"loss not recovered in-year":"cumulative positive by "+ai.recovers}`});
+    kpiTile({hero:true,span:"col6",key:"fySales",lab:"FY 2026 projected revenue · sales · SBU (CPX + MARS)",val:f0(Math.round(fyS/1000)*1000),unit:FX.code,sub:`Exact <b>${f0(fyS)}</b> · actual Jan–${MO[N-1]} <b>${f0(ytdS)}</b> + As-Is ${MO[N]}–Dec <b>${f0(projS)}</b> · CPX <b>${f0(sum(r.cpxS))}</b> · MARS <b>${f0(sum(r.mS))}</b>`})+
+    kpiTile({span:"col6",key:"fyProfit",lab:"FY 2026 projected net profit · SBU (CPX + MARS)",val:`<span class="${cls(ai.neFY)}">${fS(Math.round(ai.neFY/1000)*1000)}</span>`,sub:`Exact <b class="${cls(ai.neFY)}">${fS(ai.neFY)}</b> · YTD <b class="${cls(ytdNE)}">${fS(ytdNE)}</b> + As-Is ${MO[N]}–Dec <b class="${cls(projNE)}">${fS(projNE)}</b> · ${ai.recovers==="Not in-year"?"loss not recovered in-year":"cumulative positive by "+ai.recovers}`});
   // chart: monthly NE bars + cumulative
   destroy("cFin");
   CH.cFin=new Chart($("#cFin"),{data:{labels:MO,datasets:[
