@@ -136,6 +136,7 @@ tr.sub-r td{color:var(--muted)}
 tr.tot td{font-weight:600;border-top:1px solid var(--line)}
 tr.click{cursor:pointer}
 tr.click td:first-child{color:var(--cpx);font-weight:600}
+th.click-th{cursor:pointer;color:var(--cpx)}th.click-th:hover{text-decoration:underline}
 tr.sel td,tr.sel td:first-child{background:var(--cpx-wash)}
 .tw{display:inline-flex;width:16px;height:16px;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:4px;font-size:.78rem;font-weight:700;color:var(--cpx);margin-right:7px;cursor:pointer;background:#fff;vertical-align:-2px;line-height:1}
 .tw:hover{border-color:var(--cpx)}
@@ -424,6 +425,7 @@ function setupCurrency(code){
   PLAN={...PLAN_AED,opex:C(PLAN_AED.opex),arpa:C(PLAN_AED.arpa)};
 }
 let savedFx="AED"; try{savedFx=localStorage.getItem("cpxFx")||"AED";}catch(e){}
+try{const z0=parseFloat(localStorage.getItem("cpxZoom"))||1;Chart.defaults.devicePixelRatio=(window.devicePixelRatio||1)*Math.min(1.4,Math.max(0.7,z0));}catch(e){}
 if(!FX_RATES[savedFx]) savedFx="AED";
 setupCurrency(savedFx);
 let LV={...PLAN}, CH={};
@@ -853,7 +855,7 @@ function currentStats(){ // latest-data reference points for the levers
   return {
     opex:{v:OPEX_RUN,txt:`SBU OpEx run-rate ${MO[N-3]}–${MO[N-1]}: <b>${f0(OPEX_RUN)}</b>/mo · Jan–${MO[N-1]} avg ${f0(mean(A.opex.slice(0,N)))}`},
     brands:{txt:`Active brands ${MO[N-1]}: <b>${A.brands[N-1]}</b> · 20K-unit signings in 2026: <b>0</b> (pilot signings sit in the actual book)`},
-    arpa:{v:arpaT3,txt:`Actual ARPA ${MO[N-3]}–${MO[N-1]}: <b>${f0(arpaT3/12)}</b>/mo = <b>${f0(arpaT3)}</b>/yr (lever assumes ${f0(PLAN.arpa)})`},
+    arpa:{txt:`Actual book ARPA ${MO[N-3]}–${MO[N-1]}: <b>${f0(arpaT3/12)}</b>/mo (${f0(arpaT3)}/yr). Reference only — the lever is the fully-ramped level; the ramp curve means a new brand reaches it over six months, not in month one.`},
     exChurn:{v:rr.measurable?rr.gross:null,txt:rr.measurable?`Gross revenue churn, same brands MoM, ${MO[N-3]}–${MO[N-1]} pooled: <b>${pct(rr.gross)}</b>/mo`:"n/a"},
     newChurn:{txt:cs.measurable?`No 20K units yet · logo churn Jul–${MO[N-1]}: ${cs.churned} of ${cs.base} ≈ <b>${pct(cs.logo/(N-6))}</b>/mo`:"n/a"},
     expansion:{v:rr.measurable?Math.max(0,rr.nrr-1):null,txt:rr.measurable?`Existing book net change, same brands MoM, ${MO[N-3]}–${MO[N-1]}: NRR <b>${pct(rr.nrr,0)}</b> → <b>${(rr.nrr-1>=0?"+":"")+pct(rr.nrr-1)}</b>/mo (lever is the total over ${12-N} remaining months)`:"n/a"},
@@ -994,9 +996,10 @@ function renderCohorts(){
     options:{responsive:true,maintainAspectRatio:false,animation:{duration:400},interaction:{intersect:false,mode:"index"},plugins:{legend:{position:"bottom",labels:{boxWidth:9,font:{size:10},color:INK,padding:8}},tooltip:tip()},
       scales:{x:{grid:{display:false},ticks:{color:MUT}},y:{grid:{color:GRID},ticks:{color:MUT,callback:fK},beginAtZero:true,max:Math.ceil(mARPA*1.1/1000)*1000}}}});
   const last=horizon[horizon.length-1];
-  let h=`<table><thead><tr><th>Cohort signed</th><th>Brands</th>${months.map(m=>`<th>${MO[m-1]}</th>`).join("")}<th>FY 2026 new</th><th class="c-shade">${lbl(last)} run-rate</th></tr></thead><tbody>`;
+  let h=`<table><thead><tr><th>Cohort signed <span class="mut" style="font-weight:400">· click a cohort or a month for its build</span></th><th>Brands</th>${months.map(m=>`<th class="click-th" data-cohm="${m}" title="Click to see how each cohort contributes in ${MO[m-1]}">${MO[m-1]} ▸</th>`).join("")}<th>FY 2026 new</th><th class="c-shade click-th" data-cohm="${last}" title="Click for the ${lbl(last)} build">${lbl(last)} run-rate ▸</th></tr></thead><tbody>`;
+  COH={cohorts,horizon,matrix,totals,survivors,perCohort,mARPA,ramp,L,lbl};
   cohorts.forEach(sc=>{const rowFY=months.reduce((a,m)=>a+(matrix[sc][m]||0),0);
-    h+=`<tr><td>${MO[sc-1]} cohort</td><td class="c-asis">${perCohort.toFixed(1)}</td>`;
+    h+=`<tr class="click" data-coh="${sc}" title="Click for the month-by-month build of this cohort"><td>${MO[sc-1]} cohort</td><td class="c-asis">${perCohort.toFixed(1)}</td>`;
     months.forEach(m=>{h+=matrix[sc][m]?`<td class="c-proj">${f0(matrix[sc][m])}</td>`:'<td class="c-dash">—</td>';});
     h+=`<td><b>${f0(rowFY)}</b></td><td class="c-shade">${f0(matrix[sc][last]||0)}<span class="mut" style="font-weight:400">/mo</span></td></tr>`;});
   h+=`<tr class="band"><td>New-brand revenue (total)</td><td></td>${months.map(m=>`<td>${f0(totals[m])}</td>`).join("")}<td><b>${f0(months.reduce((a,m)=>a+totals[m],0))}</b></td><td>${f0(totals[last])}/mo</td></tr>`;
@@ -1005,6 +1008,26 @@ function renderCohorts(){
   const fyNew=months.reduce((a,m)=>a+totals[m],0);
   $("#cohortNote").innerHTML=`At current levers, ${L.brands} signings across ${12-N} cohorts (${MO[N]}–Dec${ns&&ns.names.length?` — the ${ns.names.length} pilot signings in ${ns.month} are in the actual book, not counted as units`:` — no brands were signed in ${MO[N-1]}`}) add <b style="color:var(--cpx)">${f0(fyNew)}</b> of new-brand commission from ${MO[N]}–Dec. Each cohort is ${perCohort.toFixed(1)} brands ramping on the ${L.fast?"fast (30→100%)":"standard (10→90%)"} curve at ${FX.code} ${f0(mARPA)}/brand/month, less ${(L.newChurn*100).toFixed(0)}% monthly churn. The chart runs the same cohorts twelve months out (no new signings assumed after December) so the build is visible: by ${lbl(last)} the ${12-N} cohorts would be worth <b>${f0(totals[last])}</b>/month with ${survivors[last].toFixed(1)} surviving brands — that is the run-rate 2026's signings would carry into 2027, not FY 2026 revenue.`;
 }
+
+let COH=null;
+const row2=(l,v)=>({l,v});
+function cohortAudit(sc){ // one cohort, month by month
+  const {horizon,matrix,perCohort,mARPA,ramp,L,lbl}=COH;const rows=[];
+  horizon.forEach(m=>{if(m<sc)return;const age=m-sc,surv=perCohort*Math.pow(1-L.newChurn,age),rp=ramp[Math.min(age,6)];
+    rows.push([lbl(m),"+"+age,surv.toFixed(1),pct(rp,0),f0(rp*mARPA),f0(matrix[sc][m]||0),m<=12?"FY 2026":"2027 run-on"]);});
+  return {title:MO[sc-1]+" cohort — how it builds",def:`${perCohort.toFixed(1)} brands signed in ${MO[sc-1]}. Each month: surviving brands = ${perCohort.toFixed(1)} × (1 − ${(L.newChurn*100).toFixed(0)}%)^age; revenue per brand = ramp % × ${f0(mARPA)} (the fully-ramped monthly ARPA); cohort revenue = survivors × per-brand revenue. Ramp: ${L.fast?"fast 30→100%":"standard 10→90%"} over six months, 100% thereafter.`,
+    steps:[row2("Brands signed",perCohort.toFixed(1)),row2("Monthly ARPA at full ramp",f0(mARPA)),row2("Churn",(L.newChurn*100).toFixed(0)+"% / month"),row2("FY 2026 revenue",f0(horizon.filter(m=>m<=12).reduce((a,m)=>a+(matrix[sc][m]||0),0))),row2(lbl(horizon[horizon.length-1])+" run-rate",f0(matrix[sc][horizon[horizon.length-1]]||0)+"/mo")],
+    tables:[{hdr:["Month","Age","Surviving brands","Ramp","Per brand","Cohort revenue","Period"],rows}],sources:["Sandbox levers (brands, ARPA, new-brand churn, ramp)"]};
+}
+function monthAudit(m){ // one month, cohort by cohort — the carry-forward
+  const {cohorts,matrix,perCohort,mARPA,ramp,L,lbl,totals,survivors}=COH;const rows=[];
+  cohorts.forEach(sc=>{if(m<sc){rows.push([MO[sc-1]+" cohort","not yet signed","—","—","—","—"]);return;}const age=m-sc,surv=perCohort*Math.pow(1-L.newChurn,age),rp=ramp[Math.min(age,6)];
+    rows.push([MO[sc-1]+" cohort","+"+age,surv.toFixed(1),pct(rp,0),f0(rp*mARPA),f0(matrix[sc][m]||0)]);});
+  return {title:lbl(m)+" — what each cohort contributes",def:`In ${lbl(m)} every cohort signed so far is at a different age, so a different point on the ramp. Older cohorts carry more revenue per brand (further up the ramp) but fewer brands (churn); the newest cohort is at the bottom of the ramp. The month's new-brand revenue is the sum.`,
+    steps:[row2("Cohorts active",cohorts.filter(sc=>m>=sc).length+" of "+cohorts.length),row2("Surviving new brands",survivors[m].toFixed(1)),row2("New-brand revenue",f0(totals[m])),row2("Average per surviving brand",f0(survivors[m]?totals[m]/survivors[m]:0)),row2("Share of full ARPA",pct(survivors[m]?totals[m]/survivors[m]/mARPA:0,0))],
+    tables:[{hdr:["Cohort","Age","Surviving brands","Ramp","Per brand","Revenue"],rows}],sources:["Sandbox levers (brands, ARPA, new-brand churn, ramp)"]};
+}
+document.addEventListener("click",e=>{const r=e.target.closest("tr[data-coh]");if(r&&COH){openAudit(null,cohortAudit(+r.dataset.coh));return;}const th=e.target.closest("th[data-cohm]");if(th&&COH)openAudit(null,monthAudit(+th.dataset.cohm));});
 
 /* ================= DATA QUALITY & CONTROL ================= */
 function renderDqc(){
@@ -1125,8 +1148,8 @@ function auditFor(key){
   }
   return o;
 }
-function openAudit(key){
-  const o=auditFor(key);const now=new Date().toLocaleString("en-GB",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
+function openAudit(key,obj){
+  const o=obj||auditFor(key);const now=new Date().toLocaleString("en-GB",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
   const log=[["Period",rangeLabel()+(PERIOD.mode==="year"?" (Year)":PERIOD.mode==="quarter"?" (Quarter)":PERIOD.mode==="month"?" (Month)":" (Custom)")],["Currency",FX.code+(FX.code==="USD"?" · 1 USD = 3.6725 AED":" · source currency")],["P&L",PNL_STATUS.mode==="live"?"live · "+PNL_STATUS.note:PNL_STATUS.note],["Export","CPX 2026 Performance Export Jan–"+MO[N-1]+" · agreed history (earlier months as first reported)"],["Definitions","Build kit, finalised 24 Nov 2026 · Data Quality & Control page"],["Build",CPX_DATA.meta.updated],["Computed",now]];
   const tbl=t=>`<table><thead><tr>${t.hdr.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${t.rows.map(r=>`<tr>${r.map((c,i)=>`<td${i===0?' style="text-align:left"':''}>${c}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
   let el=$("#audit");if(!el){el=document.createElement("div");el.id="audit";document.body.appendChild(el);}
@@ -1211,7 +1234,7 @@ function show(id){
   document.querySelectorAll("nav a").forEach(a=>a.classList.remove("active"));
   $("#page-"+id).classList.add("active");
   document.querySelector(`nav a[data-page="${id}"]`).classList.add("active");
-  window.scrollTo(0,0);Object.values(CH).forEach(c=>{try{c.resize();}catch(e){}});
+  window.scrollTo(0,0);requestAnimationFrame(()=>Object.values(CH).forEach(c=>{try{c.resize();c.update("none");}catch(e){}}));
 }
 document.querySelectorAll("nav a").forEach(a=>a.onclick=()=>show(a.dataset.page));
 document.addEventListener("click",e=>{if(e.target.id==="btnApply")recompute();if(e.target.id==="btnReset"){LV={...PLAN};renderLevers();recompute();}
@@ -1234,9 +1257,11 @@ function syncFxUI(){
 document.querySelectorAll("#fxToggle button").forEach(b=>b.onclick=()=>setCurrency(b.dataset.fx));
 /* zoom */
 let ZOOM=1;try{ZOOM=parseFloat(localStorage.getItem("cpxZoom"))||1;}catch(e){}
-function applyZoom(){ZOOM=Math.min(1.4,Math.max(0.7,Math.round(ZOOM*10)/10));document.querySelector("main").style.zoom=ZOOM;const z=$("#zoomPct");if(z)z.textContent=Math.round(ZOOM*100)+"%";try{localStorage.setItem("cpxZoom",String(ZOOM));}catch(e){}Object.values(CH).forEach(c=>{try{c.resize();}catch(e){}});}
+function applyZoom(first){ZOOM=Math.min(1.4,Math.max(0.7,Math.round(ZOOM*10)/10));document.querySelector("main").style.zoom=ZOOM;const z=$("#zoomPct");if(z)z.textContent=Math.round(ZOOM*100)+"%";try{localStorage.setItem("cpxZoom",String(ZOOM));}catch(e){}
+  Chart.defaults.devicePixelRatio=(window.devicePixelRatio||1)*ZOOM;   // canvases are rasterised at the zoomed size, so they stay sharp
+  if(!first){if($("#lv-opex"))readLevers();renderAll();}}
 const zi=$("#zoomIn"),zo=$("#zoomOut"),zr=$("#zoomPct");if(zi)zi.onclick=()=>{ZOOM+=0.1;applyZoom();};if(zo)zo.onclick=()=>{ZOOM-=0.1;applyZoom();};if(zr)zr.onclick=()=>{ZOOM=1;applyZoom();};
-applyZoom();
+applyZoom(true);
 syncFxUI();
 renderAll();
 setPnlStatus();
